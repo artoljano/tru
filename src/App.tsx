@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Youtube,
   AlignJustify as Spotify,
@@ -17,18 +17,25 @@ import {
   Star,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 function App() {
   const navigate = useNavigate();
+  const { scrollYProgress } = useScroll();
+
+  const scaleProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+  const opacityProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Hero Section */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        style={{
+          backgroundImage:
+            'url("https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
+          scale: scaleProgress,
+          opacity: opacityProgress,
+        }}
         className="h-screen parallax-bg flex items-center justify-center relative overflow-hidden"
         style={{
           backgroundImage:
@@ -42,12 +49,56 @@ function App() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="text-center px-4 relative"
         >
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 pulse-glow">
-            PODCAST NAME
+          {/* <motion.h1
+            className="text-5xl md:text-7xl font-bold mb-4"
+            animate={{
+              textShadow: [
+                "0 0 20px rgba(255,0,0,0.2)",
+                "0 0 40px rgba(255,0,0,0.4)",
+                "0 0 20px rgba(255,0,0,0.2)",
+              ],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          > */}
+          <h1 className="text-5xl md:text-7xl font-bold mb-4">
+            TRU PODCAST MEDIA
           </h1>
+          {/* </motion.h1> */}
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
             Your gateway to fascinating conversations and unique perspectives
           </p>
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: [0.5, 1, 0.5],
+            y: [0, 10, 0],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white"
+        >
+          <div className="flex flex-col items-center">
+            <motion.div
+              animate={{
+                y: [0, 5, 0],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            ></motion.div>
+          </div>
         </motion.div>
       </motion.div>
 
@@ -57,7 +108,7 @@ function App() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="py-20 bg-gradient-to-b from-black to-gray-900"
+        className="py-20 bg-gradient-to-b from-black to-red-950/50"
       >
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
@@ -81,7 +132,7 @@ function App() {
             </button>
             <button
               onClick={() => navigate("/review")}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 flex items-center justify-center group"
+              className="flex-1 bg-gradient-to-r from-red-600 to-red-800 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-red-700 hover:to-red-900 transition-all duration-300 flex items-center justify-center group"
             >
               Leave a Review
               <Star
@@ -94,10 +145,22 @@ function App() {
       </motion.section>
 
       {/* Host Section */}
-      <section className="py-20 bg-gray-900">
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-20 bg-red-950/50"
+      >
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="w-full md:w-1/2">
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="w-full md:w-1/2"
+            >
               <div className="aspect-square rounded-2xl overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
@@ -105,8 +168,14 @@ function App() {
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
-            </div>
-            <div className="w-full md:w-1/2 text-center md:text-left">
+            </motion.div>
+            <motion.div
+              initial={{ x: 50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="w-full md:w-1/2 text-center md:text-left"
+            >
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Meet Your Host
               </h2>
@@ -127,198 +196,103 @@ function App() {
                 perspectives and insights."
               </p>
               <div className="flex space-x-6 justify-center md:justify-start">
-                <a
-                  href="#"
-                  className="text-white hover:text-gray-300 transition-colors"
-                >
-                  <Instagram size={24} />
-                </a>
-                <a
-                  href="#"
-                  className="text-white hover:text-gray-300 transition-colors"
-                >
-                  <Twitter size={24} />
-                </a>
-                <a
-                  href="#"
-                  className="text-white hover:text-gray-300 transition-colors"
-                >
-                  <Youtube size={24} />
-                </a>
+                {[Instagram, Twitter, Youtube].map((Icon, index) => (
+                  <motion.a
+                    key={index}
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                    href="#"
+                    className="text-white hover:text-gray-300 transition-colors"
+                  >
+                    <Icon size={24} />
+                  </motion.a>
+                ))}
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-8">
-                Our Mission
-              </h2>
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-12">
-                <img
-                  src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
-                  alt="Global Connection Concept"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <h3 className="text-2xl md:text-3xl font-semibold text-white px-6 text-center">
-                    Amplifying Extraordinary Voices
-                  </h3>
-                </div>
-              </div>
-              <p className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto">
-                We believe every remarkable story deserves to be heard. Our
-                mission is to bring you conversations with thought leaders,
-                innovators, and extraordinary individuals who are shaping our
-                world in unique ways.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8 mt-12">
-              <div className="bg-gray-900/50 p-6 rounded-xl backdrop-blur-sm">
-                <h4 className="text-xl font-semibold mb-3">
-                  Deep Conversations
-                </h4>
-                <p className="text-gray-300">
-                  Going beyond surface-level discussions to explore the real
-                  stories, challenges, and insights that shape our guests'
-                  journeys.
-                </p>
-              </div>
-
-              <div className="bg-gray-900/50 p-6 rounded-xl backdrop-blur-sm">
-                <h4 className="text-xl font-semibold mb-3">
-                  Diverse Perspectives
-                </h4>
-                <p className="text-gray-300">
-                  Featuring voices from all walks of life, ensuring our content
-                  reflects the rich tapestry of human experience and knowledge.
-                </p>
-              </div>
-
-              <div className="bg-gray-900/50 p-6 rounded-xl backdrop-blur-sm">
-                <h4 className="text-xl font-semibold mb-3">
-                  Actionable Insights
-                </h4>
-                <p className="text-gray-300">
-                  Every episode aims to provide valuable takeaways that our
-                  listeners can apply to their own lives and pursuits.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-16 text-center">
-              <p className="text-xl text-gray-300 italic">
-                "We're not just creating episodes; we're building a community of
-                curious minds and lifelong learners. Every conversation is an
-                opportunity to expand our understanding and challenge our
-                perspectives."
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      </motion.section>
 
       {/* Episodes Preview Section */}
       <section id="episodes" className="py-20 bg-black">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Latest Episodes
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               Dive into our most recent conversations with extraordinary guests
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {/* Episode Card 1 */}
-            <div className="group">
-              <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1559523161-0fc0d8b38a7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                  alt="Episode with Sarah Johnson"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Play size={48} className="text-white" />
+            {/* Episode Cards */}
+            {[1, 2, 3].map((index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                className="group"
+              >
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
+                  <img
+                    src={`https://images.unsplash.com/photo-${
+                      index === 1
+                        ? "1559523161-0fc0d8b38a7a"
+                        : index === 2
+                        ? "1521898284481-a5ec348cb555"
+                        : "1516321497487-e288fb19713f"
+                    }?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80`}
+                    alt={`Episode ${index}`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <Play size={48} className="text-white" />
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-gray-300 transition-colors">
-                The Future of AI in Healthcare
-              </h3>
-              <div className="flex items-center text-gray-400 mb-3">
-                <Clock size={16} className="mr-2" />
-                <span>45 minutes</span>
-              </div>
-              <p className="text-gray-300">
-                Dr. Sarah Johnson discusses how artificial intelligence is
-                revolutionizing medical diagnosis and treatment.
-              </p>
-            </div>
-
-            {/* Episode Card 2 */}
-            <div className="group">
-              <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1521898284481-a5ec348cb555?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                  alt="Episode with Michael Chen"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Play size={48} className="text-white" />
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-gray-300 transition-colors">
+                  {index === 1
+                    ? "The Future of AI in Healthcare"
+                    : index === 2
+                    ? "Sustainable Architecture"
+                    : "The Future of Work"}
+                </h3>
+                <div className="flex items-center text-gray-400 mb-3">
+                  <Clock size={16} className="mr-2" />
+                  <span>
+                    {index === 1 ? "45" : index === 2 ? "52" : "38"} minutes
+                  </span>
                 </div>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-gray-300 transition-colors">
-                Sustainable Architecture
-              </h3>
-              <div className="flex items-center text-gray-400 mb-3">
-                <Clock size={16} className="mr-2" />
-                <span>52 minutes</span>
-              </div>
-              <p className="text-gray-300">
-                Michael Chen shares his vision for eco-friendly buildings that
-                harmonize with nature.
-              </p>
-            </div>
-
-            {/* Episode Card 3 */}
-            <div className="group">
-              <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                  alt="Episode with Emily Martinez"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Play size={48} className="text-white" />
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-gray-300 transition-colors">
-                The Future of Work
-              </h3>
-              <div className="flex items-center text-gray-400 mb-3">
-                <Clock size={16} className="mr-2" />
-                <span>38 minutes</span>
-              </div>
-              <p className="text-gray-300">
-                Emily Martinez explores how remote work is reshaping corporate
-                culture and productivity.
-              </p>
-            </div>
+                <p className="text-gray-300">
+                  {index === 1
+                    ? "Dr. Sarah Johnson discusses how artificial intelligence is revolutionizing medical diagnosis and treatment."
+                    : index === 2
+                    ? "Michael Chen shares his vision for eco-friendly buildings that harmonize with nature."
+                    : "Emily Martinez explores how remote work is reshaping corporate culture and productivity."}
+                </p>
+              </motion.div>
+            ))}
           </div>
 
           {/* Creative Link to Episodes */}
-          <div className="relative max-w-4xl mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 blur-xl"></div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative max-w-4xl mx-auto"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-grey-600/20 to-red-950/50 blur-xl"></div>
             <a
               href="/episodes"
-              className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-gray-900/90 transition-all duration-300"
+              className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-red-950/50 transition-all duration-300"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -337,12 +311,18 @@ function App() {
                 </div>
               </div>
             </a>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* YouTube Channel Promotion */}
-      <section className="py-20 bg-black">
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-20 bg-black"
+      >
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -379,7 +359,9 @@ function App() {
                       our YouTube channel.
                     </p>
                   </div>
-                  <a
+                  <motion.a
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     href="https://youtube.com/@podcastname"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -388,13 +370,13 @@ function App() {
                     <Youtube size={24} />
                     <span className="font-semibold">Subscribe Now</span>
                     <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-                  </a>
+                  </motion.a>
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

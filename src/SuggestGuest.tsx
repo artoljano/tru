@@ -1,33 +1,35 @@
-import React, { useState } from 'react';
-import { Send } from 'lucide-react';
+import React, { useState } from "react";
+import { Send } from "lucide-react";
 
 function SuggestGuest() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    guestName: '',
-    guestBackground: '',
-    whyGreatGuest: ''
+    name: "",
+    email: "",
+    guestName: "",
+    guestBackground: "",
+    whyGreatGuest: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
     setFormData({
-      name: '',
-      email: '',
-      guestName: '',
-      guestBackground: '',
-      whyGreatGuest: ''
+      name: "",
+      email: "",
+      guestName: "",
+      guestBackground: "",
+      whyGreatGuest: "",
     });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -35,9 +37,12 @@ function SuggestGuest() {
     <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white pt-24">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Suggest a Guest</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Suggest a Guest
+          </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
-            Know someone with an extraordinary story? Help us discover amazing guests for our podcast.
+            Know someone with an extraordinary story? Help us discover amazing
+            guests for our podcast.
           </p>
         </div>
 
@@ -45,7 +50,12 @@ function SuggestGuest() {
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300">Your Name</label>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Your Name
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -59,7 +69,12 @@ function SuggestGuest() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300">Your Email</label>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Your Email
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -74,7 +89,12 @@ function SuggestGuest() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="guestName" className="block text-sm font-medium text-gray-300">Suggested Guest Name</label>
+              <label
+                htmlFor="guestName"
+                className="block text-sm font-medium text-gray-300"
+              >
+                Suggested Guest Name
+              </label>
               <input
                 type="text"
                 id="guestName"
@@ -88,7 +108,12 @@ function SuggestGuest() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="guestBackground" className="block text-sm font-medium text-gray-300">Guest's Background</label>
+              <label
+                htmlFor="guestBackground"
+                className="block text-sm font-medium text-gray-300"
+              >
+                Guest's Background
+              </label>
               <textarea
                 id="guestBackground"
                 name="guestBackground"
@@ -102,7 +127,12 @@ function SuggestGuest() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="whyGreatGuest" className="block text-sm font-medium text-gray-300">Why would they be a great guest?</label>
+              <label
+                htmlFor="whyGreatGuest"
+                className="block text-sm font-medium text-gray-300"
+              >
+                Why would they be a great guest?
+              </label>
               <textarea
                 id="whyGreatGuest"
                 name="whyGreatGuest"
