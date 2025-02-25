@@ -68,8 +68,11 @@ function App() {
             TRU PODCAST MEDIA
           </h1>
           {/* </motion.h1> */}
-          <p className="text-xl md:text-2xl max-w-2xl mx-auto">
-            Your gateway to fascinating conversations and unique perspectives
+          <p className="text-2xl md:text-2xl max-w-2xl mx-auto">
+            Kur ke TRU, pse s'e perdor!
+          </p>
+          <p className="text-2xl md:text-2xl max-w-2xl mx-auto">
+            Podcast i pa censuruar!
           </p>
         </motion.div>
 
