@@ -2,21 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
-const episodes = [
-  {
-    id: 1,
-    title: "The Future of AI in Healthcare",
-    guest: "Dr. Sarah Johnson",
-  },
-  { id: 2, title: "Sustainable Architecture", guest: "Michael Chen" },
-  { id: 3, title: "The Future of Work", guest: "Emily Martinez" },
-  { id: 4, title: "Mindfulness in the Digital Age", guest: "Dr. James Wilson" },
-];
+function decodeHtml(html: string) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
 
 function ReviewPodcast() {
   const [searchParams] = useSearchParams();
   const preselectedEpisode = searchParams.get("episode");
 
+  const [episodes, setEpisodes] = useState<any[]>([]); // Episode state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,6 +22,31 @@ function ReviewPodcast() {
   });
 
   useEffect(() => {
+    // Fetch episodes from localStorage or use fallback from API if necessary
+    const storedEpisodes = localStorage.getItem("episodes");
+
+    if (storedEpisodes) {
+      // Use cached episodes from localStorage
+      setEpisodes(JSON.parse(storedEpisodes));
+    } else {
+      // Otherwise, fall back to fetching from API
+      const fetchEpisodes = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/api/podcasts");
+          const data = await response.json();
+          setEpisodes(data);
+          localStorage.setItem("episodes", JSON.stringify(data)); // Cache the episodes
+        } catch (error) {
+          console.error("Error fetching episodes:", error);
+        }
+      };
+
+      fetchEpisodes();
+    }
+  }, []); // Empty dependency array ensures this runs only once when component mounts
+
+  useEffect(() => {
+    // Preselect episode when URL query parameter is available
     if (preselectedEpisode) {
       setFormData((prev) => ({
         ...prev,
@@ -36,7 +57,6 @@ function ReviewPodcast() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
     console.log("Review submitted:", formData);
     setFormData({
       name: "",
@@ -132,7 +152,8 @@ function ReviewPodcast() {
                 <option value="">Select an episode...</option>
                 {episodes.map((episode) => (
                   <option key={episode.id} value={episode.id}>
-                    {episode.title} - with {episode.guest}
+                    {decodeHtml(episode.title)} - with{" "}
+                    {decodeHtml(episode.guest)}
                   </option>
                 ))}
               </select>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Youtube,
   AlignJustify as Spotify,
@@ -19,12 +19,95 @@ import {
 import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 
+interface Episode {
+  id: number;
+  title: string;
+  guest: string;
+  description: string;
+  duration: string;
+  date: string;
+  image: string;
+  youtubeUrl: string;
+  category: string;
+  tags: string[];
+}
+
+function decodeHtml(html: string) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
+
 function App() {
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
-
+  const [showPlayer, setShowPlayer] = useState(false);
+  const [currentEpisode, setCurrentEpisode] = useState({
+    title: "The Future of AI in Healthcare",
+    guest: "Dr. Sarah Johnson",
+    youtubeUrl: "https://example.com/podcast-episode.mp3",
+    image:
+      "https://images.unsplash.com/photo-1559523161-0fc0d8b38a7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+  });
+  const [loading, setLoading] = useState(true);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
   const scaleProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
   const opacityProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+
+  useEffect(() => {
+    const cachedEpisodes = localStorage.getItem("episodes");
+    const lastFetchTime = localStorage.getItem("lastFetchTime");
+
+    const now = new Date();
+    const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
+
+    if (cachedEpisodes && lastFetchTime) {
+      const timeSinceLastFetch =
+        now.getTime() - new Date(lastFetchTime).getTime();
+
+      // If the data is less than a week old, use the cached data
+      if (timeSinceLastFetch < weekInMilliseconds) {
+        setEpisodes(JSON.parse(cachedEpisodes));
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Fetch episodes if the data is old or not cached
+    const fetchEpisodes = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:5000/api/podcasts");
+        const data = await response.json();
+        setEpisodes(data); // Set the fetched episodes in the state
+        // Cache the data and update the timestamp
+        localStorage.setItem("episodes", JSON.stringify(data));
+        localStorage.setItem("lastFetchTime", now.toISOString());
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching episodes:", error); // Handle any errors
+        setLoading(false);
+      }
+    };
+
+    fetchEpisodes(); // Call the fetch function when the component mounts
+  }, []); // Empty dependency array to run only once when the component mounts
+
+  const handleReviewClick = (episodeId: number) => {
+    navigate(`/review?episode=${episodeId}`);
+  };
+
+  const handlePlayEpisode = (index: number) => {
+    const episodeData = episodes[index];
+
+    setCurrentEpisode({
+      title: episodeData.title,
+      guest: episodeData.guest,
+      youtubeUrl: episodeData.youtubeUrl,
+      image: episodeData.image,
+    });
+    setShowPlayer(true);
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -37,10 +120,6 @@ function App() {
           opacity: opacityProgress,
         }}
         className="h-screen parallax-bg flex items-center justify-center relative overflow-hidden"
-        style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
-        }}
       >
         <div className="absolute inset-0 bg-black/50"></div>
         <motion.div
@@ -49,59 +128,28 @@ function App() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="text-center px-4 relative"
         >
-          {/* <motion.h1
-            className="text-5xl md:text-7xl font-bold mb-4"
-            animate={{
-              textShadow: [
-                "0 0 20px rgba(255,0,0,0.2)",
-                "0 0 40px rgba(255,0,0,0.4)",
-                "0 0 20px rgba(255,0,0,0.2)",
-              ],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          > */}
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
             TRU PODCAST MEDIA
           </h1>
-          {/* </motion.h1> */}
           <p className="text-2xl md:text-2xl max-w-2xl mx-auto">
             Kur ke TRU, pse s'e perdor!
           </p>
           <p className="text-2xl md:text-2xl max-w-2xl mx-auto">
             Podcast i pa censuruar!
           </p>
-        </motion.div>
 
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: [0.5, 1, 0.5],
-            y: [0, 10, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white"
-        >
-          <div className="flex flex-col items-center">
-            <motion.div
-              animate={{
-                y: [0, 5, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            ></motion.div>
-          </div>
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate("/episodes")}
+            className="mt-8 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium flex items-center mx-auto"
+          >
+            <Headphones className="mr-2" size={20} />
+            Listen Now
+          </motion.button>
         </motion.div>
       </motion.div>
 
@@ -133,19 +181,48 @@ function App() {
                 size={20}
               />
             </button>
+
             <button
               onClick={() => navigate("/review")}
-              className="flex-1 bg-gradient-to-r from-red-600 to-red-800 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-red-700 hover:to-red-900 transition-all duration-300 flex items-center justify-center group"
+              className="flex-1 bg-red-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center group"
             >
               Leave a Review
               <Star
-                className="ml-2 group-hover:scale-110 transition-transform"
+                className="ml-2 group-hover:scale-110 group-hover:stroke-white group-hover:translate-x-1 transition-transform"
                 size={20}
               />
+              {/* <Star
+                className="ml-2 group-hover:scale-110 transition-transform"
+                size={20}
+              
+                className="ml-2 group-hover:fill-white group-hover:stroke-white"
+              /> */}
             </button>
           </div>
         </div>
       </motion.section>
+
+      {/* Testimonials Section */}
+      {/* <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-16 bg-gradient-to-b from-red-950/50 to-black"
+      >
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              What Our Listeners Say
+            </h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">
+              Hear from our community about how this podcast has impacted them
+            </p>
+          </div>
+
+          <TestimonialSlider />
+        </div>
+      </motion.section> */}
 
       {/* Host Section */}
       <motion.section
@@ -235,7 +312,7 @@ function App() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {/* Episode Cards */}
-            {[1, 2, 3].map((index) => (
+            {episodes.slice(0, 3).map((episode, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -246,39 +323,24 @@ function App() {
               >
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
                   <img
-                    src={`https://images.unsplash.com/photo-${
-                      index === 1
-                        ? "1559523161-0fc0d8b38a7a"
-                        : index === 2
-                        ? "1521898284481-a5ec348cb555"
-                        : "1516321497487-e288fb19713f"
-                    }?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80`}
-                    alt={`Episode ${index}`}
+                    src={episode.image}
+                    alt={`Episode ${index + 1}`}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <Play size={48} className="text-white" />
-                  </div>
+                  {/* <div
+                    className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+                    onClick={() => handlePlayEpisode(index)}
+                  ></div> */}
                 </div>
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-gray-300 transition-colors">
-                  {index === 1
-                    ? "The Future of AI in Healthcare"
-                    : index === 2
-                    ? "Sustainable Architecture"
-                    : "The Future of Work"}
+                  {decodeHtml(episode.title)}
                 </h3>
                 <div className="flex items-center text-gray-400 mb-3">
                   <Clock size={16} className="mr-2" />
-                  <span>
-                    {index === 1 ? "45" : index === 2 ? "52" : "38"} minutes
-                  </span>
+                  <span>{decodeHtml(episode.duration)} minutes</span>
                 </div>
                 <p className="text-gray-300">
-                  {index === 1
-                    ? "Dr. Sarah Johnson discusses how artificial intelligence is revolutionizing medical diagnosis and treatment."
-                    : index === 2
-                    ? "Michael Chen shares his vision for eco-friendly buildings that harmonize with nature."
-                    : "Emily Martinez explores how remote work is reshaping corporate culture and productivity."}
+                  {decodeHtml(episode.description)}
                 </p>
               </motion.div>
             ))}

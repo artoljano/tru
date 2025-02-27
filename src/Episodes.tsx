@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Play,
   Clock,
@@ -28,72 +28,52 @@ interface Episode {
   tags: string[];
 }
 
-const episodes: Episode[] = [
-  {
-    id: 1,
-    title: "The Future of AI in Healthcare",
-    guest: "Dr. Sarah Johnson",
-    description:
-      "Dr. Johnson discusses how artificial intelligence is revolutionizing medical diagnosis and treatment, and what this means for the future of healthcare delivery.",
-    duration: "45 minutes",
-    date: "March 15, 2025",
-    image:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-    youtubeUrl: "https://youtube.com/watch?v=example1",
-    category: "Technology",
-    tags: ["AI", "Healthcare", "Technology", "Medicine"],
-  },
-  {
-    id: 2,
-    title: "Sustainable Architecture",
-    guest: "Michael Chen",
-    description:
-      "Award-winning architect Michael Chen shares his vision for eco-friendly buildings and how sustainable architecture can combat climate change.",
-    duration: "52 minutes",
-    date: "March 10, 2025",
-    image:
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-    youtubeUrl: "https://youtube.com/watch?v=example2",
-    category: "Environment",
-    tags: ["Architecture", "Sustainability", "Climate Change"],
-  },
-  {
-    id: 3,
-    title: "The Future of Work",
-    guest: "Emily Martinez",
-    description:
-      "Tech executive Emily Martinez explores how remote work and digital transformation are reshaping corporate culture and employee productivity.",
-    duration: "38 minutes",
-    date: "March 5, 2025",
-    image:
-      "https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-    youtubeUrl: "https://youtube.com/watch?v=example3",
-    category: "Business",
-    tags: ["Remote Work", "Corporate Culture", "Technology"],
-  },
-  {
-    id: 4,
-    title: "Mindfulness in the Digital Age",
-    guest: "Dr. James Wilson",
-    description:
-      "Psychologist Dr. Wilson discusses strategies for maintaining mental well-being in an increasingly connected world.",
-    duration: "47 minutes",
-    date: "March 1, 2025",
-    image:
-      "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-    youtubeUrl: "https://youtube.com/watch?v=example4",
-    category: "Health",
-    tags: ["Mental Health", "Mindfulness", "Digital Wellness"],
-  },
-];
-
 const categories = ["All", "Technology", "Environment", "Business", "Health"];
 
-function Episodes() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+function decodeHtml(html: string) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
+
+const Episodes = () => {
+  const [episodes, setEpisodes] = useState<Episode[]>([]); // State to store episodes
+  const [searchTerm, setSearchTerm] = useState(""); // State for search
+  const [selectedCategory, setSelectedCategory] = useState("All"); // State for selected category
+  const [loading, setLoading] = useState(true); // Loading state
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const cachedEpisodes = localStorage.getItem("episodes");
+
+    if (cachedEpisodes) {
+      // If cached episodes exist, load them from localStorage
+      setEpisodes(JSON.parse(cachedEpisodes));
+      setLoading(false);
+    } else {
+      // If no cached episodes, fetch new data
+      const fetchEpisodes = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch("http://localhost:5000/api/podcasts");
+          const data = await response.json();
+          setEpisodes(data); // Set the fetched episodes in the state
+
+          // Cache the fetched data in localStorage
+          localStorage.setItem("episodes", JSON.stringify(data));
+
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching episodes:", error); // Handle any errors
+          setLoading(false);
+        }
+      };
+
+      fetchEpisodes(); // Call the fetch function to get new data if no cached data
+    }
+  }, []); // Empty dependency array to run once when the component mounts
+
+  // Filter episodes based on search term and category
   const filteredEpisodes = episodes.filter((episode) => {
     const matchesSearch =
       episode.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -109,6 +89,10 @@ function Episodes() {
   const handleReviewClick = (episodeId: number) => {
     navigate(`/review?episode=${episodeId}`);
   };
+
+  if (loading) {
+    return <div>Loading episodes...</div>;
+  }
 
   const container = {
     hidden: { opacity: 0 },
@@ -268,15 +252,17 @@ function Episodes() {
                 <div className="relative aspect-video">
                   <img
                     src={episode.image}
-                    alt={episode.title}
+                    alt={decodeHtml(episode.title)}
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
                     <div className="w-full">
                       <h2 className="text-2xl font-bold mb-2">
-                        {episode.title}
+                        {decodeHtml(episode.title)}
                       </h2>
-                      <p className="text-gray-300">with {episode.guest}</p>
+                      <p className="text-gray-300">
+                        with {decodeHtml(episode.guest)}
+                      </p>
                     </div>
                   </div>
                   <div className="absolute top-4 right-4 flex gap-2">
@@ -305,7 +291,7 @@ function Episodes() {
                   <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
                     <span className="flex items-center gap-1">
                       <Clock size={16} />
-                      {episode.duration}
+                      {decodeHtml(episode.duration)}
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar size={16} />
@@ -320,7 +306,7 @@ function Episodes() {
                         whileHover={{ scale: 1.05 }}
                         className="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300"
                       >
-                        {tag}
+                        {decodeHtml(tag)}
                       </motion.span>
                     ))}
                   </div>
@@ -352,6 +338,6 @@ function Episodes() {
       </div>
     </div>
   );
-}
+};
 
 export default Episodes;
