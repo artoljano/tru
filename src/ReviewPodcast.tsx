@@ -32,7 +32,7 @@ function ReviewPodcast() {
       // Otherwise, fall back to fetching from API
       const fetchEpisodes = async () => {
         try {
-          const response = await fetch("http://localhost:5000/api/podcasts");
+          const response = await fetch("http://localhost:5000/api/episodes");
           const data = await response.json();
           setEpisodes(data);
           localStorage.setItem("episodes", JSON.stringify(data)); // Cache the episodes
@@ -80,8 +80,8 @@ function ReviewPodcast() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white pt-24">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-b from-red-900/50 to-black text-white pt-24 ">
+      <div className="container mx-auto px-4 max-w-4xl pt-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Share Your Thoughts
@@ -92,7 +92,7 @@ function ReviewPodcast() {
           </p>
         </div>
 
-        <div className="bg-gray-900/50 rounded-xl p-8 backdrop-blur-sm shadow-xl">
+        <div className="bg-black/50 rounded-xl p-8 backdrop-blur-sm shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">

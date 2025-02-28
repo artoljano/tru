@@ -41,48 +41,37 @@ function decodeHtml(html: string) {
 function App() {
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
-  const [showPlayer, setShowPlayer] = useState(false);
-  const [currentEpisode, setCurrentEpisode] = useState({
-    title: "The Future of AI in Healthcare",
-    guest: "Dr. Sarah Johnson",
-    youtubeUrl: "https://example.com/podcast-episode.mp3",
-    image:
-      "https://images.unsplash.com/photo-1559523161-0fc0d8b38a7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-  });
+  // const [showPlayer, setShowPlayer] = useState(false);
+  // const [currentEpisode, setCurrentEpisode] = useState({
+  //   title: "The Future of AI in Healthcare",
+  //   guest: "Dr. Sarah Johnson",
+  //   youtubeUrl: "https://example.com/podcast-episode.mp3",
+  //   image:
+  //     "https://images.unsplash.com/photo-1559523161-0fc0d8b38a7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+  // });
   const [loading, setLoading] = useState(true);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const scaleProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
   const opacityProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   useEffect(() => {
+    // localStorage.clear();
     const cachedEpisodes = localStorage.getItem("episodes");
-    const lastFetchTime = localStorage.getItem("lastFetchTime");
 
-    const now = new Date();
-    const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
-
-    if (cachedEpisodes && lastFetchTime) {
-      const timeSinceLastFetch =
-        now.getTime() - new Date(lastFetchTime).getTime();
-
-      // If the data is less than a week old, use the cached data
-      if (timeSinceLastFetch < weekInMilliseconds) {
-        setEpisodes(JSON.parse(cachedEpisodes));
-        setLoading(false);
-        return;
-      }
+    if (cachedEpisodes) {
+      setEpisodes(JSON.parse(cachedEpisodes));
+      setLoading(false);
+      return;
     }
 
-    // Fetch episodes if the data is old or not cached
+    // Fetch episodes if not cached
     const fetchEpisodes = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:5000/api/podcasts");
+        const response = await fetch("http://localhost:5000/api/episodes");
         const data = await response.json();
         setEpisodes(data); // Set the fetched episodes in the state
-        // Cache the data and update the timestamp
         localStorage.setItem("episodes", JSON.stringify(data));
-        localStorage.setItem("lastFetchTime", now.toISOString());
         setLoading(false);
       } catch (error) {
         console.error("Error fetching episodes:", error); // Handle any errors
@@ -93,21 +82,21 @@ function App() {
     fetchEpisodes(); // Call the fetch function when the component mounts
   }, []); // Empty dependency array to run only once when the component mounts
 
-  const handleReviewClick = (episodeId: number) => {
-    navigate(`/review?episode=${episodeId}`);
-  };
+  // const handleReviewClick = (episodeId: number) => {
+  //   navigate(`/review?episode=${episodeId}`);
+  // };
 
-  const handlePlayEpisode = (index: number) => {
-    const episodeData = episodes[index];
+  // const handlePlayEpisode = (index: number) => {
+  //   const episodeData = episodes[index];
 
-    setCurrentEpisode({
-      title: episodeData.title,
-      guest: episodeData.guest,
-      youtubeUrl: episodeData.youtubeUrl,
-      image: episodeData.image,
-    });
-    setShowPlayer(true);
-  };
+  //   setCurrentEpisode({
+  //     title: episodeData.title,
+  //     guest: episodeData.guest,
+  //     youtubeUrl: episodeData.youtubeUrl,
+  //     image: episodeData.image,
+  //   });
+  //   setShowPlayer(true);
+  // };
 
   return (
     <div className="min-h-screen bg-black text-white">

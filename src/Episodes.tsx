@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 interface Episode {
   id: number;
@@ -43,6 +44,12 @@ const Episodes = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const navigate = useNavigate();
 
+  const [stats, setStats] = useState({
+    episodes: 0,
+    guests: 0,
+    listeners: 0,
+  });
+
   useEffect(() => {
     const cachedEpisodes = localStorage.getItem("episodes");
 
@@ -55,7 +62,7 @@ const Episodes = () => {
       const fetchEpisodes = async () => {
         try {
           setLoading(true);
-          const response = await fetch("http://localhost:5000/api/podcasts");
+          const response = await fetch("http://localhost:5000/api/episodes");
           const data = await response.json();
           setEpisodes(data); // Set the fetched episodes in the state
 
@@ -72,6 +79,30 @@ const Episodes = () => {
       fetchEpisodes(); // Call the fetch function to get new data if no cached data
     }
   }, []); // Empty dependency array to run once when the component mounts
+
+  useEffect(() => {
+    // Fetch stats data from the server
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/stats"); // Fetch stats from the new endpoint
+        const { episodes, channelStats } = response.data;
+
+        const episodeCount = episodes.length;
+        const totalViews = channelStats.totalViews;
+        const guestCount = 10; // Example: Track manually or parse description if available
+
+        setStats({
+          episodes: episodeCount,
+          guests: guestCount,
+          listeners: totalViews / 1000, // Convert to thousands for display
+        });
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   // Filter episodes based on search term and category
   const filteredEpisodes = episodes.filter((episode) => {
@@ -153,7 +184,7 @@ const Episodes = () => {
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
                 <Mic className="w-8 h-8 mb-2 mx-auto text-red-800" />
-                <div className="text-2xl font-bold">12+</div>
+                <div className="text-2xl font-bold">50+</div>
                 <div className="text-gray-400">Episodes</div>
               </motion.div>
 
@@ -165,7 +196,7 @@ const Episodes = () => {
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
                 <Users className="w-8 h-8 mb-2 mx-auto text-red-800" />
-                <div className="text-2xl font-bold">10+</div>
+                <div className="text-2xl font-bold">{stats.guests}+</div>
                 <div className="text-gray-400">Guests</div>
               </motion.div>
 
@@ -177,7 +208,9 @@ const Episodes = () => {
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
                 <Headphones className="w-8 h-8 mb-2 mx-auto text-red-800" />
-                <div className="text-2xl font-bold">5K+</div>
+                <div className="text-2xl font-bold">
+                  {Math.round(stats.listeners)}K+
+                </div>
                 <div className="text-gray-400">Listeners</div>
               </motion.div>
             </div>
