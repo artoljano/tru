@@ -24,8 +24,14 @@ function ReviewPodcast() {
   useEffect(() => {
     // Fetch episodes from localStorage or use fallback from API if necessary
     const storedEpisodes = localStorage.getItem("episodes");
+    const storedEpisodesTime = localStorage.getItem("episodesTime");
+    const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-    if (storedEpisodes) {
+    if (
+      storedEpisodes &&
+      storedEpisodesTime &&
+      Date.now() - parseInt(storedEpisodesTime) < cacheExpiry
+    ) {
       // Use cached episodes from localStorage
       setEpisodes(JSON.parse(storedEpisodes));
     } else {
@@ -36,6 +42,7 @@ function ReviewPodcast() {
           const data = await response.json();
           setEpisodes(data);
           localStorage.setItem("episodes", JSON.stringify(data)); // Cache the episodes
+          localStorage.setItem("episodesTime", Date.now().toString()); // Cache the time of fetching
         } catch (error) {
           console.error("Error fetching episodes:", error);
         }
@@ -46,25 +53,65 @@ function ReviewPodcast() {
   }, []); // Empty dependency array ensures this runs only once when component mounts
 
   useEffect(() => {
-    // Preselect episode when URL query parameter is available
-    if (preselectedEpisode) {
+    // Preselect episode when URL query parameter is available and episodeId hasn't been set
+    if (preselectedEpisode && !formData.episodeId) {
       setFormData((prev) => ({
         ...prev,
         episodeId: preselectedEpisode,
       }));
     }
-  }, [preselectedEpisode]);
+  }, [preselectedEpisode, formData.episodeId]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Review submitted:", formData);
-    setFormData({
-      name: "",
-      email: "",
-      episodeId: "",
-      rating: 5,
-      review: "",
-    });
+
+    // Log form data
+    console.log("Form Data:", formData);
+
+    // Find the episode title based on the selected episodeId
+    const selectedEpisode = episodes.find(
+      (episode) => episode.id === formData.episodeId
+    );
+
+    // Construct the email body with the episode title instead of the episodeId
+    const reviewData = {
+      name: formData.name,
+      email: formData.email,
+      episodeId: selectedEpisode ? decodeHtml(selectedEpisode.title) : "", // Use episode.title
+      rating: formData.rating,
+      review: formData.review,
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/send-review-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(reviewData),
+        }
+      );
+
+      if (response.ok) {
+        alert("Review submitted successfully!");
+        setFormData({
+          name: "",
+          email: "",
+          episodeId: "",
+          rating: 5,
+          review: "",
+        });
+      } else {
+        const errorMessage = await response.text();
+        console.error("Error submitting review:", errorMessage);
+        alert(`Failed to submit the review: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Error submitting review");
+    }
   };
 
   const handleInputChange = (
@@ -171,6 +218,7 @@ function ReviewPodcast() {
                     onClick={() =>
                       setFormData((prev) => ({ ...prev, rating: star }))
                     }
+                    aria-label={`Rate ${star} stars`}
                     className="focus:outline-none"
                   >
                     <Star

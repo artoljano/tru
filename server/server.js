@@ -2,18 +2,33 @@ import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
+import sendReviewEmail from './mailer.js';
+import bodyParser from 'body-parser';
+
 
 dotenv.config();
 
 const app = express();
+
 const port = 5000;
 
 // YouTube API key and channel ID
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-const CHANNEL_ID = 'UCwy24lZawSkq3mWqF68p2YA';
+const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+
 
 // Enable CORS
 app.use(cors());
+
+// Parse incoming JSON requests
+app.use(express.json());
+
+// Parse URL-encoded data (for form submissions, if needed)
+app.use(express.urlencoded({ extended: true }));
+
 
 // Cache setup
 let cachedStats = null;
@@ -161,64 +176,217 @@ app.get('/api/stats', async (req, res) => {
 
 
   //Email Sender
-  app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.json()); // Parse JSON bodies
+  app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (for form submissions)
+  
 
-// POST route for sending Suggest Guest form emails
-app.post('/send-suggest-guest-email', async (req, res) => {
-  const { name, email, guestName, guestBackground, whyGreatGuest } = req.body;
-
-  const subject = `Guest Suggestion: ${guestName}`;
-  const text = `
-    Name: ${name}
-    Email: ${email}
-    Suggested Guest: ${guestName}
-    Guest's Background: ${guestBackground}
-    Why they'd be a great guest: ${whyGreatGuest}
-  `;
-  const html = `
-    <p><strong>Name:</strong> ${name}</p>
-    <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Suggested Guest:</strong> ${guestName}</p>
-    <p><strong>Guest's Background:</strong> ${guestBackground}</p>
-    <p><strong>Why they'd be a great guest:</strong> ${whyGreatGuest}</p>
-  `;
-
-  try {
-    await sendEmail('your-email@example.com', subject, text, html); // Replace with actual email
-    res.status(200).send('Email sent successfully');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error sending email');
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com', // e.g., smtp.mailtrap.io
+  port: 587,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
-// POST route for sending Review Episode form emails
-app.post('/send-review-episode-email', async (req, res) => {
-  const { name, email, episodeTitle, review } = req.body;
+app.post('/api/send-review-email', (req, res) => {
+    console.log('Request body:', req.body); // Check what data is being received
+  
+    const { name, email, episodeId, rating, review } = req.body;
+  
+    // Ensure that all required fields are present
+    if (!name || !email || !episodeId || !rating || !review) {
+      return res.status(400).send('All fields are required.');
+    }
+  
+    const mailOptions = {
+      from: "artol.jano45@gmail.com",
+      to: 'artoljano0@gmail.com',
+      subject: `New Review from ${name} for Episode ${episodeId}`,
+      html: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+          }
+          .email-container {
+            background-color: #2d3748;
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+          .email-header {
+            background-color: #e53e3e;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+          }
+          .email-header h2 {
+            margin: 0;
+          }
+          .email-body {
+            font-size: 16px;
+            line-height: 1.6;
+          }
+          .email-body p {
+          color:white;
+            margin-bottom: 15px;
+          }
+          .email-body .label {
+            font-weight: bold;
+            color: #e53e3e;
+          }
+          .email-footer {
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: center;
+            color: #ccc;
+          }
+        </style>
+        <title>Podcast Review Submission</title>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="email-header">
+            <h2>New Podcast Review Submission</h2>
+          </div>
+          <div class="email-body">
+            <p><span class="label">Name:</span> ${name}</p>
+            <p><span class="label">Email:</span> ${email}</p>
+            <p><span class="label">Episode Name:</span> ${episodeId}</p>
+            <p><span class="label">Rating:</span> ${rating}</p>
+            <p><span class="label">Review:</span></p>
+            <p>${review}</p>
+          </div>
+         
+        </div>
+      </body>
+      </html>
+    `
+    };
 
-  const subject = `Review for Episode: ${episodeTitle}`;
-  const text = `
-    Name: ${name}
-    Email: ${email}
-    Episode Title: ${episodeTitle}
-    Review: ${review}
-  `;
-  const html = `
-    <p><strong>Name:</strong> ${name}</p>
-    <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Episode Title:</strong> ${episodeTitle}</p>
-    <p><strong>Review:</strong> ${review}</p>
-  `;
+    
 
-  try {
-    await sendEmail('your-email@example.com', subject, text, html); // Replace with actual email
-    res.status(200).send('Email sent successfully');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error sending email');
-  }
-});
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).send(error.toString());
+      }
+      res.status(200).send('Email sent: ' + info.response);
+    });
+  });
+
+  
+  app.post('/api/send-suggestion-email', (req, res) => {
+    console.log('Request body:', req.body); // Check what data is being received
+  
+    const { name, email, guestName, guestBackground, guestReason } = req.body;
+  
+    // Ensure that all required fields are present
+    if (!name || !email || !guestName || !guestBackground || !guestReason) {
+      return res.status(400).send('All fields are required.');
+    }
+  
+    const mailOptions = {
+      from: "artol.jano45@gmail.com",
+      to: 'artoljano0@gmail.com',
+      subject: `New Podcast Guest Suggestion from ${name}`,
+  html: `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #1a202c;
+          color: #fff;
+          margin: 0;
+          padding: 0;
+        }
+        .email-container {
+          background-color: #2d3748;
+          padding: 20px;
+          margin: 20px auto;
+          width: 80%;
+          max-width: 600px;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+          background-color: #e53e3e;
+          color: #fff;
+          padding: 15px;
+          text-align: center;
+          border-radius: 5px;
+          margin-bottom: 20px;
+        }
+        .email-header h2 {
+          margin: 0;
+        }
+        .email-body {
+          font-size: 16px;
+          line-height: 1.6;
+        }
+        .email-body p {
+          text-decoration: none;
+          color:white;
+          margin-bottom: 15px;
+        }
+        .email-body .label {
+          font-weight: bold;
+          color: #e53e3e;
+        }
+        .email-footer {
+          margin-top: 20px;
+          font-size: 14px;
+          text-align: center;
+          color: #ccc;
+        }
+      </style>
+      <title>Podcast Guest Suggestion</title>
+    </head>
+    <body>
+      <div class="email-container">
+        <div class="email-header">
+          <h2>New Podcast Guest Suggestion</h2>
+        </div>
+        <div class="email-body">
+          <p><span class="label">Name:</span> ${name}</p>
+          <p><span class="label">Email:</span> ${email}</p>
+          <p><span class="label">Guest Name:</span> ${guestName}</p>
+          <p><span class="label">Guest Background:</span> ${guestBackground}</p>
+          <p><span class="label">Reason for Suggestion:</span> ${guestReason}</p>
+        </div>
+        <div class="email-footer">
+          <p>Thank you for your suggestion!</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.status(500).send(error.toString());
+        }
+        res.status(200).send('Email sent: ' + info.response);
+      });
+    });
 
 // Start the server
 app.listen(port, () => {
