@@ -86,7 +86,16 @@ function App() {
 
     fetchEpisodes(); // Call the fetch function when the component mounts
   }, []); // Empty dependency array to run only once when the component mounts
+  const [imageLoaded, setImageLoaded] = useState(false);
 
+  useEffect(() => {
+    const img = new Image();
+    img.src =
+      "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80";
+    img.onload = () => {
+      setImageLoaded(true); // Image is loaded, reveal the background
+    };
+  }, []);
   // const handleReviewClick = (episodeId: number) => {
   //   navigate(`/review?episode=${episodeId}`);
   // };
@@ -108,10 +117,6 @@ function App() {
       {/* Hero Section */}
       <motion.div
         style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           scale: scaleProgress,
           opacity: opacityProgress,
         }}
@@ -140,7 +145,7 @@ function App() {
             transition={{ delay: 1.2 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate("/tru/episodes")}
+            onClick={() => navigate("/episodes")}
             className="mt-8 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium flex items-center mx-auto"
           >
             <Headphones className="mr-2" size={20} />
@@ -168,7 +173,7 @@ function App() {
           </p>
           <div className="flex flex-col md:flex-row gap-6 justify-center max-w-2xl mx-auto">
             <button
-              onClick={() => navigate("/tru/suggest")}
+              onClick={() => navigate("/suggest")}
               className="flex-1 bg-white text-black px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center group"
             >
               Suggest a Guest
@@ -179,7 +184,7 @@ function App() {
             </button>
 
             <button
-              onClick={() => navigate("/tru/review")}
+              onClick={() => navigate("/review")}
               className="flex-1 bg-red-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center group"
             >
               Leave a Review
