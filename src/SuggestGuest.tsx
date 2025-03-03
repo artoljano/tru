@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Send } from "lucide-react";
+
+import { Send, CheckCircle, XCircle } from "lucide-react";
 
 function SuggestGuest() {
   const [formData, setFormData] = useState({
@@ -9,6 +10,12 @@ function SuggestGuest() {
     guestBackground: "",
     guestReason: "",
   });
+  const [submissionStatus, setSubmissionStatus] = useState("idle"); // 'idle', 'sending', 'success', 'error'
+
+  const apiUrl =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000/api/send-suggestion-email"
+      : "https://artoljano.github.io/tru/api/send-suggestion-email";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,20 +28,22 @@ function SuggestGuest() {
       guestReason: formData.guestReason,
     };
 
+    // Start the "sending" state
+    setSubmissionStatus("sending");
+
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/send-suggestion-email",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(suggestionData),
-        }
-      );
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(suggestionData),
+      });
 
       if (response.ok) {
-        alert("Suggestion submitted successfully!");
+        // Successful submission
+        setSubmissionStatus("success");
+        //alert("Suggestion submitted successfully!");
         setFormData({
           name: "",
           email: "",
@@ -44,11 +53,13 @@ function SuggestGuest() {
         });
       } else {
         const errorMessage = await response.text();
-        alert(`Failed to submit suggestion: ${errorMessage}`);
+        setSubmissionStatus("error");
+        //alert(`Failed to submit suggestion: ${errorMessage}`);
       }
     } catch (error) {
       console.error("Error submitting suggestion:", error);
-      alert("Error submitting suggestion");
+      setSubmissionStatus("error");
+      //alert("Error submitting suggestion");
     }
   };
 
@@ -178,8 +189,17 @@ function SuggestGuest() {
               type="submit"
               className="w-full bg-white text-black py-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center space-x-2"
             >
+              {submissionStatus === "sending" && <span>Sending...</span>}
+              {submissionStatus === "success" && <CheckCircle size={24} />}
+              {submissionStatus === "error" && <XCircle size={24} />}
               <span>Submit Suggestion</span>
-              <Send size={20} />
+
+              {/* Default Send Icon */}
+              <span
+                className={submissionStatus === "sending" ? "animate-spin" : ""}
+              >
+                <Send size={24} />
+              </span>
             </button>
           </form>
         </div>

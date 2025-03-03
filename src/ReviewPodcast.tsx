@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Star } from "lucide-react";
+import { Star, Send, CheckCircle, XCircle } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 function decodeHtml(html: string) {
@@ -8,11 +8,45 @@ function decodeHtml(html: string) {
   return txt.value;
 }
 
-function ReviewPodcast() {
+const apiUrl =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api/send-review-email"
+    : "https://artoljano.github.io/tru/api/send-review-email";
+
+const fetchEpisodesFromCache = (): any[] | null => {
+  const storedEpisodes = localStorage.getItem("episodes");
+  const storedEpisodesTime = localStorage.getItem("episodesTime");
+  const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+  if (
+    storedEpisodes &&
+    storedEpisodesTime &&
+    Date.now() - parseInt(storedEpisodesTime) < cacheExpiry
+  ) {
+    return JSON.parse(storedEpisodes);
+  }
+  return null;
+};
+
+const fetchEpisodesFromApi = async (
+  setEpisodes: React.Dispatch<React.SetStateAction<any[]>>
+) => {
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    setEpisodes(data);
+    localStorage.setItem("episodes", JSON.stringify(data)); // Cache the episodes
+    localStorage.setItem("episodesTime", Date.now().toString()); // Cache the time of fetching
+  } catch (error) {
+    console.error("Error fetching episodes:", error);
+  }
+};
+
+const ReviewPodcast = () => {
   const [searchParams] = useSearchParams();
   const preselectedEpisode = searchParams.get("episode");
 
-  const [episodes, setEpisodes] = useState<any[]>([]); // Episode state
+  const [episodes, setEpisodes] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,39 +55,21 @@ function ReviewPodcast() {
     review: "",
   });
 
-  useEffect(() => {
-    // Fetch episodes from localStorage or use fallback from API if necessary
-    const storedEpisodes = localStorage.getItem("episodes");
-    const storedEpisodesTime = localStorage.getItem("episodesTime");
-    const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+  const [status, setStatus] = useState<
+    "idle" | "sending" | "success" | "error"
+  >("idle");
 
-    if (
-      storedEpisodes &&
-      storedEpisodesTime &&
-      Date.now() - parseInt(storedEpisodesTime) < cacheExpiry
-    ) {
-      // Use cached episodes from localStorage
-      setEpisodes(JSON.parse(storedEpisodes));
+  useEffect(() => {
+    const cachedEpisodes = fetchEpisodesFromCache();
+
+    if (cachedEpisodes) {
+      setEpisodes(cachedEpisodes);
     } else {
-      // Otherwise, fall back to fetching from API
-      const fetchEpisodes = async () => {
-        try {
-          const response = await fetch("http://localhost:5000/api/episodes");
-          const data = await response.json();
-          setEpisodes(data);
-          localStorage.setItem("episodes", JSON.stringify(data)); // Cache the episodes
-          localStorage.setItem("episodesTime", Date.now().toString()); // Cache the time of fetching
-        } catch (error) {
-          console.error("Error fetching episodes:", error);
-        }
-      };
-
-      fetchEpisodes();
+      fetchEpisodesFromApi(setEpisodes);
     }
-  }, []); // Empty dependency array ensures this runs only once when component mounts
+  }, []);
 
   useEffect(() => {
-    // Preselect episode when URL query parameter is available and episodeId hasn't been set
     if (preselectedEpisode && !formData.episodeId) {
       setFormData((prev) => ({
         ...prev,
@@ -65,19 +81,16 @@ function ReviewPodcast() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Log form data
-    console.log("Form Data:", formData);
+    setStatus("sending"); // Set sending status
 
-    // Find the episode title based on the selected episodeId
     const selectedEpisode = episodes.find(
       (episode) => episode.id === formData.episodeId
     );
 
-    // Construct the email body with the episode title instead of the episodeId
     const reviewData = {
       name: formData.name,
       email: formData.email,
-      episodeId: selectedEpisode ? decodeHtml(selectedEpisode.title) : "", // Use episode.title
+      episodeId: selectedEpisode ? decodeHtml(selectedEpisode.title) : "",
       rating: formData.rating,
       review: formData.review,
     };
@@ -95,7 +108,7 @@ function ReviewPodcast() {
       );
 
       if (response.ok) {
-        alert("Review submitted successfully!");
+        setStatus("success"); // Set success status
         setFormData({
           name: "",
           email: "",
@@ -104,13 +117,11 @@ function ReviewPodcast() {
           review: "",
         });
       } else {
-        const errorMessage = await response.text();
-        console.error("Error submitting review:", errorMessage);
-        alert(`Failed to submit the review: ${errorMessage}`);
+        setStatus("error"); // Set error status
       }
     } catch (error) {
+      setStatus("error"); // Set error status
       console.error("Error submitting review:", error);
-      alert("Error submitting review");
     }
   };
 
@@ -257,14 +268,23 @@ function ReviewPodcast() {
               type="submit"
               className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white py-4 rounded-lg font-semibold hover:from-red-700 hover:to-red-900 transition-all duration-300 flex items-center justify-center space-x-2"
             >
+              {status === "sending" && <span>Sending...</span>}
+              {status === "success" && <CheckCircle size={24} />}
+              {status === "error" && <XCircle size={24} />}
               <span>Submit Review</span>
-              <Star size={20} />
+              <span
+                className={`transition-transform duration-300 ${
+                  status === "sending" ? "animate-spin" : ""
+                }`}
+              >
+                <Star size={24} />
+              </span>
             </button>
           </form>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ReviewPodcast;

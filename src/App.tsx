@@ -38,6 +38,11 @@ function decodeHtml(html: string) {
   return txt.value;
 }
 
+const apiUrl =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api/episodes"
+    : "https://artoljano.github.io/tru/api/episodes";
+
 function App() {
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
@@ -68,7 +73,7 @@ function App() {
     const fetchEpisodes = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/episodes");
+        const response = await fetch(apiUrl);
         const data = await response.json();
         setEpisodes(data); // Set the fetched episodes in the state
         localStorage.setItem("episodes", JSON.stringify(data));
@@ -135,7 +140,7 @@ function App() {
             transition={{ delay: 1.2 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate("/episodes")}
+            onClick={() => navigate("/tru/episodes")}
             className="mt-8 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium flex items-center mx-auto"
           >
             <Headphones className="mr-2" size={20} />
@@ -163,7 +168,7 @@ function App() {
           </p>
           <div className="flex flex-col md:flex-row gap-6 justify-center max-w-2xl mx-auto">
             <button
-              onClick={() => navigate("/suggest")}
+              onClick={() => navigate("/tru/suggest")}
               className="flex-1 bg-white text-black px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center group"
             >
               Suggest a Guest
@@ -174,7 +179,7 @@ function App() {
             </button>
 
             <button
-              onClick={() => navigate("/review")}
+              onClick={() => navigate("/tru/review")}
               className="flex-1 bg-red-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center group"
             >
               Leave a Review
@@ -347,7 +352,7 @@ function App() {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-grey-600/20 to-red-950/50 blur-xl"></div>
             <a
-              href="/episodes"
+              href="/tru/episodes"
               className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-red-950/50 transition-all duration-300"
             >
               <div className="flex items-center justify-between">

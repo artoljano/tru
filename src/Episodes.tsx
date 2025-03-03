@@ -37,6 +37,16 @@ function decodeHtml(html: string) {
   return txt.value;
 }
 
+const apiUrl =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api/stats"
+    : "https://artoljano.github.io/tru/api/stats";
+
+const apiUrl2 =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api/episodes"
+    : "https://artoljano.github.io/tru/api/episodes";
+
 const Episodes = () => {
   const [episodes, setEpisodes] = useState<Episode[]>([]); // State to store episodes
   const [searchTerm, setSearchTerm] = useState(""); // State for search
@@ -62,7 +72,7 @@ const Episodes = () => {
       const fetchEpisodes = async () => {
         try {
           setLoading(true);
-          const response = await fetch("/api/episodes");
+          const response = await fetch(apiUrl2);
           const data = await response.json();
           setEpisodes(data); // Set the fetched episodes in the state
 
@@ -84,7 +94,7 @@ const Episodes = () => {
     // Fetch stats data from the server
     const fetchStats = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/stats"); // Fetch stats from the new endpoint
+        const response = await axios.get(apiUrl); // Fetch stats from the new endpoint
         const { episodes, channelStats } = response.data;
 
         const episodeCount = episodes.length;

@@ -3,8 +3,7 @@ import cors from 'cors';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import nodemailer from "nodemailer";
-import sendReviewEmail from './mailer.js';
-import bodyParser from 'body-parser';
+
 
 
 dotenv.config();
@@ -328,8 +327,8 @@ app.post('/api/send-review-email', (req, res) => {
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .email-header {
-          background-color: #e53e3e;
-          color: #fff;
+          background-color: white;
+          color: #e53e3e;
           padding: 15px;
           text-align: center;
           border-radius: 5px;
@@ -392,6 +391,5 @@ app.post('/api/send-review-email', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
 
 
