@@ -7,49 +7,20 @@ function SuggestGuest() {
     email: "",
     guestName: "",
     guestBackground: "",
-    guestReason: "",
+    whyGreatGuest: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const suggestionData = {
-      name: formData.name,
-      email: formData.email,
-      guestName: formData.guestName,
-      guestBackground: formData.guestBackground,
-      guestReason: formData.guestReason,
-    };
-
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/send-suggestion-email",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(suggestionData),
-        }
-      );
-
-      if (response.ok) {
-        alert("Suggestion submitted successfully!");
-        setFormData({
-          name: "",
-          email: "",
-          guestName: "",
-          guestBackground: "",
-          guestReason: "",
-        });
-      } else {
-        const errorMessage = await response.text();
-        alert(`Failed to submit suggestion: ${errorMessage}`);
-      }
-    } catch (error) {
-      console.error("Error submitting suggestion:", error);
-      alert("Error submitting suggestion");
-    }
+    // Handle form submission here
+    console.log("Form submitted:", formData);
+    setFormData({
+      name: "",
+      email: "",
+      guestName: "",
+      guestBackground: "",
+      whyGreatGuest: "",
+    });
   };
 
   const handleInputChange = (
@@ -157,15 +128,15 @@ function SuggestGuest() {
 
             <div className="space-y-2">
               <label
-                htmlFor="guestReason"
+                htmlFor="whyGreatGuest"
                 className="block text-sm font-medium text-gray-300"
               >
                 Why would they be a great guest?
               </label>
               <textarea
-                id="guestReason"
-                name="guestReason"
-                value={formData.guestReason}
+                id="whyGreatGuest"
+                name="whyGreatGuest"
+                value={formData.whyGreatGuest}
                 onChange={handleInputChange}
                 required
                 rows={4}

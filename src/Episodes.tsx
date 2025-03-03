@@ -62,7 +62,7 @@ const Episodes = () => {
       const fetchEpisodes = async () => {
         try {
           setLoading(true);
-          const response = await fetch("/api/episodes");
+          const response = await fetch("http://localhost:5000/api/episodes");
           const data = await response.json();
           setEpisodes(data); // Set the fetched episodes in the state
 
@@ -349,7 +349,7 @@ const Episodes = () => {
                       href={episode.youtubeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors"
+                      className="inline-flex items-center gap-2 text-red-900 hover:text-red-600 transition-colors"
                     >
                       Watch on YouTube
                       <ExternalLink size={16} />
