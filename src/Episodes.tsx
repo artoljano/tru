@@ -91,27 +91,42 @@ const Episodes = () => {
   }, []); // Empty dependency array to run once when the component mounts
 
   useEffect(() => {
-    // Fetch stats data from the server
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get(apiUrl); // Fetch stats from the new endpoint
-        const { episodes, channelStats } = response.data;
+    const cachedChannelStats = localStorage.getItem("channelStats");
 
-        const episodeCount = episodes.length;
-        const totalViews = channelStats.totalViews;
-        const guestCount = 10; // Example: Track manually or parse description if available
+    if (cachedChannelStats) {
+      // Load cached stats from localStorage
+      setStats(JSON.parse(cachedChannelStats));
+      setLoading(false);
+    } else {
+      // If no cached stats, fetch new data
+      const fetchChannelStats = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch("apiUrl");
+          const data = await response.json();
 
-        setStats({
-          episodes: episodeCount,
-          guests: guestCount,
-          listeners: totalViews / 1000, // Convert to thousands for display
-        });
-      } catch (error) {
-        console.error("Error fetching stats:", error);
-      }
-    };
+          // Prepare stats for display
+          const newStats = {
+            episodes: data.totalEpisodes,
+            guests: 10, // Example: Adjust as needed
+            listeners: data.totalViews / 1000, // Convert views to thousands
+          };
 
-    fetchStats();
+          // Update state with fetched data
+          setStats(newStats);
+
+          // Cache the data in localStorage
+          localStorage.setItem("channelStats", JSON.stringify(newStats));
+
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching channel stats:", error);
+          setLoading(false);
+        }
+      };
+
+      fetchChannelStats();
+    }
   }, []);
 
   // Filter episodes based on search term and category

@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Cache setup
-let cachedStats = null;
+
 let cachedEpisodes = null;
 let lastCacheTime = null;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -107,9 +107,24 @@ const getYouTubeVideos = async () => {
 };
 
 
-const getChannelStats = async () => {
+// API endpoint to get episodes with caching
+app.get('/api/episodes', async (req, res) => {
+    if (cachedEpisodes && (Date.now() - lastCacheTime < CACHE_DURATION)) {
+      console.log('Serving from cache');
+      res.json(cachedEpisodes);
+    } else {
+      console.log('Fetching new data');
+      const episodes = await getYouTubeVideos();
+      res.json(episodes);
+    }
+  });
+
+
+  let cachedChannelStats = null;
+  
+  // Fetch channel stats from YouTube API
+  const getChannelStats = async () => {
     try {
-      // Fetch channel statistics (total views, total subscribers, etc.)
       const response = await axios.get('https://www.googleapis.com/youtube/v3/channels', {
         params: {
           part: 'statistics',
@@ -123,10 +138,14 @@ const getChannelStats = async () => {
       const totalViews = channelData?.viewCount || 0;
       const totalEpisodes = channelData?.videoCount || 0;
   
-      return {
+      // Cache the channel stats
+      cachedChannelStats = {
         totalViews,
         totalEpisodes,
       };
+    
+  
+      return cachedChannelStats;
     } catch (error) {
       console.error('Error fetching channel stats:', error);
       return {
@@ -135,44 +154,24 @@ const getChannelStats = async () => {
       };
     }
   };
-
-
-
-// API endpoint to get episodes with caching
-app.get('/api/episodes', async (req, res) => {
-  if (cachedEpisodes && (Date.now() - lastCacheTime < CACHE_DURATION)) {
-    console.log('Serving from cache');
-    res.json(cachedEpisodes);
-  } else {
-    console.log('Fetching new data');
-    const episodes = await getYouTubeVideos();
-    res.json(episodes);
-  }
-});
-
-app.get('/api/stats', async (req, res) => {
-    if (cachedStats && (Date.now() - lastCacheTime < CACHE_DURATION)) {
-      console.log('Serving from cache');
-      res.json(cachedStats);
-    } else {
-      console.log('Fetching new data');
   
-      // Fetch the episodes and channel stats
-      const episodes = await getYouTubeVideos();
-      const channelStats = await getChannelStats();
-  
-      // Combine the stats and episodes data
-      const responseData = {
-        episodes,
-        channelStats,
-      };
-  
-      cachedStats = responseData;
-      lastCacheTime = Date.now();
-      res.json(responseData);
+  // API endpoint for stats (uses cache when valid)
+  app.get('/api/stats', async (req, res) => {
+    try {
+      if (cachedChannelStats && (Date.now() - lastCacheTime < CACHE_DURATION)) {
+        console.log('Serving channel stats from cache');
+        res.json(cachedChannelStats);
+      } else {
+        console.log('Fetching new channel stats');
+        const channelStats = await getChannelStats();
+        res.json(channelStats);
+      }
+    } catch (error) {
+      console.error('Error in /api/stats:', error);
+      res.status(500).json({ error: 'Failed to fetch channel stats' });
     }
   });
-
+  
 
   //Email Sender
   app.use(express.json()); // Parse JSON bodies
