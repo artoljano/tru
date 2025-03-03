@@ -55,7 +55,7 @@ function App() {
   const opacityProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   useEffect(() => {
-    // localStorage.clear();
+    //localStorage.clear();
     const cachedEpisodes = localStorage.getItem("episodes");
 
     if (cachedEpisodes) {
@@ -68,7 +68,7 @@ function App() {
     const fetchEpisodes = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:5000/api/episodes");
+        const response = await fetch("/api/episodes");
         const data = await response.json();
         setEpisodes(data); // Set the fetched episodes in the state
         localStorage.setItem("episodes", JSON.stringify(data));
@@ -105,6 +105,8 @@ function App() {
         style={{
           backgroundImage:
             'url("https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           scale: scaleProgress,
           opacity: opacityProgress,
         }}
