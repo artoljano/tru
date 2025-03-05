@@ -31,23 +31,18 @@ interface Episode {
 
 const categories = ["All", "Technology", "Environment", "Business", "Health"];
 
+const handleScrollToTop = () => {
+  window.scrollTo(0, 0); // Scrolls the page to the top
+};
+
 function decodeHtml(html: string) {
   const txt = document.createElement("textarea");
   txt.innerHTML = html;
   return txt.value;
 }
 
-const apiUrl =
-  window.location.hostname === "localhost"
-    ? "http://localhost:5000/api/stats"
-    : "https://artoljano.github.io/tru/api/stats";
-
-const apiUrl2 =
-  window.location.hostname === "localhost"
-    ? "http://localhost:5000/api/episodes"
-    : "https://artoljano.github.io/tru/api/episodes";
-
 const Episodes = () => {
+  // handleScrollToTop();
   const [episodes, setEpisodes] = useState<Episode[]>([]); // State to store episodes
   const [searchTerm, setSearchTerm] = useState(""); // State for search
   const [selectedCategory, setSelectedCategory] = useState("All"); // State for selected category
@@ -72,7 +67,7 @@ const Episodes = () => {
       const fetchEpisodes = async () => {
         try {
           setLoading(true);
-          const response = await fetch(apiUrl2);
+          const response = await fetch("http://localhost:5000/api/episodes");
           const data = await response.json();
           setEpisodes(data); // Set the fetched episodes in the state
 
@@ -102,7 +97,7 @@ const Episodes = () => {
       const fetchChannelStats = async () => {
         try {
           setLoading(true);
-          const response = await fetch("apiUrl");
+          const response = await fetch("http://localhost:5000/api/stats");
           const data = await response.json();
 
           // Prepare stats for display

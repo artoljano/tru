@@ -32,6 +32,10 @@ interface Episode {
   tags: string[];
 }
 
+const handleScrollToTop = () => {
+  window.scrollTo(0, 0); // Scrolls the page to the top
+};
+
 function decodeHtml(html: string) {
   const txt = document.createElement("textarea");
   txt.innerHTML = html;
@@ -44,6 +48,7 @@ const apiUrl =
     : "https://artoljano.github.io/tru/api/episodes";
 
 function App() {
+  // handleScrollToTop();
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
   // const [showPlayer, setShowPlayer] = useState(false);

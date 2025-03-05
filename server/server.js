@@ -3,6 +3,11 @@ import cors from 'cors';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import nodemailer from "nodemailer";
+import fs from "fs";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from 'url';  // import to convert URL to file path
+
 
 
 
@@ -27,6 +32,9 @@ app.use(express.json());
 
 // Parse URL-encoded data (for form submissions, if needed)
 app.use(express.urlencoded({ extended: true }));
+
+
+
 
 
 // Cache setup
@@ -92,7 +100,8 @@ const getYouTubeVideos = async () => {
         image: item.snippet.thumbnails.high.url,
         guest: item.snippet.title,
         category: 'General',
-        tags: item.snippet.title.split(' '),
+        //tags: item.snippet..title.split(' '),
+        tags: item.snippet.tags || [],
         duration: formattedDuration,
       };
     }));
@@ -385,6 +394,154 @@ app.post('/api/send-review-email', (req, res) => {
         res.status(200).send('Email sent: ' + info.response);
       });
     });
+
+
+    //Handle Newsletter Data
+
+   // Get the current directory
+   const __filename = fileURLToPath(import.meta.url);
+   const __dirname = path.dirname(__filename);
+   const myPath = path.join(__dirname, 'newsletterData.json');
+   const uploadDir = path.join(__dirname, 'uploads');
+   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+   // Image upload logic
+   const storage = multer.diskStorage({
+     destination: (req, file, cb) => {
+       cb(null, uploadDir);
+     },
+     filename: (req, file, cb) => {
+       cb(null, Date.now() + path.extname(file.originalname));
+     },
+   });
+   
+   const upload = multer({ storage });
+   
+   // Endpoint for uploading images
+   app.post('/api/uploadImage', upload.single('image'), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+  
+    // The relative path that will work both locally and in production
+    const imageUrl = `/server/uploads/${req.file.filename}`;
+  
+    // Return the relative image path
+    return res.json({ imagePath: `/uploads/${req.file.filename}` });
+  });
+   
+   // Save newsletter data to JSON file
+   function saveNewsletterData(data) {
+     fs.readFile(myPath, (err, fileData) => {
+       let newsletters = [];
+       if (!err) {
+         newsletters = JSON.parse(fileData);
+       }
+       newsletters.push(data);
+       fs.writeFile(myPath, JSON.stringify(newsletters, null, 2), (err) => {
+         if (err) throw err;
+         console.log('Data saved successfully.');
+       });
+     });
+   }
+   
+   // Delete a post by ID
+   function deletePostById(postId) {
+     fs.readFile(myPath, (err, fileData) => {
+       if (err) throw err;
+       let newsletters = JSON.parse(fileData);
+       newsletters = newsletters.filter(post => post.id !== postId);
+       fs.writeFile(myPath, JSON.stringify(newsletters, null, 2), (err) => {
+         if (err) throw err;
+         console.log('Post deleted successfully.');
+       });
+     });
+   }
+   
+   // Save post endpoint
+   app.post('/api/savePost', upload.single('image'), (req, res) => {
+    const postData = req.body;
+  
+    if (req.file) {
+      // Ensure image path is correctly assigned
+      postData.image = `/uploads/${req.file.filename}`; // Store the correct path
+    }
+  
+    fs.readFile(myPath, (err, fileData) => {
+      let newsletters = [];
+      if (!err) {
+        newsletters = JSON.parse(fileData);
+      }
+  
+      // Add new post
+      newsletters.push(postData);
+  
+      fs.writeFile(myPath, JSON.stringify(newsletters, null, 2), (err) => {
+        if (err) {
+          return res.status(500).json({ error: 'Error saving post' });
+        }
+  
+        // Respond with a JSON message and saved post
+        res.status(200).json({
+          message: 'Post saved successfully',
+          post: postData, // Send back the saved post
+        });
+      });
+    });
+  });
+   
+   // Get all posts
+   app.get('/api/getPosts', (req, res) => {
+     fs.readFile(myPath, (err, fileData) => {
+       if (err) throw err;
+       res.json(JSON.parse(fileData));
+     });
+   });
+   
+   // Delete a post by ID
+   const postsFile = path.join(__dirname, 'newsletterData.json');
+const uploadsDir = path.join(__dirname, '');
+
+app.delete('/api/deletePost', (req, res) => {
+  const { id, image } = req.body;
+
+  // Read the posts.json file
+  fs.readFile(postsFile, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading posts file:', err);
+      return res.status(500).json({ message: 'Failed to read posts file' });
+    }
+
+    let posts = JSON.parse(data);
+
+    // Filter out the post to delete
+    const updatedPosts = posts.filter((post) => post.id !== id);
+
+    if (posts.length === updatedPosts.length) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Write the updated posts back to the file
+    fs.writeFile(postsFile, JSON.stringify(updatedPosts, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing posts file:', err);
+        return res.status(500).json({ message: 'Failed to update posts file' });
+      }
+
+      // Delete the image
+      const imagePath = path.join(uploadsDir, image);
+      fs.unlink(imagePath, (err) => {
+        if (err && err.code !== 'ENOENT') {
+          console.error('Error deleting image:', err);
+          return res.status(500).json({ message: 'Failed to delete image' });
+        }
+
+        res.json({ message: 'Post and image deleted successfully' });
+      });
+    });
+  });
+});
+  
+   
 
 // Start the server
 app.listen(port, () => {

@@ -9,6 +9,8 @@ import About from "./About.tsx";
 import Newsletter from "./Newsletter.tsx";
 import Layout from "./Layout.tsx";
 import "./index.css";
+import NewsletterForm from "./NewsletterForm.tsx";
+import NewsletterAdmin from "./NewsletterAdmin.tsx";
 
 const router = createBrowserRouter(
   [
@@ -39,6 +41,14 @@ const router = createBrowserRouter(
         {
           path: "/newsletter",
           element: <Newsletter />,
+        },
+        {
+          path: "/admin/newsletter/add",
+          element: <NewsletterForm />,
+        },
+        {
+          path: "/admin/newsletter/manage",
+          element: <NewsletterAdmin />,
         },
       ],
     },

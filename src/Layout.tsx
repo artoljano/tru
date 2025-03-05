@@ -13,7 +13,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./components/Footer";
 import logo from "../src/images/tru_logo.jpeg";
 
+const handleScrollToTop = () => {
+  window.scrollTo(0, 0); // Scrolls the page to the top
+};
+
 function Layout() {
+  handleScrollToTop();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 

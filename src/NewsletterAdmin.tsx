@@ -285,40 +285,41 @@ interface NewsPost {
 //   },
 // ];
 
-const postsPerPage = 6;
-
-function Newsletter() {
+const NewsletterAdmin = () => {
   const [filter, setFilter] = useState<"all" | "podcast" | "general">("all");
   const [selectedPost, setSelectedPost] = useState<NewsPost | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState<NewsPost[]>([]);
+  const postsPerPage = 6; // Define posts per page
 
   useEffect(() => {
-    // Fetch posts from JSON file on page load (you would implement this in your backend)
+    // Fetch posts from JSON file or your backend API
     fetch("http://localhost:5000/api/getPosts")
       .then((response) => response.json())
       .then((data) => setPosts(data));
   }, []);
 
+  // Filter the posts based on the selected filter value
   const filteredPosts = posts.filter((post) => {
     if (filter === "all") return true;
     if (filter === "podcast") return post.isPodcastRelated;
     return !post.isPodcastRelated;
   });
 
+  // Pagination logic - slice the filtered posts based on the current page
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
   const currentPosts = filteredPosts.slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage
   );
 
+  // Handle page change (for pagination)
   const handlePageChange = (newPage: number) => {
-    // Assuming you are updating the currentPage state when the page changes
     setCurrentPage(newPage);
-    // Scroll to the top after changing the page
     window.scrollTo(0, 0);
   };
 
+  // Animation variants for container and items
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -338,6 +339,44 @@ function Newsletter() {
         duration: 0.6,
       },
     },
+  };
+
+  // Handle edit post functionality
+  const handleEditPost = (postId: number) => {
+    const postToEdit = posts.find((post) => post.id === postId);
+    setSelectedPost(postToEdit); // Show post data in a modal/form for editing
+  };
+
+  // Handle delete post functionality
+  const handleDeletePost = (postId: number, postImage: string) => {
+    if (
+      window.confirm("Are you sure you want to delete this post and its image?")
+    ) {
+      fetch(`http://localhost:5000/api/deletePost`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: postId, image: postImage }), // Send both postId and image path
+      })
+        .then((response) => {
+          console.log("Response:", response);
+
+          if (!response.ok) {
+            throw new Error("Failed to delete post.");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.message === "Post and image deleted successfully") {
+            const updatedPosts = posts.filter((post) => post.id !== postId);
+            setPosts(updatedPosts); // Update the post list
+            alert("Post and image deleted successfully");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting post:", error);
+          alert("Error deleting post: " + error.message);
+        });
+    }
   };
 
   return (
@@ -454,7 +493,7 @@ function Newsletter() {
             >
               <div className="relative aspect-video">
                 <img
-                  src={post.image}
+                  src={`http://localhost:5000/${post.image}`}
                   alt={post.title}
                   className="w-full h-full object-cover"
                 />
@@ -496,6 +535,21 @@ function Newsletter() {
                   Read More
                   <ArrowRight size={16} />
                 </motion.button>
+                {/* Edit and Delete Buttons */}
+                <div className="mt-4 flex justify-between gap-4">
+                  <button
+                    onClick={() => handleEditPost(post.id)}
+                    className="text-yellow-400 hover:text-yellow-500"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeletePost(post.id, post.image)}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </motion.article>
           ))}
@@ -602,6 +656,6 @@ function Newsletter() {
       </AnimatePresence>
     </div>
   );
-}
+};
 
-export default Newsletter;
+export default NewsletterAdmin;

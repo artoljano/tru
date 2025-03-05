@@ -19,7 +19,12 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
+const handleScrollToTop = () => {
+  window.scrollTo(0, 0); // Scrolls the page to the top
+};
+
 function About() {
+  // handleScrollToTop();
   const CustomIcon = () => (
     <svg
       width="38%"
