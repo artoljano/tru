@@ -422,12 +422,13 @@ app.post('/api/send-review-email', (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
   
-    // The relative path that will work both locally and in production
-    const imageUrl = `/server/uploads/${req.file.filename}`;
+    // Store the correct relative path without "server/"
+    const relativeImagePath = `uploads/${req.file.filename}`;
   
-    // Return the relative image path
-    return res.json({ imagePath: `/uploads/${req.file.filename}` });
+    // Send both frontend and JSON-friendly paths
+    res.json({ imagePath: relativeImagePath });
   });
+  
    
    // Save newsletter data to JSON file
    function saveNewsletterData(data) {
@@ -462,32 +463,33 @@ app.post('/api/send-review-email', (req, res) => {
     const postData = req.body;
   
     if (req.file) {
-      // Ensure image path is correctly assigned
-      postData.image = `/uploads/${req.file.filename}`; // Store the correct path
+      postData.image = `uploads/${req.file.filename}`; // Make sure req.file is correctly handled
     }
   
-    fs.readFile(myPath, (err, fileData) => {
+    fs.readFile(myPath, 'utf8', (err, fileData) => {
       let newsletters = [];
-      if (!err) {
-        newsletters = JSON.parse(fileData);
+      if (!err && fileData) {
+        try {
+          newsletters = JSON.parse(fileData);
+        } catch (parseErr) {
+          console.error('Error parsing JSON:', parseErr);
+          return res.status(500).json({ error: 'Failed to parse JSON' });
+        }
       }
   
-      // Add new post
       newsletters.push(postData);
   
-      fs.writeFile(myPath, JSON.stringify(newsletters, null, 2), (err) => {
-        if (err) {
+      fs.writeFile(myPath, JSON.stringify(newsletters, null, 2), (writeErr) => {
+        if (writeErr) {
+          console.error('Error writing JSON file:', writeErr);
           return res.status(500).json({ error: 'Error saving post' });
         }
-  
-        // Respond with a JSON message and saved post
-        res.status(200).json({
-          message: 'Post saved successfully',
-          post: postData, // Send back the saved post
-        });
+        res.status(200).json({ message: 'Post saved successfully', post: postData });
       });
     });
   });
+  
+  
    
    // Get all posts
    app.get('/api/getPosts', (req, res) => {

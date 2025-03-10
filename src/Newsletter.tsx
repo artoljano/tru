@@ -454,7 +454,7 @@ function Newsletter() {
             >
               <div className="relative aspect-video">
                 <img
-                  src={post.image}
+                  src={`server/${post.image}`}
                   alt={post.title}
                   className="w-full h-full object-cover"
                 />

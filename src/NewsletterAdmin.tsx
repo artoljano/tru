@@ -341,12 +341,6 @@ const NewsletterAdmin = () => {
     },
   };
 
-  // Handle edit post functionality
-  const handleEditPost = (postId: number) => {
-    const postToEdit = posts.find((post) => post.id === postId);
-    setSelectedPost(postToEdit); // Show post data in a modal/form for editing
-  };
-
   // Handle delete post functionality
   const handleDeletePost = (postId: number, postImage: string) => {
     if (
@@ -537,12 +531,6 @@ const NewsletterAdmin = () => {
                 </motion.button>
                 {/* Edit and Delete Buttons */}
                 <div className="mt-4 flex justify-between gap-4">
-                  <button
-                    onClick={() => handleEditPost(post.id)}
-                    className="text-yellow-400 hover:text-yellow-500"
-                  >
-                    Edit
-                  </button>
                   <button
                     onClick={() => handleDeletePost(post.id, post.image)}
                     className="text-red-500 hover:text-red-600"

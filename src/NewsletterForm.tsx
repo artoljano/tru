@@ -80,25 +80,23 @@ const NewsletterForm = ({
         .then((jsonData) => {
           console.log("Server response:", jsonData);
 
-          // Update form data with the image path
           if (jsonData.imagePath) {
-            setFormData((prev) => ({
-              ...prev,
-              image: jsonData.imagePath, // Assuming server returns the image URL
-            }));
-
-            // Save post to JSON file on the server
+            // Save post with the updated image path directly in the same step
             return fetch("http://localhost:5000/api/savePost", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(formData),
+              body: JSON.stringify({
+                ...formData,
+                image: jsonData.imagePath, // Directly use the image URL here
+              }),
             });
           } else {
             throw new Error("Image upload failed, no image path returned.");
           }
         })
+
         .then((response) => response.json())
         .then((savedPost) => {
           console.log("Post saved successfully:", savedPost);
