@@ -379,9 +379,7 @@ app.post('/api/send-review-email', (req, res) => {
           <p><span class="label">Guest Background:</span> ${guestBackground}</p>
           <p><span class="label">Reason for Suggestion:</span> ${guestReason}</p>
         </div>
-        <div class="email-footer">
-          <p>Thank you for your suggestion!</p>
-        </div>
+       
       </div>
     </body>
     </html>

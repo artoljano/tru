@@ -325,7 +325,7 @@ function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="group"
+                className="group bg-gray-900/40 hover:bg-gray-900/60 p-4 rounded-2xl shadow-md hover:shadow-xl transition-all duration-500"
               >
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
                   <img
@@ -333,19 +333,15 @@ function App() {
                     alt={`Episode ${index + 1}`}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* <div
-                    className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
-                    onClick={() => handlePlayEpisode(index)}
-                  ></div> */}
                 </div>
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-gray-300 transition-colors">
+                <h3 className="text-xl font-semibold mb-2 text-white">
                   {decodeHtml(episode.title)}
                 </h3>
-                <div className="flex items-center text-gray-400 mb-3">
+                <div className="flex items-center text-gray-400 mb-3 text-sm">
                   <Clock size={16} className="mr-2" />
                   <span>{decodeHtml(episode.duration)} minutes</span>
                 </div>
-                <p className="text-gray-300">
+                <p className="text-gray-300 text-sm leading-relaxed">
                   {decodeHtml(episode.description)}
                 </p>
               </motion.div>

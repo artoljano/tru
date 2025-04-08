@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
@@ -12,55 +12,80 @@ import "./index.css";
 import NewsletterForm from "./NewsletterForm.tsx";
 import NewsletterAdmin from "./NewsletterAdmin.tsx";
 
+// Create your router like before
 const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <Layout />,
       children: [
-        {
-          path: "/",
-          element: <App />,
-        },
-        {
-          path: "/suggest",
-          element: <SuggestGuest />,
-        },
-        {
-          path: "/review",
-          element: <ReviewPodcast />,
-        },
-        {
-          path: "/episodes",
-          element: <Episodes />,
-        },
-        {
-          path: "/about",
-          element: <About />,
-        },
-        {
-          path: "/newsletter",
-          element: <Newsletter />,
-        },
-        {
-          path: "/admin/newsletter/add",
-          element: <NewsletterForm />,
-        },
-        {
-          path: "/admin/newsletter/manage",
-          element: <NewsletterAdmin />,
-        },
+        { path: "/", element: <App /> },
+        { path: "/suggest", element: <SuggestGuest /> },
+        { path: "/review", element: <ReviewPodcast /> },
+        { path: "/episodes", element: <Episodes /> },
+        { path: "/about", element: <About /> },
+        { path: "/newsletter", element: <Newsletter /> },
+        { path: "/admin/newsletter/add", element: <NewsletterForm /> },
+        { path: "/admin/newsletter/manage", element: <NewsletterAdmin /> },
       ],
     },
   ],
   {
-    basename: "/tru", // Replace with your actual GitHub repository name
+    basename: "/tru",
   }
 );
 
-// Render the app with the router
+// KillSwitchWrapper handles the fetch and conditionally renders the app
+function KillSwitchWrapper() {
+  const [killed, setKilled] = useState(false);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkKillSwitch = async () => {
+      try {
+        const res = await fetch(
+          "https://artoljano.github.io/rks/kill-switch.json?ts=" + Date.now()
+        );
+        const config = await res.json();
+        if (config.kill) {
+          setKilled(true);
+          setMessage(config.message || "The site is unavailable.");
+        }
+      } catch (err) {
+        console.error("Kill switch check failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkKillSwitch();
+  }, []);
+
+  if (loading)
+    return (
+      <div style={{ textAlign: "center", marginTop: "4rem" }}>Loading...</div>
+    );
+  if (killed)
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "4rem",
+          padding: "2rem",
+          fontSize: "1.2rem",
+        }}
+      >
+        {message}
+      </div>
+    );
+
+  return <RouterProvider router={router} />;
+}
+
+// Render app
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <KillSwitchWrapper />
   </StrictMode>
 );
