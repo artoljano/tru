@@ -341,7 +341,7 @@ function Newsletter() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-blue-900/20 text-white">
       {/* New Hero Section */}
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
@@ -375,7 +375,7 @@ function Newsletter() {
                 transition={{ delay: 0.2 }}
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
-                <Rss className="w-8 h-8 mb-2 mx-auto text-red-800" />
+                <Rss className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">Weekly</div>
                 <div className="text-gray-400">Updates</div>
               </motion.div>
@@ -387,7 +387,7 @@ function Newsletter() {
                 transition={{ delay: 0.3 }}
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
-                <PenTool className="w-8 h-8 mb-2 mx-auto text-red-800" />
+                <PenTool className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">Original</div>
                 <div className="text-gray-400">Content</div>
               </motion.div>
@@ -399,7 +399,7 @@ function Newsletter() {
                 transition={{ delay: 0.4 }}
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
-                <Users className="w-8 h-8 mb-2 mx-auto text-red-800" />
+                <Users className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">Growing</div>
                 <div className="text-gray-400">Community</div>
               </motion.div>
@@ -491,7 +491,7 @@ function Newsletter() {
                 <motion.button
                   whileHover={{ x: 10 }}
                   onClick={() => setSelectedPost(post)}
-                  className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors"
+                  className="flex items-center gap-2 text-gold-600 hover:text-gold-700 transition-colors"
                 >
                   Read More
                   <ArrowRight size={16} />

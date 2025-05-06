@@ -74,7 +74,7 @@ function SuggestGuest() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-red-900/50 text-white pt-24">
+    <div className="min-h-screen bg-gradient-to-b from-blue-900/20 to-gold-900/50 text-white pt-24">
       <div className="container mx-auto px-4 max-w-4xl pt-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">

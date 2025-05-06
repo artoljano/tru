@@ -168,7 +168,7 @@ const Episodes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-blue-900/20 text-white">
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -203,7 +203,7 @@ const Episodes = () => {
                 transition={{ delay: 0.2 }}
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
-                <Mic className="w-8 h-8 mb-2 mx-auto text-red-800" />
+                <Mic className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">50+</div>
                 <div className="text-gray-400">Episodes</div>
               </motion.div>
@@ -215,7 +215,7 @@ const Episodes = () => {
                 transition={{ delay: 0.3 }}
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
-                <Users className="w-8 h-8 mb-2 mx-auto text-red-800" />
+                <Users className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">{stats.guests}+</div>
                 <div className="text-gray-400">Guests</div>
               </motion.div>
@@ -227,7 +227,7 @@ const Episodes = () => {
                 transition={{ delay: 0.4 }}
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
-                <Headphones className="w-8 h-8 mb-2 mx-auto text-red-800" />
+                <Headphones className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">
                   {Math.round(stats.listeners)}K+
                 </div>

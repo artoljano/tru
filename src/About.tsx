@@ -17,6 +17,7 @@ import {
   Coffee,
   BookOpen,
 } from "lucide-react";
+import host from "../src/images/host.jpeg";
 import { motion } from "framer-motion";
 
 const handleScrollToTop = () => {
@@ -68,9 +69,9 @@ function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24">
+    <div className="min-h-screen bg-blue-900/20 text-white pt-24">
       {/* Host Section */}
-      <section className="py-20">
+      <section className="py-20 bg-gradient-to-b from-gold-900 to-blue-950/5">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -87,13 +88,14 @@ function About() {
                   className="relative z-10"
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                    // src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                    src={host}
                     alt="John Smith"
                     className="rounded-2xl shadow-2xl"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-2xl"></div>
                 </motion.div>
-                <div className="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-red-600/20 to-red-800/20 rounded-2xl -z-10"></div>
+                <div className="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-gold-600/20 to-gold-800/20 rounded-2xl -z-10"></div>
               </div>
 
               <motion.div
@@ -104,7 +106,7 @@ function About() {
                 <h1 className="text-4xl md:text-5xl font-bold mb-6">
                   Meet Your Host
                 </h1>
-                <h2 className="text-2xl font-semibold text-red-900 mb-4">
+                <h2 className="text-2xl font-semibold text-white mb-4">
                   John Smith
                 </h2>
                 <div className="space-y-4 text-gray-300">
@@ -160,7 +162,7 @@ function About() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="py-16 bg-gradient-to-b from-black to-red-800/20"
+        className="py-16 bg-blue-950/5"
       >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -174,7 +176,7 @@ function About() {
                 className="text-center "
               >
                 <div className="inline-block p-4 bg-gray-800/50 rounded-full mb-4">
-                  <stat.icon size={24} className="text-red-800" />
+                  <stat.icon size={24} className="text-gold-800" />
                 </div>
                 <div className="text-3xl font-bold mb-2">{stat.value}</div>
                 <div className="text-gray-400">{stat.label}</div>
@@ -185,7 +187,7 @@ function About() {
       </motion.section>
 
       {/* Our Story Section */}
-      <section className="py-20 bg-gradient-to-b from-red-800/20 to-black">
+      <section className="py-20 bg-blue-950/5">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -290,7 +292,7 @@ function About() {
       </section>
 
       {/* Available On Section */}
-      <section className="py-20 bg-black">
+      <section className="py-20 bg-blue-950/5">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -329,7 +331,7 @@ function About() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-gradient-to-b from-black to-red-900/50">
+      <section className="py-20 bg-gradient-to-b from-blue-950/5 to-gold-900">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -373,8 +375,8 @@ function About() {
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-xl backdrop-blur-sm"
               >
-                <div className="bg-gradient-to-br from-red-600/20 to-red-800/20 p-4 rounded-full inline-block mb-6">
-                  <value.icon size={32} className="text-red-800" />
+                <div className="bg-gradient-to-br from-gold-600/20 to-gold-800/20 p-4 rounded-full inline-block mb-6">
+                  <value.icon size={32} className="text-gold-800" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
                 <p className="text-gray-300">{value.description}</p>

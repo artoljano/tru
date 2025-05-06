@@ -39,9 +39,9 @@ body {
 }
 
 .parallax-bg {
-  background-image: url("https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80");
+  background-image: url("../src/images/hero.png");
   background-attachment: fixed;
-  background-position: center;
+  background-position: left;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: fill;
 }

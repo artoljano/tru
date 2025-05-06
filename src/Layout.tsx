@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./components/Footer";
-import logo from "../src/images/tru_logo.jpeg";
+import logo from "../src/images/tru_logo1.png";
 
 const handleScrollToTop = () => {
   window.scrollTo(0, 0); // Scrolls the page to the top
@@ -78,7 +78,7 @@ function Layout() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
-        className="hidden md:flex justify-between items-center px-8 py-1 fixed w-full bg-black/95 z-50"
+        className="hidden md:flex justify-between items-center px-8 py-1 fixed w-full bg-blue-950/20 z-50"
       >
         <Link to="/" className="flex-shrink-0">
           <img
@@ -89,16 +89,18 @@ function Layout() {
         </Link>
 
         <div className="flex space-x-8">
-          {["Episodes", "About", "Newsletter", "Suggest"].map((item, index) => (
-            <motion.div key={index} whileHover={{ y: -2 }}>
-              <Link
-                to={`/${item.toLowerCase()}`}
-                className="text-white hover:text-gray-300 transition-colors text-base"
-              >
-                {item}
-              </Link>
-            </motion.div>
-          ))}
+          {["Episodes", "About", "Newsletter", "Suggest", "Review"].map(
+            (item, index) => (
+              <motion.div key={index} whileHover={{ y: -2 }}>
+                <Link
+                  to={`/${item.toLowerCase()}`}
+                  className="text-white hover:text-gray-300 transition-colors text-base"
+                >
+                  {item}
+                </Link>
+              </motion.div>
+            )
+          )}
         </div>
 
         <div className="flex items-center space-x-5">
@@ -120,7 +122,7 @@ function Layout() {
 
       {/* Mobile Navbar */}
       <nav className="md:hidden fixed w-full z-50">
-        <div className="flex justify-between items-center px-6 py-4 bg-black/95">
+        <div className="flex justify-between items-center px-6 py-4 bg-blue-900/20">
           <Link to="/" className="text-xl font-bold text-white">
             <img
               src={logo}
@@ -145,7 +147,7 @@ function Layout() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/95 pt-20"
+              className="fixed inset-0 bg-blue-950/95 pt-20"
             >
               <div className="flex flex-col items-center space-y-8">
                 <motion.button
@@ -182,6 +184,13 @@ function Layout() {
                   className="text-2xl text-white hover:text-gray-300 transition-colors"
                 >
                   Suggest
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleNavigation("/review")}
+                  className="text-2xl text-white hover:text-gray-300 transition-colors"
+                >
+                  Review
                 </motion.button>
                 <div className="flex space-x-8 mt-8">
                   {[Youtube, CustomIcon2, Apple, Instagram, Twitter].map(

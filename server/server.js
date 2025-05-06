@@ -34,12 +34,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-
-
-
 // Cache setup
 
 let cachedEpisodes = null;
+let cachedPlaylists = null;
 let lastCacheTime = null;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
@@ -114,6 +112,87 @@ const getYouTubeVideos = async () => {
     return [];
   }
 };
+
+// Helper function to get videos from the YouTube API, grouped by playlist
+const getYouTubeVideosByPlaylist = async () => {
+  try {
+    // First, fetch the playlists associated with the channel
+    const playlistsResponse = await axios.get('https://www.googleapis.com/youtube/v3/playlists', {
+      params: {
+        part: 'snippet',
+        channelId: CHANNEL_ID,
+        maxResults: 10, // Adjust if you need more
+        key: YOUTUBE_API_KEY,
+      },
+    });
+
+    // Get the playlists from the response
+    const playlists = playlistsResponse.data.items;
+
+    // Fetch videos for each playlist and group them
+    const playlistVideos = await Promise.all(
+      playlists.map(async (playlist) => {
+        const playlistId = playlist.id;
+        const playlistTitle = playlist.snippet.title;
+
+        // Fetch the videos in the playlist
+        const videosResponse = await axios.get('https://www.googleapis.com/youtube/v3/playlistItems', {
+          params: {
+            part: 'snippet',
+            playlistId: playlistId,
+            maxResults: 10, // Adjust based on your needs
+            key: YOUTUBE_API_KEY,
+          },
+        });
+
+        // Map over the videos and format them
+        const videos = await Promise.all(
+          videosResponse.data.items.map(async (item) => {
+            const durationIso = await getVideoDuration(item.snippet.resourceId.videoId);
+            const formattedDuration = formatDuration(durationIso);
+
+            return {
+              id: item.snippet.resourceId.videoId,
+              title: item.snippet.title,
+              description: item.snippet.description,
+              date: item.snippet.publishedAt,
+              youtubeUrl: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+              image: item.snippet.thumbnails.high.url,
+              guest: item.snippet.title,
+              category: 'General',
+              tags: item.snippet.tags || [],
+              duration: formattedDuration,
+              playlist: playlistTitle, // Associate the playlist title
+            };
+          })
+        );
+
+        return {
+          playlistTitle, // Include playlist title in the group
+          videos,
+        };
+      })
+    );
+
+    cachedEpisodes = playlistVideos;
+    lastCacheTime = Date.now();
+    return playlistVideos;
+  } catch (error) {
+    console.error('Error fetching YouTube videos by playlist:', error);
+    return [];
+  }
+};
+
+app.get('/api/playlists', async (req, res) => {
+  if (cachedPlaylists && (Date.now() - lastCacheTime < CACHE_DURATION)) {
+    console.log('Serving playlists from cache');
+    res.json(cachedPlaylists);
+  } else {
+    console.log('Fetching new playlist data');
+    const playlists = await getYouTubeVideosByPlaylist();
+    res.json(playlists);
+  }
+});
 
 
 // API endpoint to get episodes with caching

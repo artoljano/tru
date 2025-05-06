@@ -16,6 +16,8 @@ import {
   Heart,
   Star,
 } from "lucide-react";
+import host from "../src/images/host.jpeg";
+import hero from "../src/images/hero.png";
 import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 
@@ -95,10 +97,9 @@ function App() {
 
   useEffect(() => {
     const img = new Image();
-    img.src =
-      "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80";
+    img.src = hero; // use imported local image
     img.onload = () => {
-      setImageLoaded(true); // Image is loaded, reveal the background
+      setImageLoaded(true);
     };
   }, []);
   // const handleReviewClick = (episodeId: number) => {
@@ -118,29 +119,37 @@ function App() {
   // };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-blue-900/20 text-white">
       <motion.div
         style={{
           scale: scaleProgress,
           opacity: opacityProgress,
         }}
-        className="h-screen parallax-bg flex items-center justify-center relative overflow-hidden"
+        className="min-h-screen flex flex-col md:flex-row items-center justify-between relative overflow-hidden px-4 md:px-8 py-12"
       >
-        <div className="absolute inset-0 bg-black/50"></div>
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-blue-950/5 z-0"></div>
+
+        {/* Top Section: Image */}
+        <div className="w-full md:w-1/2 z-10 flex justify-center mb-2 md:mb-2">
+          <img
+            src={hero}
+            alt="TRU Hero"
+            className="w-full h-auto max-h-[50vh] object-contain md:max-h-full"
+          />
+        </div>
+
+        {/* Bottom Section: Text */}
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-center px-4 relative"
+          className="w-full md:w-1/2 z-10 flex flex-col justify-center items-center text-center md:text-left"
         >
-          <h1 className="text-5xl md:text-7xl font-bold mb-4">
-            TRU PODCAST MEDIA
-          </h1>
-          <p className="text-2xl md:text-2xl max-w-2xl mx-auto">
+          <h1 className="text-3xl md:text-6xl font-bold mb-4 text-white leading-tight px-4">
             Kur ke TRU, pse s'e perdor!
-          </p>
-          <p className="text-2xl md:text-2xl max-w-2xl mx-auto">
+          </h1>
+          <p className="text-lg md:text-2xl text-white max-w-md px-4">
             Podcast i pa censuruar!
           </p>
 
@@ -151,7 +160,7 @@ function App() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/episodes")}
-            className="mt-8 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium flex items-center mx-auto"
+            className="mt-8 bg-gold-600 hover:bg-gold-700 text-white px-6 py-3 rounded-full font-medium flex items-center"
           >
             <Headphones className="mr-2" size={20} />
             Listen Now
@@ -165,7 +174,7 @@ function App() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="py-20 bg-gradient-to-b from-black to-red-950/50"
+        className="py-20 bg-gradient-to-b from-blue-950/5 to-gold-900"
       >
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
@@ -190,7 +199,7 @@ function App() {
 
             <button
               onClick={() => navigate("/review")}
-              className="flex-1 bg-red-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center group"
+              className="flex-1 bg-gold-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-700 transition-all duration-300 flex items-center justify-center group"
             >
               Leave a Review
               <Star
@@ -236,7 +245,7 @@ function App() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="py-20 bg-red-950/50"
+        className="py-20 bg-gradient-to-b from-gold-900 to-blue-950/5"
       >
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-12">
@@ -249,7 +258,7 @@ function App() {
             >
               <div className="aspect-square rounded-2xl overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                  src={host}
                   alt="Podcast Host"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
@@ -299,7 +308,7 @@ function App() {
       </motion.section>
 
       {/* Episodes Preview Section */}
-      <section id="episodes" className="py-20 bg-black">
+      <section id="episodes" className="py-20 bg-blue">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -356,10 +365,10 @@ function App() {
             transition={{ duration: 0.8 }}
             className="relative max-w-4xl mx-auto"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-grey-600/20 to-red-950/50 blur-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-grey-600/20 to-red-900/50 blur-xl"></div>
             <a
               href="/tru/episodes"
-              className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-red-950/50 transition-all duration-300"
+              className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-gold-900/50 transition-all duration-300"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -388,7 +397,7 @@ function App() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="py-20 bg-black"
+        className="py-20 bg-blue"
       >
         <div className="container mx-auto px-4">
           <motion.div
@@ -402,9 +411,9 @@ function App() {
               <motion.div
                 animate={{
                   background: [
-                    "radial-gradient(circle at 0% 0%, rgba(255,0,0,0.1) 0%, transparent 50%)",
-                    "radial-gradient(circle at 100% 100%, rgba(255,0,0,0.1) 0%, transparent 50%)",
-                    "radial-gradient(circle at 0% 0%, rgba(255,0,0,0.1) 0%, transparent 50%)",
+                    "radial-gradient(circle at 0% 0%, rgba(237,173,42,0.1) 0%, transparent 50%)",
+                    "radial-gradient(circle at 100% 100%, rgba(237,173,42,0.1) 0%, transparent 50%)",
+                    "radial-gradient(circle at 0% 0%, rgba(237,173,42,0.1) 0%, transparent 50%)",
                   ],
                 }}
                 transition={{

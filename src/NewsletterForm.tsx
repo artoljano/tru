@@ -309,7 +309,7 @@ const NewsletterForm = ({
           {post && (
             <button
               onClick={handleDelete}
-              className="w-full bg-red-600 text-white py-4 rounded-lg mt-4 font-semibold hover:bg-red-500 transition-colors duration-300"
+              className="w-full bg-gold-600 text-white py-4 rounded-lg mt-4 font-semibold hover:bg-gold-500 transition-colors duration-300"
             >
               Delete Post
             </button>

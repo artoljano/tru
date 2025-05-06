@@ -60,7 +60,7 @@ function Footer() {
   );
 
   return (
-    <footer className="relative bg-black pt-20 pb-12 overflow-hidden">
+    <footer className="relative bg-blue-900/20 pt-20 pb-12 overflow-hidden">
       {/* Decorative Background Elements */}
       <motion.div
         animate={{
@@ -80,7 +80,9 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand Column */}
           <div>
-            <h4 className="text-2xl font-bold mb-6">PODCAST NAME</h4>
+            <h4 className="text-2xl text-gray-400 font-bold mb-6">
+              PODCAST NAME
+            </h4>
             <p className="text-gray-400 mb-6">
               Exploring extraordinary stories and insights through meaningful
               conversations.
@@ -121,7 +123,9 @@ function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
+            <h4 className="text-lg text-gray-400 font-semibold mb-6">
+              Quick Links
+            </h4>
             <ul className="space-y-4">
               <li>
                 <Link
@@ -160,7 +164,9 @@ function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-semibold mb-6">Contact</h4>
+            <h4 className="text-lg text-gray-400 font-semibold mb-6">
+              Contact
+            </h4>
             <ul className="space-y-4">
               <li className="flex items-center text-gray-400">
                 <Mail size={16} className="mr-3" />
@@ -179,7 +185,9 @@ function Footer() {
 
           {/* Listen On */}
           <div>
-            <h4 className="text-lg font-semibold mb-6">Listen On</h4>
+            <h4 className="text-lg text-gray-400 font-semibold mb-6">
+              Listen On
+            </h4>
             <ul className="space-y-4">
               <li>
                 <a

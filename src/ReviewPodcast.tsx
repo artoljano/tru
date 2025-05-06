@@ -135,7 +135,7 @@ const ReviewPodcast = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-900/50 to-black text-white pt-24 ">
+    <div className="min-h-screen bg-gradient-to-b from-gold-900/50 to-blue-900/20 text-white pt-24 ">
       <div className="container mx-auto px-4 max-w-4xl pt-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -164,7 +164,7 @@ const ReviewPodcast = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none text-white"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
                   placeholder="John Doe"
                 />
               </div>
@@ -183,7 +183,7 @@ const ReviewPodcast = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none text-white"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
                   placeholder="john@example.com"
                 />
               </div>
@@ -202,7 +202,7 @@ const ReviewPodcast = () => {
                 value={formData.episodeId}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none text-white"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
               >
                 <option value="">Select an episode...</option>
                 {episodes.map((episode) => (
@@ -233,9 +233,9 @@ const ReviewPodcast = () => {
                       size={32}
                       className={`${
                         star <= formData.rating
-                          ? "text-red-500 fill-red-500"
+                          ? "text-gold-500 fill-gold-500"
                           : "text-gray-600"
-                      } transition-colors duration-200 hover:text-red-500`}
+                      } transition-colors duration-200 hover:text-gold-500`}
                     />
                   </button>
                 ))}
@@ -256,14 +256,14 @@ const ReviewPodcast = () => {
                 onChange={handleInputChange}
                 required
                 rows={6}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none text-white"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
                 placeholder="Share your thoughts about the episode..."
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white py-4 rounded-lg font-semibold hover:from-red-700 hover:to-red-900 transition-all duration-300 flex items-center justify-center space-x-2"
+              className="w-full bg-gradient-to-r from-gold-600 to-gold-800 text-white py-4 rounded-lg font-semibold hover:from-gold-700 hover:to-gold-900 transition-all duration-300 flex items-center justify-center space-x-2"
             >
               {status === "sending" && <span>Sending...</span>}
               {status === "success" && <CheckCircle size={24} />}
