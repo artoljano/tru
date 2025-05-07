@@ -65,9 +65,13 @@ function App() {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const scaleProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
   const opacityProgress = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   useEffect(() => {
-    //localStorage.clear();
+    // localStorage.clear();
+    // localStorage.removeItem("episodesTime");
+    // localStorage.removeItem("episodes");
+
     const cachedEpisodes = localStorage.getItem("episodes");
 
     if (cachedEpisodes) {
@@ -117,15 +121,17 @@ function App() {
   //   });
   //   setShowPlayer(true);
   // };
+  //bg-blue-900/20
+
+  function truncate(text: string, max = 120) {
+    return text.length > max ? text.slice(0, max) + "…" : text;
+  }
 
   return (
-    <div className="min-h-screen bg-blue-900/20 text-white">
+    <div className="min-h-screen bg-blue-900/40 text-white">
       <motion.div
-        style={{
-          scale: scaleProgress,
-          opacity: opacityProgress,
-        }}
-        className="min-h-screen flex flex-col md:flex-row items-center justify-between relative overflow-hidden px-4 md:px-8 py-12"
+        style={{ scale: scaleProgress, opacity: opacityProgress }}
+        className="min-h-screen flex flex-col md:flex-row items-center justify-center md:justify-between gap-8 md:gap-0 relative overflow-hidden px-4 md:px-8 py-12"
       >
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-blue-950/5 z-0"></div>
@@ -324,12 +330,11 @@ function App() {
               Dive into our most recent conversations with extraordinary guests
             </p>
           </motion.div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {/* Episode Cards */}
             {episodes.slice(0, 3).map((episode, index) => (
               <motion.div
-                key={index}
+                key={episode.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -339,23 +344,84 @@ function App() {
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
                   <img
                     src={episode.image}
-                    alt={`Episode ${index + 1}`}
+                    alt={decodeHtml(episode.title)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
+
+                  {/* review & youtube buttons */}
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleReviewClick(episode.id)}
+                      className="bg-black text-white p-2 rounded-full transition-colors duration-300"
+                      title="Leave a review"
+                    >
+                      <Star size={20} />
+                    </motion.button>
+                    <motion.a
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      href={episode.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-red-600 text-white p-2 rounded-full transition-colors duration-300"
+                      title="Watch on YouTube"
+                    >
+                      <Youtube size={20} />
+                    </motion.a>
+                  </div>
                 </div>
+
                 <h3 className="text-xl font-semibold mb-2 text-white">
                   {decodeHtml(episode.title)}
                 </h3>
                 <div className="flex items-center text-gray-400 mb-3 text-sm">
                   <Clock size={16} className="mr-2" />
-                  <span>{decodeHtml(episode.duration)} minutes</span>
+                  <span>{decodeHtml(episode.duration)}</span>
                 </div>
+
                 <p className="text-gray-300 text-sm leading-relaxed">
-                  {decodeHtml(episode.description)}
+                  {truncate(decodeHtml(episode.description))}
+                  <button
+                    onClick={() => setSelectedEpisode(episode)}
+                    className="ml-2 text-blue-400 hover:text-blue-300 underline"
+                  >
+                    Read more
+                  </button>
                 </p>
               </motion.div>
             ))}
           </div>
+
+          {selectedEpisode && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="relative bg-gray-900 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+              >
+                <button
+                  onClick={() => setSelectedEpisode(null)}
+                  aria-label="Close"
+                  className="absolute top-4 right-4 z-20 text-gray-400 hover:text-gray-200"
+                >
+                  ✕
+                </button>
+
+                {/* scrollable content */}
+                <div className="p-8 overflow-y-auto flex-1">
+                  <h2 className="text-2xl font-bold mb-4">
+                    {decodeHtml(selectedEpisode.title)}
+                  </h2>
+                  <p className="whitespace-pre-line text-gray-200">
+                    {decodeHtml(selectedEpisode.description)}
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          )}
 
           {/* Creative Link to Episodes */}
           <motion.div
@@ -368,7 +434,7 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-r from-grey-600/20 to-red-900/50 blur-xl"></div>
             <a
               href="/tru/episodes"
-              className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-gold-900/50 transition-all duration-300"
+              className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-gold-900 transition-all duration-300"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -438,7 +504,7 @@ function App() {
                   <motion.a
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    href="https://youtube.com/@podcastname"
+                    href="https://www.youtube.com/@TruPodcastMediaOfficial-p9c"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-4 bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full transition-all duration-300"

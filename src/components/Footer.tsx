@@ -60,7 +60,7 @@ function Footer() {
   );
 
   return (
-    <footer className="relative bg-blue-900/20 pt-20 pb-12 overflow-hidden">
+    <footer className="relative bg-blue-900/40 pt-20 pb-12 overflow-hidden">
       {/* Decorative Background Elements */}
       <motion.div
         animate={{
@@ -72,7 +72,7 @@ function Footer() {
           repeat: Infinity,
           ease: "linear",
         }}
-        className="absolute -top-40 -right-40 w-80 h-80 bg-red-500/10 rounded-full blur-3xl"
+        className="absolute -top-40 -right-40 w-80 h-80 bg-gold-500/10 rounded-full blur-3xl"
       />
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-red-800/10 rounded-full blur-3xl"></div>
 

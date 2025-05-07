@@ -8,22 +8,24 @@ function decodeHtml(html: string) {
   return txt.value;
 }
 
-const apiUrl =
+// Episodes come from /api/episodes
+const episodesApiUrl =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api/episodes"
+    : "https://artoljano.github.io/tru/api/episodes";
+
+// Reviews still post to /api/send-review-email
+const reviewApiUrl =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/send-review-email"
     : "https://artoljano.github.io/tru/api/send-review-email";
 
 const fetchEpisodesFromCache = (): any[] | null => {
-  const storedEpisodes = localStorage.getItem("episodes");
-  const storedEpisodesTime = localStorage.getItem("episodesTime");
-  const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-  if (
-    storedEpisodes &&
-    storedEpisodesTime &&
-    Date.now() - parseInt(storedEpisodesTime) < cacheExpiry
-  ) {
-    return JSON.parse(storedEpisodes);
+  const stored = localStorage.getItem("episodes");
+  const when = localStorage.getItem("episodesTime");
+  const expiry = 24 * 60 * 60 * 1000;
+  if (stored && when && Date.now() - +when < expiry) {
+    return JSON.parse(stored);
   }
   return null;
 };
@@ -32,13 +34,13 @@ const fetchEpisodesFromApi = async (
   setEpisodes: React.Dispatch<React.SetStateAction<any[]>>
 ) => {
   try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    const res = await fetch(episodesApiUrl);
+    const data = await res.json();
     setEpisodes(data);
-    localStorage.setItem("episodes", JSON.stringify(data)); // Cache the episodes
-    localStorage.setItem("episodesTime", Date.now().toString()); // Cache the time of fetching
-  } catch (error) {
-    console.error("Error fetching episodes:", error);
+    localStorage.setItem("episodes", JSON.stringify(data));
+    localStorage.setItem("episodesTime", Date.now().toString());
+  } catch (e) {
+    console.error("Error fetching episodes:", e);
   }
 };
 
@@ -50,7 +52,7 @@ const ReviewPodcast = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    episodeId: preselectedEpisode || "",
+    episodeId: "", // always start empty
     rating: 5,
     review: "",
   });
@@ -60,10 +62,9 @@ const ReviewPodcast = () => {
   >("idle");
 
   useEffect(() => {
-    const cachedEpisodes = fetchEpisodesFromCache();
-
-    if (cachedEpisodes) {
-      setEpisodes(cachedEpisodes);
+    const cached = fetchEpisodesFromCache();
+    if (cached) {
+      setEpisodes(cached);
     } else {
       fetchEpisodesFromApi(setEpisodes);
     }
@@ -96,11 +97,9 @@ const ReviewPodcast = () => {
     };
 
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(reviewApiUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reviewData),
       });
 
@@ -135,7 +134,7 @@ const ReviewPodcast = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gold-900/50 to-blue-900/20 text-white pt-24 ">
+    <div className="min-h-screen bg-gradient-to-b from-gold-900/50 to-blue-900/40 text-white pt-24 ">
       <div className="container mx-auto px-4 max-w-4xl pt-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">

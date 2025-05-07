@@ -27,9 +27,13 @@ interface Episode {
   youtubeUrl: string;
   category: string;
   tags: string[];
+  playlistTitle?: string; // Added this property for enriched data
 }
 
-const categories = ["All", "Technology", "Environment", "Business", "Health"];
+type Playlist = {
+  id: number;
+  playlistTitle: string;
+};
 
 const handleScrollToTop = () => {
   window.scrollTo(0, 0); // Scrolls the page to the top
@@ -41,109 +45,123 @@ function decodeHtml(html: string) {
   return txt.value;
 }
 
-const Episodes = () => {
-  // handleScrollToTop();
-  const [episodes, setEpisodes] = useState<Episode[]>([]); // State to store episodes
-  const [searchTerm, setSearchTerm] = useState(""); // State for search
-  const [selectedCategory, setSelectedCategory] = useState("All"); // State for selected category
-  const [loading, setLoading] = useState(true); // Loading state
-  const navigate = useNavigate();
+function formatDate(iso: string) {
+  // "2025-05-07T07:05:39Z" → "2025-05-07"
+  return iso.split("T")[0];
+}
 
+function truncate(text: string, max = 100) {
+  return text.length > max ? text.slice(0, max) + "…" : text;
+}
+
+interface Episode {
+  id: string;
+  title: string;
+  guest: string;
+  description: string;
+  duration: string;
+  date: string;
+  image: string;
+  youtubeUrl: string;
+  tags: string[];
+  playlist: string;
+}
+
+interface PlaylistGroup {
+  playlistId: string;
+  playlistTitle: string;
+  videos: Episode[];
+}
+
+const Episodes = () => {
+  const [groups, setGroups] = useState<PlaylistGroup[]>([]);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
   const [stats, setStats] = useState({
     episodes: 0,
     guests: 0,
     listeners: 0,
   });
 
+  const navigate = useNavigate();
+
+  // fetch playlists → categories
   useEffect(() => {
-    const cachedEpisodes = localStorage.getItem("episodes");
-
-    if (cachedEpisodes) {
-      // If cached episodes exist, load them from localStorage
-      setEpisodes(JSON.parse(cachedEpisodes));
+    const load = async () => {
+      setLoading(true);
+      const { data: grp } = await axios.get<PlaylistGroup[]>(
+        "http://localhost:5000/api/playlists"
+      );
+      setGroups(grp);
       setLoading(false);
-    } else {
-      // If no cached episodes, fetch new data
-      const fetchEpisodes = async () => {
-        try {
-          setLoading(true);
-          const response = await fetch("http://localhost:5000/api/episodes");
-          const data = await response.json();
-          setEpisodes(data); // Set the fetched episodes in the state
-
-          // Cache the fetched data in localStorage
-          localStorage.setItem("episodes", JSON.stringify(data));
-
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching episodes:", error); // Handle any errors
-          setLoading(false);
-        }
-      };
-
-      fetchEpisodes(); // Call the fetch function to get new data if no cached data
-    }
-  }, []); // Empty dependency array to run once when the component mounts
-
-  useEffect(() => {
-    const cachedChannelStats = localStorage.getItem("channelStats");
-
-    if (cachedChannelStats) {
-      // Load cached stats from localStorage
-      setStats(JSON.parse(cachedChannelStats));
-      setLoading(false);
-    } else {
-      // If no cached stats, fetch new data
-      const fetchChannelStats = async () => {
-        try {
-          setLoading(true);
-          const response = await fetch("http://localhost:5000/api/stats");
-          const data = await response.json();
-
-          // Prepare stats for display
-          const newStats = {
-            episodes: data.totalEpisodes,
-            guests: 10, // Example: Adjust as needed
-            listeners: data.totalViews / 1000, // Convert views to thousands
-          };
-
-          // Update state with fetched data
-          setStats(newStats);
-
-          // Cache the data in localStorage
-          localStorage.setItem("channelStats", JSON.stringify(newStats));
-
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching channel stats:", error);
-          setLoading(false);
-        }
-      };
-
-      fetchChannelStats();
-    }
+    };
+    load();
   }, []);
 
-  // Filter episodes based on search term and category
-  const filteredEpisodes = episodes.filter((episode) => {
-    const matchesSearch =
-      episode.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      episode.guest.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      episode.description.toLowerCase().includes(searchTerm.toLowerCase());
+  // reload episodes whenever category changes
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      const url =
+        selectedCategory === "All"
+          ? "http://localhost:5000/api/episodes"
+          : `http://localhost:5000/api/episodes?playlist=${encodeURIComponent(
+              selectedCategory
+            )}`;
+      const { data: eps } = await axios.get<Episode[]>(url);
+      setEpisodes(eps);
+      setLoading(false);
+    };
+    load();
+  }, [selectedCategory]);
 
-    const matchesCategory =
-      selectedCategory === "All" || episode.category === selectedCategory;
+  useEffect(() => {
+    const loadStats = async () => {
+      const cached = localStorage.getItem("channelStats");
+      if (cached) {
+        setStats(JSON.parse(cached));
+        return;
+      }
+      try {
+        const { data } = await axios.get<{
+          totalEpisodes: number;
+          totalViews: number;
+        }>("http://localhost:5000/api/stats");
+        const newStats = {
+          episodes: data.totalEpisodes,
+          guests: 30, // adjust if you have real guest count
+          listeners: data.totalViews / 1000,
+        };
+        setStats(newStats);
+        localStorage.setItem("channelStats", JSON.stringify(newStats));
+      } catch (e) {
+        console.error("Error loading stats", e);
+      }
+    };
+    loadStats();
+  }, []);
 
-    return matchesSearch && matchesCategory;
+  // build category list
+  const categories = ["All", ...groups.map((g) => g.playlistTitle)];
+
+  // apply search filter
+  const filteredEpisodes = episodes.filter((ep) => {
+    const s = searchTerm.toLowerCase();
+    return (
+      ep.title.toLowerCase().includes(s) ||
+      ep.guest.toLowerCase().includes(s) ||
+      ep.description.toLowerCase().includes(s)
+    );
   });
 
   const handleReviewClick = (episodeId: number) => {
     navigate(`/review?episode=${episodeId}`);
   };
 
-  if (loading) {
-    return <div>Loading episodes...</div>;
-  }
+  if (loading) return <div>Loading episodes...</div>;
 
   const container = {
     hidden: { opacity: 0 },
@@ -168,7 +186,7 @@ const Episodes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-blue-900/20 text-white">
+    <div className="min-h-screen bg-blue-900/40 text-white">
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -246,8 +264,9 @@ const Episodes = () => {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mx-auto mb-12"
         >
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="relative flex-1">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            {/* Search input takes full width always */}
+            <div className="relative w-full">
               <Search
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
                 size={20}
@@ -260,19 +279,22 @@ const Episodes = () => {
                 className="w-full pl-12 pr-4 py-3 bg-gray-900 rounded-full border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none transition-all duration-300"
               />
             </div>
-            <div className="flex items-center gap-4">
-              <Filter size={20} className="text-gray-400" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-gray-900 border border-gray-700 rounded-full px-6 py-3 focus:border-white focus:ring-2 focus:ring-white focus:outline-none transition-all duration-300"
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+            {/* On small: full width & margin-top; on sm+: auto width and no top margin */}
+            <div className="w-full sm:w-auto">
+              <div className="flex items-center gap-2">
+                <Filter size={20} className="text-gray-400 flex-shrink-0" />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full sm:w-auto bg-gray-900 border border-gray-700 rounded-full px-4 py-3 focus:border-white focus:ring-2 focus:ring-white focus:outline-none transition-all duration-300"
+                >
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -295,12 +317,42 @@ const Episodes = () => {
             animate="show" // Use animate instead of whileInView
             className="grid md:grid-cols-2 gap-8"
           >
+            {selectedEpisode && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  className="relative bg-gray-900 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+                >
+                  {/* Close button pinned to top-right of the card */}
+                  <button
+                    onClick={() => setSelectedEpisode(null)}
+                    aria-label="Close"
+                    className="absolute top-4 right-4 z-20 text-gray-400 hover:text-gray-200"
+                  >
+                    ✕
+                  </button>
+
+                  {/* Scrollable body */}
+                  <div className="p-8 overflow-y-auto flex-1">
+                    <h2 className="text-2xl font-bold mb-4">
+                      {decodeHtml(selectedEpisode.title)}
+                    </h2>
+                    <p className="whitespace-pre-line text-gray-200">
+                      {decodeHtml(selectedEpisode.description)}
+                    </p>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+
             {filteredEpisodes.map((episode) => (
               <motion.div
                 key={episode.id}
                 variants={item}
                 whileHover={{ scale: 1.02 }}
-                className="bg-gray-900/50 rounded-xl overflow-hidden backdrop-blur-sm transform transition-all duration-300 hover:shadow-2xl"
+                className="bg-gray-700/50 rounded-xl overflow-hidden backdrop-blur-sm transform transition-all duration-300 hover:shadow-2xl"
               >
                 <div className="relative aspect-video">
                   <img
@@ -308,7 +360,7 @@ const Episodes = () => {
                     alt={decodeHtml(episode.title)}
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                  {/* <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
                     <div className="w-full">
                       <h2 className="text-2xl font-bold mb-2">
                         {decodeHtml(episode.title)}
@@ -317,7 +369,7 @@ const Episodes = () => {
                         with {decodeHtml(episode.guest)}
                       </p>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="absolute top-4 right-4 flex gap-2">
                     <motion.button
                       whileHover={{ scale: 1.1 }}
@@ -348,21 +400,31 @@ const Episodes = () => {
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar size={16} />
-                      {episode.date}
+                      {formatDate(episode.date)}
                     </span>
                   </div>
-                  <p className="text-gray-300 mb-6">{episode.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {episode.tags.map((tag) => (
-                      <motion.span
-                        key={tag}
-                        whileHover={{ scale: 1.05 }}
-                        className="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300"
-                      >
-                        {decodeHtml(tag)}
-                      </motion.span>
-                    ))}
-                  </div>
+                  <p className="text-gray-300 mb-6">
+                    {truncate(episode.description)}
+                    <button
+                      onClick={() => setSelectedEpisode(episode)}
+                      className="ml-2 text-blue-400 hover:text-blue-300 underline"
+                    >
+                      Read more
+                    </button>
+                  </p>
+                  {selectedCategory !== "All" && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {episode.tags.map((tag) => (
+                        <motion.span
+                          key={tag}
+                          whileHover={{ scale: 1.05 }}
+                          className="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300"
+                        >
+                          {decodeHtml(tag)}
+                        </motion.span>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex items-center gap-4">
                     <motion.a
                       whileHover={{ x: 5 }}

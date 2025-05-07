@@ -341,7 +341,7 @@ function Newsletter() {
   };
 
   return (
-    <div className="min-h-screen bg-blue-900/20 text-white">
+    <div className="min-h-screen bg-blue-900/40 text-white">
       {/* New Hero Section */}
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">

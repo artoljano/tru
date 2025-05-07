@@ -41,6 +41,17 @@ let cachedPlaylists = null;
 let lastCacheTime = null;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
+function durationToSeconds(formatted) {
+  // formatted looks like "1 hour(s) 5 minute(s) 23 second(s)" or "5 minute(s) 3 second(s)"
+  const hoursMatch   = formatted.match(/(\d+)\s*hour/);
+  const minutesMatch = formatted.match(/(\d+)\s*minute/);
+  const secondsMatch = formatted.match(/(\d+)\s*second/);
+  const h = hoursMatch   ? parseInt(hoursMatch[1], 10)   : 0;
+  const m = minutesMatch ? parseInt(minutesMatch[1], 10) : 0;
+  const s = secondsMatch ? parseInt(secondsMatch[1], 10) : 0;
+  return h * 3600 + m * 60 + s;
+}
+
 // Helper function to get video duration
 const getVideoDuration = async (videoId) => {
   try {
@@ -73,108 +84,146 @@ const formatDuration = (isoDuration) => {
 };
 
 // Helper function to get videos from the YouTube API
-const getYouTubeVideos = async () => {
+// Helper function to fetch all channel uploads with full description
+async function getYouTubeVideos() {
   try {
-    const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
-      params: {
-        part: 'snippet',
-        channelId: CHANNEL_ID,
-        maxResults: 10,
-        order: 'date',
-        key: YOUTUBE_API_KEY,
-      },
-    });
+    // 1) Get the latest 20 video IDs on the channel
+    const searchRes = await axios.get(
+      'https://www.googleapis.com/youtube/v3/search',
+      {
+        params: {
+          part:        'id',
+          channelId:   CHANNEL_ID,
+          maxResults:  20,
+          order:       'date',
+          key:         YOUTUBE_API_KEY,
+          type:        'video',
+        },
+      }
+    );
+    const ids = searchRes.data.items
+      .map(i => i.id.videoId)
+      .filter(Boolean)
+      .join(',');
 
-    const episodes = await Promise.all(response.data.items.map(async (item) => {
-      const durationIso = await getVideoDuration(item.id.videoId);
-      const formattedDuration = formatDuration(durationIso);
+    if (!ids) {
+      return [];
+    }
 
-      return {
-        id: item.id.videoId,
-        title: item.snippet.title,
-        description: item.snippet.description,
-        date: item.snippet.publishedAt,
-        youtubeUrl: `https://www.youtube.com/watch?v=${item.id.videoId}`,
-        image: item.snippet.thumbnails.high.url,
-        guest: item.snippet.title,
-        category: 'General',
-        //tags: item.snippet..title.split(' '),
-        tags: item.snippet.tags || [],
-        duration: formattedDuration,
-      };
-    }));
+    // 2) Fetch full snippet + contentDetails for those IDs
+    const videosRes = await axios.get(
+      'https://www.googleapis.com/youtube/v3/videos',
+      {
+        params: {
+          part: 'snippet,contentDetails',
+          id:   ids,
+          key:  YOUTUBE_API_KEY,
+        },
+      }
+    );
 
+    // 3) Map & filter out any under 10 minutes
+    const episodes = videosRes.data.items
+      .map(item => {
+        const iso = item.contentDetails.duration;
+        const formattedDuration = formatDuration(iso);
+        // convert ISO to total seconds for filtering
+        const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+        const hours   = parseInt(match[1]||'0',10);
+        const minutes = parseInt(match[2]||'0',10);
+        const seconds = parseInt(match[3]||'0',10);
+        const totalSeconds = hours*3600 + minutes*60 + seconds;
+
+        return {
+          id:          item.id,
+          title:       item.snippet.title,
+          description: item.snippet.description,
+          date:        item.snippet.publishedAt,
+          youtubeUrl:  `https://www.youtube.com/watch?v=${item.id}`,
+          image:       item.snippet.thumbnails.high.url,
+          guest:       item.snippet.title,
+          category:    'General',
+          tags:        item.snippet.tags || [],
+          duration:    formattedDuration,
+          _durationSec: totalSeconds,
+        };
+      })
+      // 10 minutes = 600 seconds
+      .filter(ep => ep._durationSec >= 600)
+      // drop our temporary _durationSec before returning
+      .map(({ _durationSec, ...keep }) => keep);
+
+    // cache & return
     cachedEpisodes = episodes;
-    lastCacheTime = Date.now();
+    lastCacheTime  = Date.now();
     return episodes;
-  } catch (error) {
-    console.error('Error fetching YouTube data:', error);
+
+  } catch (err) {
+    console.error('Error in getYouTubeVideos:', err);
     return [];
   }
-};
+}
 
-// Helper function to get videos from the YouTube API, grouped by playlist
+
+
 const getYouTubeVideosByPlaylist = async () => {
   try {
-    // First, fetch the playlists associated with the channel
     const playlistsResponse = await axios.get('https://www.googleapis.com/youtube/v3/playlists', {
       params: {
         part: 'snippet',
         channelId: CHANNEL_ID,
-        maxResults: 10, // Adjust if you need more
+        maxResults: 20,
         key: YOUTUBE_API_KEY,
       },
     });
 
-    // Get the playlists from the response
     const playlists = playlistsResponse.data.items;
 
-    // Fetch videos for each playlist and group them
     const playlistVideos = await Promise.all(
       playlists.map(async (playlist) => {
         const playlistId = playlist.id;
         const playlistTitle = playlist.snippet.title;
 
-        // Fetch the videos in the playlist
         const videosResponse = await axios.get('https://www.googleapis.com/youtube/v3/playlistItems', {
           params: {
             part: 'snippet',
-            playlistId: playlistId,
-            maxResults: 10, // Adjust based on your needs
+            playlistId,
+            maxResults: 20,
             key: YOUTUBE_API_KEY,
           },
         });
 
-        // Map over the videos and format them
         const videos = await Promise.all(
           videosResponse.data.items.map(async (item) => {
-            const durationIso = await getVideoDuration(item.snippet.resourceId.videoId);
+            const videoId = item.snippet.resourceId.videoId;
+            const durationIso = await getVideoDuration(videoId);
             const formattedDuration = formatDuration(durationIso);
 
             return {
-              id: item.snippet.resourceId.videoId,
+              id: videoId,
               title: item.snippet.title,
               description: item.snippet.description,
               date: item.snippet.publishedAt,
-              youtubeUrl: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-              image: item.snippet.thumbnails.high.url,
+              youtubeUrl: `https://www.youtube.com/watch?v=${videoId}`,
+              image: item.snippet.thumbnails?.high?.url,
               guest: item.snippet.title,
               category: 'General',
-              tags: item.snippet.tags || [],
+              tags: [], // Playlist items don't return tags
               duration: formattedDuration,
-              playlist: playlistTitle, // Associate the playlist title
+              playlist: playlistTitle,
             };
           })
         );
 
         return {
-          playlistTitle, // Include playlist title in the group
-          videos,
+          playlistId,     // the YouTube playlist ID
+          playlistTitle,  // human-readable title
+          videos,         // the array of videos (each video has a `.playlist` field)
         };
       })
     );
 
-    cachedEpisodes = playlistVideos;
+    cachedPlaylists = playlistVideos;
     lastCacheTime = Date.now();
     return playlistVideos;
   } catch (error) {
@@ -183,29 +232,49 @@ const getYouTubeVideosByPlaylist = async () => {
   }
 };
 
+
 app.get('/api/playlists', async (req, res) => {
-  if (cachedPlaylists && (Date.now() - lastCacheTime < CACHE_DURATION)) {
-    console.log('Serving playlists from cache');
-    res.json(cachedPlaylists);
-  } else {
-    console.log('Fetching new playlist data');
-    const playlists = await getYouTubeVideosByPlaylist();
-    res.json(playlists);
+  if (cachedPlaylists && Date.now() - lastCacheTime < CACHE_DURATION) {
+    return res.json(cachedPlaylists);
   }
+  const fresh = await getYouTubeVideosByPlaylist();
+  cachedPlaylists = fresh;
+  lastCacheTime = Date.now();
+  res.json(fresh);
 });
 
 
-// API endpoint to get episodes with caching
+
 app.get('/api/episodes', async (req, res) => {
-    if (cachedEpisodes && (Date.now() - lastCacheTime < CACHE_DURATION)) {
-      console.log('Serving from cache');
-      res.json(cachedEpisodes);
-    } else {
-      console.log('Fetching new data');
-      const episodes = await getYouTubeVideos();
-      res.json(episodes);
+  const { playlist } = req.query;
+
+  // Helper that filters out anything under 600 seconds (10 min)
+  function keepLongEnough(list) {
+    return list.filter(ep => durationToSeconds(ep.duration) >= 600);
+  }
+
+  // 1) If user asked for a specific playlist (not "All")
+  if (playlist && playlist !== 'All') {
+    // ensure our playlist-groups cache is fresh
+    if (!cachedPlaylists || Date.now() - lastCacheTime > CACHE_DURATION) {
+      cachedPlaylists = await getYouTubeVideosByPlaylist();
+      lastCacheTime = Date.now();
     }
-  });
+    // flatten and then filter by playlist title
+    let allVideos = cachedPlaylists.flatMap(pl => pl.videos);
+    let byPlaylist = allVideos.filter(ep => ep.playlist === playlist);
+    return res.json( keepLongEnough(byPlaylist) );
+  }
+
+  // 2) Otherwise "All": fall back to channel uploads
+  if (!cachedEpisodes || Date.now() - lastCacheTime > CACHE_DURATION) {
+    cachedEpisodes = await getYouTubeVideos();
+    lastCacheTime = Date.now();
+  }
+  // cachedEpisodes is already a flat array of videos from the channel feed
+  return res.json( keepLongEnough(cachedEpisodes) );
+});
+
 
 
   let cachedChannelStats = null;
