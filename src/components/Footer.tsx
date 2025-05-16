@@ -10,7 +10,10 @@ import {
   Phone,
   Headphones,
   Heart,
+  Twitch,
+  Facebook,
 } from "lucide-react";
+import { FaTiktok, FaPatreon } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -59,6 +62,94 @@ function Footer() {
     </svg>
   );
 
+  const brandLinks = [
+    {
+      Icon: Youtube,
+      url: "https://youtube.com/YourChannel",
+      hoverClass: "hover:text-red-500",
+    },
+    {
+      Icon: CustomIcon,
+      url: "https://open.spotify.com/show/…",
+      hoverClass: "hover:text-green-500",
+    },
+    {
+      Icon: FaTiktok,
+      url: "https://tiktok.com/@YourProfile",
+      hoverClass: "hover:text-pink-500",
+    },
+    {
+      Icon: FaPatreon,
+      url: "https://patreon.com/YourPage",
+      hoverClass: "hover:text-orange-500",
+    },
+    {
+      Icon: Instagram,
+      url: "https://instagram.com/YourProfile",
+      hoverClass: "hover:text-pink-500",
+    },
+    {
+      Icon: Twitch,
+      url: "https://twitch.tv/YourChannel",
+      hoverClass: "hover:text-purple-600",
+    },
+    {
+      Icon: Facebook,
+      url: "https://facebook.com/YourPage",
+      hoverClass: "hover:text-blue-600",
+    },
+    {
+      Icon: Twitter,
+      url: "https://twitter.com/YourHandle",
+      hoverClass: "hover:text-blue-400",
+    },
+  ];
+
+  const listenLinks = [
+    {
+      Icon: CustomIcon2,
+      name: "   Spotify",
+      url: "https://open.spotify.com/show/…",
+      hoverClass: "mr-0 hover:text-green-500 ml-2",
+    },
+    {
+      Icon: Apple,
+      name: "Apple Podcasts",
+      url: "https://podcasts.apple.com/…",
+      hoverClass: "mr-0 hover:text-purple-500 ml-2",
+    },
+    {
+      Icon: Youtube,
+      name: "YouTube",
+      url: "https://youtube.com/YourChannel",
+      hoverClass: "mr-0 hover:text-red-500 ml-2",
+    },
+    {
+      Icon: Headphones,
+      name: "Google Podcasts",
+      url: "https://podcasts.google.com/…",
+      hoverClass: "mr-0 hover:text-blue-400 ml-2",
+    },
+    {
+      Icon: Twitch,
+      name: "Twitch",
+      url: "https://twitch.tv/YourChannel",
+      hoverClass: "mr-0 hover:text-purple-600 ml-2",
+    },
+    {
+      Icon: FaPatreon,
+      name: "Patreon",
+      url: "https://patreon.com/YourPage",
+      hoverClass: "mr-0 hover:text-orange-500 ml-2",
+    },
+    {
+      Icon: FaTiktok,
+      name: "TikTok",
+      url: "https://tiktok.com/@YourProfile",
+      hoverClass: "mr-0 hover:text-pink-500 ml-2",
+    },
+  ];
+
   return (
     <footer className="relative bg-blue-900/40 pt-20 pb-12 overflow-hidden">
       {/* Decorative Background Elements */}
@@ -81,50 +172,31 @@ function Footer() {
           {/* Brand Column */}
           <div>
             <h4 className="text-2xl text-gray-400 font-bold mb-6">
-              PODCAST NAME
+              TRU PODCAST MEDIA
             </h4>
             <p className="text-gray-400 mb-6">
-              Exploring extraordinary stories and insights through meaningful
-              conversations.
+              Eksplorojmë histori dhe perspektiva të jashtëzakonshme përmes
+              bisedave dhe zërave autentikë.
             </p>
             <div className="flex space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Youtube size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <CustomIcon />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Apple size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Instagram size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Twitter size={20} />
-              </a>
+              {brandLinks.map(({ Icon, url, hoverClass }, i) => (
+                <a
+                  key={i}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-gray-400 transition-colors ${hoverClass}`}
+                >
+                  <Icon size={20} />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="text-lg text-gray-400 font-semibold mb-6">
-              Quick Links
+              Eksploro
             </h4>
             <ul className="space-y-4">
               <li>
@@ -132,7 +204,7 @@ function Footer() {
                   to="/episodes"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Episodes
+                  Episodet
                 </Link>
               </li>
               <li>
@@ -140,7 +212,7 @@ function Footer() {
                   to="/about"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  About Us
+                  Rreth Nesh
                 </Link>
               </li>
               <li>
@@ -148,7 +220,7 @@ function Footer() {
                   to="/newsletter"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Newsletter
+                  Tru Media
                 </Link>
               </li>
               <li>
@@ -156,7 +228,15 @@ function Footer() {
                   to="/suggest"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Suggest a Guest
+                  Sygjero një të ftuar
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/review"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Vlerësime
                 </Link>
               </li>
             </ul>
@@ -165,20 +245,20 @@ function Footer() {
           {/* Contact Info */}
           <div>
             <h4 className="text-lg text-gray-400 font-semibold mb-6">
-              Contact
+              Kontakt
             </h4>
             <ul className="space-y-4">
               <li className="flex items-center text-gray-400">
                 <Mail size={16} className="mr-3" />
-                <span>hello@podcastname.com</span>
+                hello@podcastname.com
               </li>
               <li className="flex items-center text-gray-400">
                 <MapPin size={16} className="mr-3" />
-                <span>Tirana, Albania</span>
+                Tiranë, Shqipëri
               </li>
               <li className="flex items-center text-gray-400">
                 <Phone size={16} className="mr-3" />
-                <span>+35567676767</span>
+                +355 67 676 767
               </li>
             </ul>
           </div>
@@ -186,45 +266,22 @@ function Footer() {
           {/* Listen On */}
           <div>
             <h4 className="text-lg text-gray-400 font-semibold mb-6">
-              Listen On
+              Dëgjo Në
             </h4>
             <ul className="space-y-4">
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center text-gray-400 hover:text-white transition-colors"
-                >
-                  <CustomIcon2 />
-                  <span className="ml-3">Spotify</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center text-gray-400 hover:text-white transition-colors"
-                >
-                  <Apple size={16} className="mr-3" />
-                  <span>Apple Podcasts</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center text-gray-400 hover:text-white transition-colors"
-                >
-                  <Youtube size={16} className="mr-3" />
-                  <span>YouTube</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center text-gray-400 hover:text-white transition-colors"
-                >
-                  <Headphones size={16} className="mr-3" />
-                  <span>Google Podcasts</span>
-                </a>
-              </li>
+              {listenLinks.map(({ Icon, name, url, hoverClass }, i) => (
+                <li key={i}>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center text-gray-400 transition-colors ${hoverClass}`}
+                  >
+                    <Icon size={16} />
+                    <span className={`${hoverClass}`}>{name}</span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -233,32 +290,32 @@ function Footer() {
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2025 PODCAST NAME. All rights reserved.
+              © 2025 TRU PODCAST MEDIA. Të gjitha të drejtat e rezervuara.
             </div>
             <div className="flex items-center space-x-6 text-sm">
               <a
                 href="#"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Privacy Policy
+                Politika e Privatësisë
               </a>
               <a
                 href="#"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Terms of Service
+                Kushtet e Shërbimit
               </a>
               <a
                 href="#"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Cookie Policy
+                Politika e Cookie-ve
               </a>
             </div>
             <div className="flex items-center text-gray-400 text-sm">
               <span className="flex items-center">
-                Made with <Heart size={14} className="mx-1 text-red-500" /> in
-                Tirana
+                Bërë me <Heart size={14} className="mx-1 text-red-500" /> në
+                Tiranë
               </span>
             </div>
           </div>

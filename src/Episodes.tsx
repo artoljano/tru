@@ -106,7 +106,7 @@ const Episodes = () => {
     const load = async () => {
       setLoading(true);
       const url =
-        selectedCategory === "All"
+        selectedCategory === "Të gjitha"
           ? "http://localhost:5000/api/episodes"
           : `http://localhost:5000/api/episodes?playlist=${encodeURIComponent(
               selectedCategory
@@ -145,7 +145,7 @@ const Episodes = () => {
   }, []);
 
   // build category list
-  const categories = ["All", ...groups.map((g) => g.playlistTitle)];
+  const categories = ["Të gjitha", ...groups.map((g) => g.playlistTitle)];
 
   // apply search filter
   const filteredEpisodes = episodes.filter((ep) => {
@@ -206,11 +206,11 @@ const Episodes = () => {
             className="max-w-3xl"
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Our Episodes
+              Episodet Tona
             </h1>
             <p className="text-xl text-gray-300 mb-8">
-              Dive into our collection of thought-provoking conversations with
-              extraordinary guests.
+              Eksploroni koleksionin tonë të bisedave frymëzuese me të ftuar të
+              jashtëzakonshëm.
             </p>
 
             <div className="grid grid-cols-3 gap-6 mb-8">
@@ -223,7 +223,7 @@ const Episodes = () => {
               >
                 <Mic className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">50+</div>
-                <div className="text-gray-400">Episodes</div>
+                <div className="text-gray-400">Episode</div>
               </motion.div>
 
               <motion.div
@@ -235,7 +235,7 @@ const Episodes = () => {
               >
                 <Users className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                 <div className="text-2xl font-bold">{stats.guests}+</div>
-                <div className="text-gray-400">Guests</div>
+                <div className="text-gray-400">Të Ftuar</div>
               </motion.div>
 
               <motion.div
@@ -249,7 +249,7 @@ const Episodes = () => {
                 <div className="text-2xl font-bold">
                   {Math.round(stats.listeners)}K+
                 </div>
-                <div className="text-gray-400">Listeners</div>
+                <div className="text-gray-400">Dëgjues</div>
               </motion.div>
             </div>
           </motion.div>
@@ -273,7 +273,7 @@ const Episodes = () => {
               />
               <input
                 type="text"
-                placeholder="Search episodes..."
+                placeholder="Kërko episode..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 bg-gray-900 rounded-full border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none transition-all duration-300"
@@ -306,7 +306,7 @@ const Episodes = () => {
             className="text-center py-12"
           >
             <p className="text-xl text-gray-400">
-              No episodes found matching your search.
+              Nuk u gjet asnjë episod që përputhet me kërkesën tuaj.
             </p>
           </motion.div>
         ) : (
@@ -409,7 +409,7 @@ const Episodes = () => {
                       onClick={() => setSelectedEpisode(episode)}
                       className="ml-2 text-blue-400 hover:text-blue-300 underline"
                     >
-                      Read more
+                      Lexo më shumë...
                     </button>
                   </p>
                   {selectedCategory !== "All" && (
@@ -433,7 +433,7 @@ const Episodes = () => {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors"
                     >
-                      Watch on YouTube
+                      Shiko në YouTube
                       <ExternalLink size={16} />
                     </motion.a>
                     <motion.button
@@ -441,7 +441,7 @@ const Episodes = () => {
                       onClick={() => handleReviewClick(episode.id)}
                       className="inline-flex items-center gap-2 text-white hover:text-white transition-colors"
                     >
-                      Leave a Review
+                      Shkruaj një Vlerësim
                       <Star size={16} />
                     </motion.button>
                   </div>

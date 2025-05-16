@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 // Create a transporter object using your SMTP configuration
 const transporter = nodemailer.createTransport({
@@ -22,4 +22,4 @@ const sendEmail = (to, subject, text, html) => {
   return transporter.sendMail(mailOptions);
 };
 
-module.exports = sendEmail;
+export default sendEmail;

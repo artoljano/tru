@@ -17,6 +17,7 @@ import {
   Coffee,
   BookOpen,
   Twitch,
+  Zap,
 } from "lucide-react";
 import host from "../src/images/host.jpeg";
 import intro from "../src/images/about-intro-hq.mp4";
@@ -148,18 +149,37 @@ function About() {
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                  Meet Your Host
+                  Njihuni me Moderatorin
                 </h1>
                 <h2 className="text-2xl font-semibold text-white mb-4">
-                  John Smith
+                  Shpendi Gashi <br />
+                  <span className="text-lg text-gray-400">
+                    Politolog | Studiues | Moderator i Tru Podcast
+                  </span>
                 </h2>
                 <div className="space-y-4 text-gray-300">
                   <p>
-                    With five years of experience in digital media and a passion
-                    for storytelling, John brings fresh energy and authentic
-                    curiosity to every conversation...
+                    Me një formim të thelluar akademik në shkencat politike dhe
+                    një pasion të palëkundur për të vërtetën, Shpendi Gashi
+                    sjell në çdo episod të Tru Podcast një qasje të thellë,
+                    analitike dhe të ndershme ndaj realitetit që na rrethon. Si
+                    politolog dhe studiues, ai është i përkushtuar ndaj ideve që
+                    sfidojnë mendimin e zakonshëm, duke shtruar pyetje të
+                    guximshme dhe duke eksploruar temat më të ndërlikuara me një
+                    kuriozitet të sinqertë dhe një qasje kritike.
                   </p>
-                  {/* remaining paragraphs */}
+                  <p>
+                    Për Shpendin, Tru Podcast nuk është vetëm një platformë për
+                    të folur — është një ftesë për të menduar. Për të ndalur,
+                    reflektuar dhe për të hyrë në thellësi të përvojës njerëzore
+                    dhe realiteteve politike, sociale e kulturore që na
+                    formësojnë.
+                  </p>
+                  <p>
+                    Nën moderimin e tij, bisedat zhvillohen në një atmosferë të
+                    hapur dhe të menduar mirë — aty ku fjalët kanë peshë, dhe
+                    heshtja nuk është boshësi, por hapësirë për reflektim.
+                  </p>
                 </div>
 
                 <motion.div
@@ -233,7 +253,7 @@ function About() {
             </p>
           </motion.div>
 
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="space-y-16">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
@@ -242,15 +262,51 @@ function About() {
                 transition={{ duration: 0.8 }}
                 className="flex flex-col md:flex-row items-center gap-8"
               >
-                <div className="md:w-1/3">
+                <div className="md:w-1/2">
                   <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
                     <Coffee size={48} className="text-white-400 mb-4" />
                     <h3 className="text-2xl font-bold mb-4">The Spark</h3>
                     <p className="text-gray-300">
-                      It all started with a series of engaging conversations
-                      over coffee with friends about technology, culture, and
-                      the future. We realized these discussions deserved a
-                      broader audience.
+                      Tru Podcast nuk lindi nga komoditeti, por nga përplasja.
+                      Ishte pikërisht mospajtimi me formatin e mbyllur të
+                      universitetit, refuzimi për t’u pajtuar me kufizimet
+                      akademike dhe zhgënjimi nga mediat tradicionale që
+                      preferojnë zhurmën ndaj së vërtetës — që ndezën shkëndijën
+                      fillestare.
+                    </p>
+                    <p className="text-gray-300">
+                      <br />
+                      Nga ai moment tensioni, lindi një ide:
+                    </p>
+                    <p className="text-gray-300">
+                      <br />
+
+                      <strong>
+                        "Po sikur të ndërtojmë një hapësirë të lirë, ku fjala
+                        është e pakompromis dhe mendimi nuk filtrohet?"
+                      </strong>
+                    </p>
+                    <p className="text-gray-300">
+                      <br />
+                      Tru Podcast është produkti i asaj shkëputjeje — një
+                      platformë që refuzon uniformitetin dhe u jep zë atyre që
+                      shpesh injorohen. Këtu nuk ka linjë editoriale të
+                      imponuar, nuk ka fjalë të ndaluara, nuk ka tema të
+                      paprekshme.
+                    </p>
+                    <p className="text-gray-300">
+                      <br />
+                      Është një përgjigje ndaj sistemit që kërkonte heshtje. Dhe
+                      çdo episod është një dëshmi që zëri ynë nuk u ndal.
+                    </p>
+                    <p className="text-gray-300">
+                      <br />
+                      <strong>| </strong>
+                      <strong>
+                        "Sa shumë kam humbur nga frika se mos humbisja."
+                      </strong>
+                      <br />
+                      —Shpendi Gashi
                     </p>
                   </div>
                 </div>
@@ -270,17 +326,107 @@ function About() {
                 transition={{ duration: 0.8 }}
                 className="flex flex-col md:flex-row-reverse items-center gap-8"
               >
-                <div className="md:w-1/3">
+                <div className="md:w-1/2">
                   <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
                     <Podcast size={48} className="text-white-400 mb-4" />
                     <h3 className="text-2xl font-bold mb-4">Taking Flight</h3>
                     <p className="text-gray-300">
-                      In late 2024, we launched our first episode. The response
-                      was immediate and encouraging, showing us there was a real
-                      appetite for authentic, in-depth conversations.
+                      Çdo ide e madhe ka nevojë për krahë. Tru Podcast nisi si
+                      një zë i vetëm — i qartë, por ende i brishtë. Dhe
+                      pikërisht atëherë, kur nevoja për të folur ndryshe u bë
+                      urgjencë, u bashkuan njerëz që besuan. Miq,
+                      bashkëpunëtorë, dashamirës. E ndërtuam çdo pjesë me dorë,
+                      me zemër dhe me bindjen se kjo platformë nuk ishte vetëm
+                      ëndrra ime — ishte e domosdoshme për të gjithë ata që
+                      kërkonin një zë sfidues, të ndershëm dhe ndryshe.
+                    </p>
+                    <p className="text-gray-300 mt-4">
+                      Fluturimi nisi më 28 Nëntor — në Ditën e Flamurit — jo
+                      rastësisht. Ishte një akt simbolik, një premtim që zëri
+                      ynë nuk do të përkulet. I ftuari i parë ishte një luftëtar
+                      i gjallë, Dritan Goxhaj — një hero që mishëron guximin dhe
+                      qëndrimin. Një hyrje e denjë për një platformë që nuk
+                      pranon të heshtë.
+                    </p>
+                    <p className="text-gray-300 mt-4">
+                      <strong>| Ky nuk është thjesht një podcast.</strong>
+                      <br />
+                      Është një qëndresë. Është një fluturim drejt së vërtetës.
+                    </p>
+                    <p className="text-gray-300 mt-4">
+                      Dhe ky është vetëm fillimi. Tru Podcast tani fluturon me
+                      mbështetjen e një komuniteti të tërë — në{" "}
+                      <span
+                        className="underline hover:text-red-600 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://www.youtube.com/YourChannel",
+                            "_blank"
+                          )
+                        }
+                      >
+                        YouTube
+                      </span>
+                      ,{" "}
+                      <span
+                        className="underline hover:text-green-500 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://open.spotify.com/show/YourShowId",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Spotify
+                      </span>
+                      ,{" "}
+                      <span
+                        className="underline hover:text-orange-500 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://www.patreon.com/YourPage",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Patreon
+                      </span>
+                      ,{" "}
+                      <span
+                        className="underline hover:text-purple-600 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://www.twitch.tv/YourChannel",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Twitch
+                      </span>{" "}
+                      dhe{" "}
+                      <span
+                        className="underline hover:text-blue-400 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://twitter.com/YourHandle",
+                            "_blank"
+                          )
+                        }
+                      >
+                        X
+                      </span>
+                      — duke ndërtuar një hapësirë ku fjalët kanë peshë, dhe
+                      mendimi nuk censurohet.
+                    </p>
+                    <p className="text-gray-300 mt-4">
+                      Bashkohuni me fluturimin tonë. Ndihmoni që ky zë të flasë
+                      më lart, bëhuni pjesë e komunitetit tonë përmes
+                      anëtarësimeve, komenteve, apo duke u bashkëpunuar me ne.
+                      Se vetëm së bashku mund të arrijmë më shumë.
                     </p>
                   </div>
                 </div>
+
                 <div className="md:w-2/3">
                   <img
                     src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
@@ -297,14 +443,93 @@ function About() {
                 transition={{ duration: 0.8 }}
                 className="flex flex-col md:flex-row items-center gap-8"
               >
-                <div className="md:w-1/3">
+                <div className="md:w-1/2">
                   <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
                     <BookOpen size={48} className="text-white-400 mb-4" />
                     <h3 className="text-2xl font-bold mb-4">Looking Ahead</h3>
                     <p className="text-gray-300">
-                      Today, we're building a community of curious minds and
-                      working to bring you even more engaging content and
-                      diverse perspectives.
+                      Në Tru Podcast, ne po ndërtojmë më shumë sesa një emision
+                      — po krijojmë një komunitet të mendjesh të hapura, që nuk
+                      kënaqet me sipërfaqësoren dhe që kërkon thellësi, kuptim
+                      dhe dialog të ndershëm. Ndërsa zgjerojmë horizontin tonë,
+                      synimi ynë është të sjellim përmbajtje më të thelluar, më
+                      interaktive dhe më të vërtetë se kurrë më parë.
+                    </p>
+                    <p className="text-gray-300 mt-4">
+                      Sot, ti mund të bëhesh pjesë aktive e këtij rrugëtimi:
+                    </p>
+                    <p className="text-gray-300 mt-2">
+                      Bëhu anëtar në kanalin tonë{" "}
+                      <span
+                        className="underline hover:text-red-600 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://www.youtube.com/YourChannel",
+                            "_blank"
+                          )
+                        }
+                      >
+                        YouTube
+                      </span>{" "}
+                      dhe fito akses në përmbajtje ekskluzive, pjesë pas
+                      kuintave dhe rubrika vetëm për anëtarët.
+                    </p>
+                    <p className="text-gray-300 mt-2">
+                      Na ndiq edhe në{" "}
+                      <span
+                        className="underline hover:text-green-500 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://open.spotify.com/show/YourShowId",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Spotify
+                      </span>
+                      ,{" "}
+                      <span
+                        className="underline hover:text-orange-500 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://www.patreon.com/YourPage",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Patreon
+                      </span>
+                      ,{" "}
+                      <span
+                        className="underline hover:text-purple-600 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://www.twitch.tv/YourChannel",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Twitch
+                      </span>{" "}
+                      dhe{" "}
+                      <span
+                        className="underline hover:text-blue-400 cursor-pointer transition-colors"
+                        onClick={() =>
+                          window.open(
+                            "https://twitter.com/YourHandle",
+                            "_blank"
+                          )
+                        }
+                      >
+                        X
+                      </span>
+                      — për përmbajtje të zgjeruar dhe për të qenë pjesë e
+                      komunitetit tonë global.
+                    </p>
+                    <p className="text-gray-300 mt-4">
+                      Mbështetjen tënde e kthejmë në përmbajtje me vlerë. Fjalët
+                      e tua, donacionet dhe pjesëmarrja jote janë shtysa jonë
+                      për të bërë më shumë — për ty.
                     </p>
                   </div>
                 </div>
@@ -376,31 +601,37 @@ function About() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-6">Our Values</h2>
+            <h2 className="text-4xl font-bold mb-6">Vlerat Tona</h2>
             <p className="text-xl text-gray-300">
-              The principles guiding our journey from day one
+              Parimet që na udhëheqin që nga dita e parë
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
             {[
               {
                 icon: Mic,
-                title: "Authentic Voices",
+                title: "Zëra të Papërgatitur, Por Autentikë",
                 description:
-                  "We believe in real, unscripted conversations that reveal the true essence of our guests' stories.",
+                  "Ne rrëfejmë jetët tona pa maska, pa skenar dhe pa filtra. Çdo bisedë është një pasqyrë e papunuar e realitetit, ku emocionet dhe të vërtetat dalin në shesh të lirë.",
               },
               {
                 icon: Heart,
-                title: "Growing Together",
+                title: "Rritemi Së Bashku, Jo Vetëm",
                 description:
-                  "Every episode is an opportunity to learn and grow alongside our community of listeners.",
+                  "Kjo nuk është një udhëtim i vetëm. Në çdo bisedë, ne dhe të ftuarit tanë hapim së bashku dyer të reja, ku gabimet janë mësime dhe çdo moment i papritur bëhet këngë.",
               },
               {
                 icon: Award,
-                title: "Quality First",
+                title: "Cilësia Nuk Është Aksident",
                 description:
-                  "Though we're new, we're committed to delivering the highest quality content in every episode.",
+                  "Nuk ofrojmë vetëm përmbajtje - ofrojmë përvoja. Çdo episod është një përzierje e pazakontë e spontanitetit dhe përgatitjes, ku autenticiteti takon profesionalizmin.",
+              },
+              {
+                icon: Zap,
+                title: "Pse? Sepse Ne Besojmë...",
+                description:
+                  "Që botës i duhen më shumë zëra të patinjuar, më pak perfeksionizëm të sajuar dhe më shumë kurajë për të qenë të përkryer... të papërsosur.",
               },
             ].map((value, index) => (
               <motion.div

@@ -68,7 +68,7 @@ function App() {
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   useEffect(() => {
-    // localStorage.clear();
+    localStorage.clear();
     // localStorage.removeItem("episodesTime");
     // localStorage.removeItem("episodes");
 
@@ -184,19 +184,20 @@ function App() {
       >
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Be Part of Our Journey
+            Bashkohu me Ne në Udhëtimin Tonë
           </h2>
           <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto text-gray-300">
-            Help us create better content and grow our community. Whether you
-            know someone with an inspiring story or want to share your thoughts
-            about our episodes, your input matters.
+            Jep kontributin tënd për të ndërtuar një përmbajtje më të mirë dhe
+            për të zgjeruar komunitetin tonë. Nëse njeh dikë me një histori
+            frymëzuese apo dëshiron t’i ndaj mendimet në episodet tona, zëri yt
+            ka vlerë.
           </p>
           <div className="flex flex-col md:flex-row gap-6 justify-center max-w-2xl mx-auto">
             <button
               onClick={() => navigate("/suggest")}
               className="flex-1 bg-white text-black px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center group"
             >
-              Suggest a Guest
+              Propozo një të Ftuar
               <Send
                 className="ml-2 group-hover:translate-x-1 transition-transform"
                 size={20}
@@ -207,17 +208,11 @@ function App() {
               onClick={() => navigate("/review")}
               className="flex-1 bg-gold-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold-700 transition-all duration-300 flex items-center justify-center group"
             >
-              Leave a Review
+              Jep Vlerësimin Tënd
               <Star
                 className="ml-2 group-hover:scale-110 group-hover:stroke-white group-hover:translate-x-1 transition-transform"
                 size={20}
               />
-              {/* <Star
-                className="ml-2 group-hover:scale-110 transition-transform"
-                size={20}
-              
-                className="ml-2 group-hover:fill-white group-hover:stroke-white"
-              /> */}
             </button>
           </div>
         </div>
@@ -278,23 +273,29 @@ function App() {
               className="w-full md:w-1/2 text-center md:text-left"
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Meet Your Host
+                Njihuni me Moderatorin
               </h2>
               <h3 className="text-2xl font-semibold text-gray-300 mb-4">
-                John Smith
+                Shpendi Gashi <br />
+                <span className="text-lg text-gray-400">
+                  Politolog | Studiues | Moderator i Tru Podcast
+                </span>
               </h3>
               <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-                With over a decade of experience in journalism and broadcasting,
-                John brings a unique blend of curiosity, insight, and
-                authenticity to every conversation. His ability to connect with
-                guests and draw out their most compelling stories has made this
-                podcast a must-listen for thousands of devoted fans.
+                Me një formim të thelluar akademik në shkencat politike dhe një
+                pasion të palëkundur për të vërtetën, Shpendi Gashi sjell në çdo
+                episod të Tru Podcast një qasje të thellë, analitike dhe të
+                ndershme ndaj realitetit që na rrethon. Si politolog dhe
+                studiues, ai është i përkushtuar ndaj ideve që sfidojnë mendimin
+                e zakonshëm, duke shtruar pyetje të guximshme dhe duke
+                eksploruar temat më të ndërlikuara me një kuriozitet të sinqertë
+                dhe një qasje kritike.
               </p>
               <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-                "My goal is to create a space where meaningful conversations can
-                flourish, where we can explore the depths of human experience,
-                and where every episode leaves our listeners with new
-                perspectives and insights."
+                "Qëllimi im nuk është të jap përgjigje, por të hap dritare për
+                pyetje që shpesh nuk i bëjmë dot me zë të lartë. Çdo episod
+                është një mundësi për të dëgjuar më shumë, për të kuptuar më
+                thellë dhe për të parë përtej sipërfaqes."
               </p>
               <div className="flex space-x-6 justify-center md:justify-start">
                 {[Instagram, Twitter, Youtube].map((Icon, index) => (
@@ -324,10 +325,12 @@ function App() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Latest Episodes
+              Episodet e Fundit
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Dive into our most recent conversations with extraordinary guests
+              Zbuloni episodet tona më të fundit dhe bashkohuni në bisedat
+              frymëzuese. Çdo episod është një mundësi për të eksploruar tema të
+              reja dhe për të dëgjuar histori që sfidojnë perceptimet tona.
             </p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
@@ -439,12 +442,14 @@ function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-2xl font-bold mb-2">
-                    Ready to Explore More?
+                    Gati për të Zbuluar Më Shumë?
                   </h3>
                   <p className="text-gray-300">
-                    Discover our full library of thought-provoking episodes
+                    Zbulo koleksionin tonë të plotë me episode që nxisin
+                    mendime.
                   </p>
                 </div>
+
                 <div className="bg-white/10 p-4 rounded-full group-hover:bg-white/20 transition-colors duration-300">
                   <ArrowRight
                     size={24}
@@ -493,12 +498,12 @@ function App() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                   <div className="text-center md:text-left">
                     <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                      Join Us on YouTube
+                      Bashkohuni me ne në YouTube
                     </h3>
                     <p className="text-gray-300 max-w-md">
-                      Get exclusive behind-the-scenes content, video versions of
-                      our episodes, and special bonus content only available on
-                      our YouTube channel.
+                      Ndihmoni që ky zë të flasë. Bëhuni pjesë e komunitetit
+                      tonë përmes anëtarësimeve, komenteve, apo duke u
+                      bashkëpunuar me ne.
                     </p>
                   </div>
                   <motion.a

@@ -134,15 +134,16 @@ const ReviewPodcast = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gold-900/50 to-blue-900/40 text-white pt-24 ">
+    <div className="min-h-screen bg-gradient-to-b from-gold-900/50 to-blue-900/40 text-white pt-24">
       <div className="container mx-auto px-4 max-w-4xl pt-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Share Your Thoughts
+            Ndaj Mendimet e Tua
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
-            Your feedback helps us improve and create better content for our
-            community.
+            Vlerësimet tuaja na ndihmojnë të përmirësohemi dhe të krijojmë
+            përmbajtje më të mirë për ju. Ju lutemi ndani mendimet tuaja rreth
+            episodeve dhe na ndihmoni të rritemi!
           </p>
         </div>
 
@@ -154,7 +155,7 @@ const ReviewPodcast = () => {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-300"
                 >
-                  Your Name
+                  Emri Juaj
                 </label>
                 <input
                   type="text"
@@ -163,8 +164,8 @@ const ReviewPodcast = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
-                  placeholder="John Doe"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 text-white"
+                  placeholder="Emri Mbiemri"
                 />
               </div>
 
@@ -173,7 +174,7 @@ const ReviewPodcast = () => {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-300"
                 >
-                  Your Email
+                  Email-i Juaj
                 </label>
                 <input
                   type="email"
@@ -182,8 +183,8 @@ const ReviewPodcast = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
-                  placeholder="john@example.com"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 text-white"
+                  placeholder="shembull@domain.com"
                 />
               </div>
             </div>
@@ -193,7 +194,7 @@ const ReviewPodcast = () => {
                 htmlFor="episodeId"
                 className="block text-sm font-medium text-gray-300"
               >
-                Select Episode
+                Zgjidh Episodin
               </label>
               <select
                 id="episodeId"
@@ -201,13 +202,12 @@ const ReviewPodcast = () => {
                 value={formData.episodeId}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 text-white"
               >
-                <option value="">Select an episode...</option>
+                <option value="">Zgjidh një episod...</option>
                 {episodes.map((episode) => (
                   <option key={episode.id} value={episode.id}>
-                    {decodeHtml(episode.title)} - with{" "}
-                    {decodeHtml(episode.guest)}
+                    {decodeHtml(episode.title)} – me {decodeHtml(episode.guest)}
                   </option>
                 ))}
               </select>
@@ -215,7 +215,7 @@ const ReviewPodcast = () => {
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Rating
+                Vlerësimi
               </label>
               <div className="flex space-x-4">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -225,7 +225,7 @@ const ReviewPodcast = () => {
                     onClick={() =>
                       setFormData((prev) => ({ ...prev, rating: star }))
                     }
-                    aria-label={`Rate ${star} stars`}
+                    aria-label={`Vlerëso ${star} yje`}
                     className="focus:outline-none"
                   >
                     <Star
@@ -246,7 +246,7 @@ const ReviewPodcast = () => {
                 htmlFor="review"
                 className="block text-sm font-medium text-gray-300"
               >
-                Your Review
+                Komenti Juaj
               </label>
               <textarea
                 id="review"
@@ -255,24 +255,20 @@ const ReviewPodcast = () => {
                 onChange={handleInputChange}
                 required
                 rows={6}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 focus:outline-none text-white"
-                placeholder="Share your thoughts about the episode..."
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500 text-white"
+                placeholder="Ndani mendimet tuaja rreth episodit..."
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-gold-600 to-gold-800 text-white py-4 rounded-lg font-semibold hover:from-gold-700 hover:to-gold-900 transition-all duration-300 flex items-center justify-center space-x-2"
+              className="w-full bg-gradient-to-r from-gold-600 to-gold-800 text-white py-4 rounded-lg font-semibold hover:from-gol d-700 hover:to-gold-900 transition-all duration-300 flex items-center justify-center space-x-2"
             >
-              {status === "sending" && <span>Sending...</span>}
+              {status === "sending" && <span>Duke dërguar...</span>}
               {status === "success" && <CheckCircle size={24} />}
               {status === "error" && <XCircle size={24} />}
-              <span>Submit Review</span>
-              <span
-                className={`transition-transform duration-300 ${
-                  status === "sending" ? "animate-spin" : ""
-                }`}
-              >
+              <span>Dërgo Vlerësimin</span>
+              <span className={status === "sending" ? "animate-spin" : ""}>
                 <Star size={24} />
               </span>
             </button>

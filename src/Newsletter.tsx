@@ -342,15 +342,15 @@ function Newsletter() {
 
   return (
     <div className="min-h-screen bg-blue-900/40 text-white">
-      {/* New Hero Section */}
+      {/* Seksioni Kryesor */}
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
-            alt="Writing Desk"
+            alt="Pulti Shkrimi"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
         </div>
 
         <div className="relative h-full container mx-auto px-4 flex items-center">
@@ -361,10 +361,10 @@ function Newsletter() {
             transition={{ duration: 0.8 }}
             className="max-w-3xl"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">Newsletter</h1>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">Tru Media</h1>
             <p className="text-xl text-gray-300 mb-8">
-              Stay updated with our latest podcast news, insights, and thoughts
-              on technology, culture, and more.
+              Qëndroni të informuar për çdo zhvillim, ide dhe reflektim të ri në
+              botën e politikës, kulturës dhe më shumë.
             </p>
 
             <div className="grid grid-cols-3 gap-6">
@@ -376,8 +376,8 @@ function Newsletter() {
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
                 <Rss className="w-8 h-8 mb-2 mx-auto text-gold-800" />
-                <div className="text-2xl font-bold">Weekly</div>
-                <div className="text-gray-400">Updates</div>
+                <div className="text-2xl font-bold">Javore</div>
+                <div className="text-gray-400">Përmbledhje</div>
               </motion.div>
 
               <motion.div
@@ -388,8 +388,8 @@ function Newsletter() {
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
                 <PenTool className="w-8 h-8 mb-2 mx-auto text-gold-800" />
-                <div className="text-2xl font-bold">Original</div>
-                <div className="text-gray-400">Content</div>
+                <div className="text-2xl font-bold">Ekskluzive</div>
+                <div className="text-gray-400">Reflektime Vetjake</div>
               </motion.div>
 
               <motion.div
@@ -400,17 +400,17 @@ function Newsletter() {
                 className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
               >
                 <Users className="w-8 h-8 mb-2 mx-auto text-gold-800" />
-                <div className="text-2xl font-bold">Growing</div>
-                <div className="text-gray-400">Community</div>
+                <div className="text-2xl font-bold">Në Rritje</div>
+                <div className="text-gray-400">Komunitet</div>
               </motion.div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Main Content */}
+      {/* Përmbajtja Kryesore */}
       <div className="container mx-auto px-4 py-20">
-        {/* Filter Buttons */}
+        {/* Butonat e Filtrit */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -418,9 +418,9 @@ function Newsletter() {
           className="flex justify-center mb-12 space-x-4"
         >
           {[
-            { value: "all", label: "All Posts" },
-            { value: "podcast", label: "Podcast News" },
-            { value: "general", label: "General Insights" },
+            { value: "all", label: "Të gjitha" },
+            { value: "podcast", label: "Lajme Podcast-i" },
+            { value: "general", label: "Reflektime" },
           ].map((option) => (
             <button
               key={option.value}
@@ -460,7 +460,7 @@ function Newsletter() {
                 />
                 {post.isPodcastRelated && (
                   <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded-full text-sm">
-                    Podcast News
+                    Lajme Podcast-i
                   </div>
                 )}
               </div>
@@ -493,7 +493,7 @@ function Newsletter() {
                   onClick={() => setSelectedPost(post)}
                   className="flex items-center gap-2 text-gold-600 hover:text-gold-700 transition-colors"
                 >
-                  Read More
+                  Lexo Më Shumë
                   <ArrowRight size={16} />
                 </motion.button>
               </div>
@@ -501,29 +501,29 @@ function Newsletter() {
           ))}
         </motion.div>
 
-        {/* Pagination */}
+        {/* Navigimi */}
         <div className="flex justify-center mt-12">
           <button
             disabled={currentPage === 1}
             onClick={() => handlePageChange(currentPage - 1)}
             className="px-4 py-2 bg-gray-800 text-white rounded-full mx-2 disabled:opacity-50"
           >
-            Previous
+            Më Parë
           </button>
           <span className="px-4 py-2 bg-gray-800 text-white rounded-full">
-            {currentPage} of {totalPages}
+            {currentPage} nga {totalPages}
           </span>
           <button
             disabled={currentPage === totalPages}
             onClick={() => handlePageChange(currentPage + 1)}
             className="px-4 py-2 bg-gray-800 text-white rounded-full mx-2 disabled:opacity-50"
           >
-            Next
+            Më Pas
           </button>
         </div>
       </div>
 
-      {/* Full Post Modal */}
+      {/* Modal i Postimit të Plotë */}
       <AnimatePresence>
         {selectedPost && (
           <motion.div
@@ -556,7 +556,7 @@ function Newsletter() {
                   </button>
                   {selectedPost.isPodcastRelated && (
                     <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded-full text-sm">
-                      Podcast News
+                      Lajme Podcast-i
                     </div>
                   )}
                 </div>
@@ -575,13 +575,11 @@ function Newsletter() {
                     {selectedPost.title}
                   </h2>
                   <div className="prose prose-invert max-w-none">
-                    {selectedPost.content
-                      .split("\n")
-                      .map((paragraph, index) => (
-                        <p key={index} className="mb-4 text-gray-300">
-                          {paragraph.trim()}
-                        </p>
-                      ))}
+                    {selectedPost.content.split("\n").map((paragraph, i) => (
+                      <p key={i} className="mb-4 text-gray-300">
+                        {paragraph.trim()}
+                      </p>
+                    ))}
                   </div>
                   <div className="flex flex-wrap gap-2 mt-8">
                     {selectedPost.tags.map((tag) => (

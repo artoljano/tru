@@ -78,11 +78,11 @@ function SuggestGuest() {
       <div className="container mx-auto px-4 max-w-4xl pt-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Suggest a Guest
+            Rekomando Një Të Ftuar
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
-            Know someone with an extraordinary story? Help us discover amazing
-            guests for our podcast.
+            Njeh dikë me një histori që frymëzon? Na ndihmoni të zbulojmë zëra
+            të jashtëzakonshëm për podcast-in tonë.
           </p>
         </div>
 
@@ -94,7 +94,7 @@ function SuggestGuest() {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-300"
                 >
-                  Your Name
+                  Emri Juaj
                 </label>
                 <input
                   type="text"
@@ -103,8 +103,8 @@ function SuggestGuest() {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                  placeholder="John Doe"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
+                  placeholder="Emri Mbiemri"
                 />
               </div>
 
@@ -113,7 +113,7 @@ function SuggestGuest() {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-300"
                 >
-                  Your Email
+                  Email-i Juaj
                 </label>
                 <input
                   type="email"
@@ -122,8 +122,8 @@ function SuggestGuest() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                  placeholder="john@example.com"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
+                  placeholder="shembull@domain.com"
                 />
               </div>
             </div>
@@ -133,7 +133,7 @@ function SuggestGuest() {
                 htmlFor="guestName"
                 className="block text-sm font-medium text-gray-300"
               >
-                Suggested Guest Name
+                Emri i të Ftuarit
               </label>
               <input
                 type="text"
@@ -142,8 +142,8 @@ function SuggestGuest() {
                 value={formData.guestName}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="Guest's full name"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
+                placeholder="Emri Mbiemri i të Ftuarit"
               />
             </div>
 
@@ -152,7 +152,7 @@ function SuggestGuest() {
                 htmlFor="guestBackground"
                 className="block text-sm font-medium text-gray-300"
               >
-                Guest's Background
+                Biografia e Shkurtër
               </label>
               <textarea
                 id="guestBackground"
@@ -161,8 +161,8 @@ function SuggestGuest() {
                 onChange={handleInputChange}
                 required
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="Tell us about their work, achievements, or expertise..."
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
+                placeholder="Na tregoni për punën ose arritjet e tyre..."
               />
             </div>
 
@@ -171,7 +171,7 @@ function SuggestGuest() {
                 htmlFor="guestReason"
                 className="block text-sm font-medium text-gray-300"
               >
-                Why would they be a great guest?
+                Pse do të ishin të shkëlqyer?
               </label>
               <textarea
                 id="guestReason"
@@ -180,8 +180,8 @@ function SuggestGuest() {
                 onChange={handleInputChange}
                 required
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="What unique perspectives or stories could they share with our audience?"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
+                placeholder="Çfarë perspektivash të veçanta sjellin për audiencën tonë?"
               />
             </div>
 
@@ -189,17 +189,16 @@ function SuggestGuest() {
               type="submit"
               className="w-full bg-white text-black py-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center space-x-2"
             >
-              {submissionStatus === "sending" && <span>Sending...</span>}
+              {submissionStatus === "sending" && <span>Duke dërguar...</span>}
               {submissionStatus === "success" && <CheckCircle size={24} />}
               {submissionStatus === "error" && <XCircle size={24} />}
-              <span>Submit Suggestion</span>
-
-              {/* Default Send Icon */}
-              <span
-                className={submissionStatus === "sending" ? "animate-spin" : ""}
-              >
-                <Send size={24} />
-              </span>
+              <span>Dërgo Rekomandimin</span>
+              <Send
+                className={
+                  submissionStatus === "sending" ? "animate-spin ml-2" : "ml-2"
+                }
+                size={24}
+              />
             </button>
           </form>
         </div>
