@@ -1,12 +1,78 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="sq">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <!-- Primary Meta Tags -->
+    <title>Tru Media – Podcasti më i mirë për Politikë, Kulturë & Reflektim</title>
+    <meta
+      name="description"
+      content="Eksploroni bisedat frymëzuese me të ftuar të jashtëzakonshëm në Tru Media—podcasti juaj për politikë, kulturë dhe më shumë."
+    />
+    <link
+      rel="canonical"
+      href="https://artoljano.github.io/tru/"
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://artoljano.github.io/tru/"
+    />
+    <meta
+      property="og:title"
+      content="Tru Media – Podcasti më i mirë për Politikë, Kulturë & Reflektim"
+    />
+    <meta
+      property="og:description"
+      content="Eksploroni bisedat frymëzuese me të ftuar të jashtëzakonshëm në Tru Media—podcasti juaj për politikë, kulturë dhe më shumë."
+    />
+    <meta
+      property="og:image"
+      content="https://artoljano.github.io/tru/og-image.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:url"
+      content="https://artoljano.github.io/tru/"
+    />
+    <meta
+      name="twitter:title"
+      content="Tru Media – Podcasti më i mirë për Politikë, Kulturë & Reflektim"
+    />
+    <meta
+      name="twitter:description"
+      content="Eksploroni bisedat frymëzuese me të ftuar të jashtëzakonshëm në Tru Media—podcasti juaj për politikë, kulturë dhe më shumë."
+    />
+    <meta
+      name="twitter:image"
+      content="https://artoljano.github.io/tru/twitter-image.jpg"
+    />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-    <script type="module" crossorigin src="/tru/assets/index-Jptz1md8.js"></script>
-    <link rel="stylesheet" crossorigin href="/tru/assets/index-j5rNlf-e.css">
+
+    <!-- Sitemap -->
+    <link
+      rel="sitemap"
+      type="application/xml"
+      title="Sitemap"
+      href="data:text/xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjx1cmxzZXQgeG1sbnM9Imh0dHA6Ly93d3cuc2l0ZW1hcHMub3JnL3NjaGVtYXMvc2l0ZW1hcC8wLjkiIHhtbG5zOnhodG1sPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIj4NCgk8IS0tIEhvbWUgLS0+DQoJPHVybD4NCgkJPGxvYz4NCgkJCWh0dHBzOi8veW91cmRvbWFpbi5jb20vDQoJCTwvbG9jPg0KCQk8Y2hhbmdlZnJlcT4NCgkJCWRhaWx5DQoJCTwvY2hhbmdlZnJlcT4NCgkJPHByaW9yaXR5Pg0KCQkJMS4wDQoJCTwvcHJpb3JpdHk+DQoJPC91cmw+DQoJPCEtLSBFcGlzb2RlcyAtLT4NCgk8dXJsPg0KCQk8bG9jPg0KCQkJaHR0cHM6Ly95b3VyZG9tYWluLmNvbS9lcGlzb2Rlcw0KCQk8L2xvYz4NCgkJPGNoYW5nZWZyZXE+DQoJCQl3ZWVrbHkNCgkJPC9jaGFuZ2VmcmVxPg0KCQk8cHJpb3JpdHk+DQoJCQkwLjgNCgkJPC9wcmlvcml0eT4NCgk8L3VybD4NCgk8IS0tIEFib3V0IC0tPg0KCTx1cmw+DQoJCTxsb2M+DQoJCQlodHRwczovL3lvdXJkb21haW4uY29tL2Fib3V0DQoJCTwvbG9jPg0KCQk8Y2hhbmdlZnJlcT4NCgkJCW1vbnRobHkNCgkJPC9jaGFuZ2VmcmVxPg0KCQk8cHJpb3JpdHk+DQoJCQkwLjYNCgkJPC9wcmlvcml0eT4NCgk8L3VybD4NCgk8IS0tIE5ld3NsZXR0ZXIgLS0+DQoJPHVybD4NCgkJPGxvYz4NCgkJCWh0dHBzOi8veW91cmRvbWFpbi5jb20vbmV3c2xldHRlcg0KCQk8L2xvYz4NCgkJPGNoYW5nZWZyZXE+DQoJCQl3ZWVrbHkNCgkJPC9jaGFuZ2VmcmVxPg0KCQk8cHJpb3JpdHk+DQoJCQkwLjcNCgkJPC9wcmlvcml0eT4NCgk8L3VybD4NCgk8IS0tIFN1Z2dlc3QgLS0+DQoJPHVybD4NCgkJPGxvYz4NCgkJCWh0dHBzOi8veW91cmRvbWFpbi5jb20vc3VnZ2VzdA0KCQk8L2xvYz4NCgkJPGNoYW5nZWZyZXE+DQoJCQltb250aGx5DQoJCTwvY2hhbmdlZnJlcT4NCgkJPHByaW9yaXR5Pg0KCQkJMC41DQoJCTwvcHJpb3JpdHk+DQoJPC91cmw+DQoJPCEtLSBSZXZpZXcgLS0+DQoJPHVybD4NCgkJPGxvYz4NCgkJCWh0dHBzOi8veW91cmRvbWFpbi5jb20vcmV2aWV3DQoJCTwvbG9jPg0KCQk8Y2hhbmdlZnJlcT4NCgkJCW1vbnRobHkNCgkJPC9jaGFuZ2VmcmVxPg0KCQk8cHJpb3JpdHk+DQoJCQkwLjUNCgkJPC9wcmlvcml0eT4NCgk8L3VybD4NCjwvdXJsc2V0Pg0K"
+    />
+
+    <!-- (Optional) manifest for PWA -->
+    <link rel="manifest" href="/site.webmanifest" />
+    <script type="module" crossorigin src="/tru/assets/index-BwHbDCsO.js"></script>
+    <link rel="stylesheet" crossorigin href="/tru/assets/index-RpBiqLiD.css">
   </head>
   <body>
     <div id="root"></div>
