@@ -355,8 +355,8 @@ app.post('/api/send-review-email', (req, res) => {
     }
   
     const mailOptions = {
-      from: "artol.jano45@gmail.com",
-      to: 'artoljano0@gmail.com',
+      from: "info@trupodcast.media",
+      to: 'info@trupodcast.media',
       subject: `New Review from ${name} for Episode ${episodeId}`,
       html: `
       <!DOCTYPE html>
@@ -456,8 +456,8 @@ app.post('/api/send-review-email', (req, res) => {
     }
   
     const mailOptions = {
-      from: "artol.jano45@gmail.com",
-      to: 'artoljano0@gmail.com',
+      from: "info@trupodcast.media",
+      to: 'info@trupodcast.media',
       subject: `New Podcast Guest Suggestion from ${name}`,
   html: `
     <!DOCTYPE html>

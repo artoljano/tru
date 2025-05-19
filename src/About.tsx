@@ -18,10 +18,13 @@ import {
   BookOpen,
   Twitch,
   Zap,
+  Facebook,
 } from "lucide-react";
+import { FaTiktok, FaPatreon } from "react-icons/fa";
 import host from "../src/images/host.jpeg";
 import intro from "../src/images/about-intro-hq.mp4";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 
 const CustomIcon = () => (
   <svg
@@ -68,6 +71,7 @@ function About() {
   if (showIntro) {
     return (
       <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+        {/* Video Background */}
         <video
           src={intro}
           className="w-full h-full object-cover"
@@ -76,23 +80,34 @@ function About() {
           playsInline
           onEnded={handleVideoEnd}
         />
+
+        {/* Skip Button */}
+        <motion.button
+          onClick={() => setShowIntro(false)}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.5 }}
+          className="absolute top-6 right-6 bg-blue text-white px-4 py-2 rounded-full font-semibold hover:bg-gold-600 transition-colors"
+        >
+          Mbyll Intro
+        </motion.button>
       </div>
     );
   }
 
   // 4) once video is done, render your normal About page:
   const stats = [
-    { icon: Headphones, value: "5K+", label: "Monthly Listeners" },
-    { icon: Star, value: "4.8", label: "Average Rating" },
-    { icon: Mic, value: "12+", label: "Episodes Released" },
-    { icon: Users, value: "10+", label: "Notable Guests" },
+    { icon: Headphones, value: "20K+", label: "Dëgjues Mujor" },
+    { icon: Star, value: "4.8", label: "Vlerësimet Mesatare" },
+    { icon: Mic, value: "50+", label: "Episode" },
+    { icon: Users, value: "30+", label: "Të Ftuar" },
   ];
   const platforms = [
     {
       icon: Youtube,
       name: "YouTube",
       color: "hover:text-red-500",
-      href: "https://youtube.com/yourchannel",
+      href: "https://www.youtube.com/@TruPodcastMediaOfficial-p9c",
     },
     {
       icon: CustomIcon,
@@ -107,552 +122,602 @@ function About() {
       href: "https://twitch.tv/yourchannel",
     },
     {
-      icon: Apple,
-      name: "Apple Podcasts",
-      color: "hover:text-purple-300",
+      icon: FaPatreon,
+      name: "Patreon",
+      color: "hover:text-orange-500",
       href: "https://podcasts.apple.com/yourpodcast",
     },
   ];
 
+  const socials = [
+    { icon: Instagram, url: "https://www.instagram.com/shpendi_gashi/" },
+    { icon: Facebook, url: "https://youtube.com/@yourchannel" },
+    { icon: Twitter, url: "https://twitter.com/yourhandle" },
+  ];
+
   return (
-    <div className="min-h-screen bg-blue-900/40 text-white pt-24">
-      {/* Host Section */}
-      <section className="py-20 bg-gradient-to-b from-gold-900 to-blue-950/5">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-6xl mx-auto"
-          >
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="relative">
+    <>
+      <Helmet>
+        <title>Rreth Nesh – Tru Podcast Media</title>
+        <meta
+          name="description"
+          content="Zbulo historinë dhe vizionin prapa Tru Podcast, moderatorët tanë dhe misionin tonë."
+        />
+        <link rel="canonical" href="https://yourdomain.com/about" />
+        <meta property="og:title" content="Rreth Nesh – Tru Podcast Media" />
+        <meta
+          property="og:description"
+          content="Zbulo historinë dhe vizionin prapa Tru Podcast, moderatorët tanë dhe misionin tonë."
+        />
+        <meta property="og:url" content="https://yourdomain.com/about" />
+        <meta
+          property="og:image"
+          content="https://yourdomain.com/og-about.png"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Rreth Nesh – Tru Podcast Media" />
+        <meta
+          name="twitter:description"
+          content="Zbulo historinë dhe vizionin prapa Tru Podcast, moderatorët tanë dhe misionin tonë."
+        />
+        <meta
+          name="twitter:image"
+          content="https://yourdomain.com/og-about.png"
+        />
+      </Helmet>
+
+      <div className="min-h-screen bg-blue-900/40 text-white pt-24">
+        {/* Host Section */}
+        <section className="py-20 bg-gradient-to-b from-gold-900 to-blue-950/5">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="max-w-6xl mx-auto"
+            >
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div className="relative">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                    className="relative z-10"
+                  >
+                    <img
+                      src={host}
+                      alt="Host"
+                      className="rounded-2xl shadow-2xl"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-2xl"></div>
+                  </motion.div>
+                  <div className="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-gold-600/20 to-gold-800/20 rounded-2xl -z-10"></div>
+                </div>
+
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.8 }}
-                  className="relative z-10"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  <img
-                    src={host}
-                    alt="Host"
-                    className="rounded-2xl shadow-2xl"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-2xl"></div>
+                  <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                    Njihuni me Moderatorin
+                  </h1>
+                  <h2 className="text-2xl font-semibold text-white mb-4">
+                    Shpendi Gashi <br />
+                    <span className="text-lg text-gray-400">
+                      Politolog | Studiues | Moderator i Tru Podcast
+                    </span>
+                  </h2>
+                  <div className="space-y-4 text-gray-300">
+                    <p>
+                      Me një formim të thelluar akademik në shkencat politike
+                      dhe një pasion të palëkundur për të vërtetën, Shpendi
+                      Gashi sjell në çdo episod të Tru Podcast një qasje të
+                      thellë, analitike dhe të ndershme ndaj realitetit që na
+                      rrethon. Si politolog dhe studiues, ai është i përkushtuar
+                      ndaj ideve që sfidojnë mendimin e zakonshëm, duke shtruar
+                      pyetje të guximshme dhe duke eksploruar temat më të
+                      ndërlikuara me një kuriozitet të sinqertë dhe një qasje
+                      kritike.
+                    </p>
+                    <p>
+                      Për Shpendin, Tru Podcast nuk është vetëm një platformë
+                      për të folur — është një ftesë për të menduar. Për të
+                      ndalur, reflektuar dhe për të hyrë në thellësi të përvojës
+                      njerëzore dhe realiteteve politike, sociale e kulturore që
+                      na formësojnë.
+                    </p>
+                    <p>
+                      Nën moderimin e tij, bisedat zhvillohen në një atmosferë
+                      të hapur dhe të menduar mirë — aty ku fjalët kanë peshë,
+                      dhe heshtja nuk është boshësi, por hapësirë për reflektim.
+                    </p>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="flex space-x-4 mt-6"
+                  >
+                    {socials.map(({ icon: Icon, url }, idx) => (
+                      <motion.a
+                        key={idx}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        whileTap={{ scale: 0.95 }}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-colors"
+                      >
+                        <Icon size={20} />
+                      </motion.a>
+                    ))}
+                  </motion.div>
                 </motion.div>
-                <div className="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-gold-600/20 to-gold-800/20 rounded-2xl -z-10"></div>
               </div>
+            </motion.div>
+          </div>
+        </section>
 
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                  Njihuni me Moderatorin
-                </h1>
-                <h2 className="text-2xl font-semibold text-white mb-4">
-                  Shpendi Gashi <br />
-                  <span className="text-lg text-gray-400">
-                    Politolog | Studiues | Moderator i Tru Podcast
-                  </span>
-                </h2>
-                <div className="space-y-4 text-gray-300">
-                  <p>
-                    Me një formim të thelluar akademik në shkencat politike dhe
-                    një pasion të palëkundur për të vërtetën, Shpendi Gashi
-                    sjell në çdo episod të Tru Podcast një qasje të thellë,
-                    analitike dhe të ndershme ndaj realitetit që na rrethon. Si
-                    politolog dhe studiues, ai është i përkushtuar ndaj ideve që
-                    sfidojnë mendimin e zakonshëm, duke shtruar pyetje të
-                    guximshme dhe duke eksploruar temat më të ndërlikuara me një
-                    kuriozitet të sinqertë dhe një qasje kritike.
-                  </p>
-                  <p>
-                    Për Shpendin, Tru Podcast nuk është vetëm një platformë për
-                    të folur — është një ftesë për të menduar. Për të ndalur,
-                    reflektuar dhe për të hyrë në thellësi të përvojës njerëzore
-                    dhe realiteteve politike, sociale e kulturore që na
-                    formësojnë.
-                  </p>
-                  <p>
-                    Nën moderimin e tij, bisedat zhvillohen në një atmosferë të
-                    hapur dhe të menduar mirë — aty ku fjalët kanë peshë, dhe
-                    heshtja nuk është boshësi, por hapësirë për reflektim.
-                  </p>
-                </div>
+        {/* Stats Section */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="py-16 bg-blue-950/5"
+        >
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="text-center"
+                >
+                  <div className="inline-block p-4 bg-gray-800/50 rounded-full mb-4">
+                    <stat.icon size={24} className="text-gold-800" />
+                  </div>
+                  <div className="text-3xl font-bold mb-2">{stat.value}</div>
+                  <div className="text-gray-400">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Our Story Section */}
+        <section className="py-20 bg-blue-950/5">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="max-w-4xl mx-auto text-center mb-16"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Historia Jonë
+              </h2>
+              <p className="text-xl text-gray-300">
+                From a simple idea to a growing platform for meaningful
+                conversations
+              </p>
+            </motion.div>
+
+            <div className="max-w-6xl mx-auto">
+              <div className="space-y-16">
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="flex flex-col md:flex-row items-center gap-8"
+                >
+                  <div className="md:w-1/2">
+                    <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
+                      <Coffee size={48} className="text-white-400 mb-4" />
+                      <h3 className="text-2xl font-bold mb-4">
+                        Shkëndija E Fillimit
+                      </h3>
+                      <p className="text-gray-300">
+                        Tru Podcast nuk lindi nga komoditeti, por nga përplasja.
+                        Ishte pikërisht mospajtimi me formatin e mbyllur të
+                        universitetit, refuzimi për t’u pajtuar me kufizimet
+                        akademike dhe zhgënjimi nga mediat tradicionale që
+                        preferojnë zhurmën ndaj së vërtetës — që ndezën
+                        shkëndijën fillestare.
+                      </p>
+                      <p className="text-gray-300">
+                        <br />
+                        Nga ai moment tensioni, lindi një ide:
+                      </p>
+                      <p className="text-gray-300">
+                        <br />
+
+                        <strong>
+                          "Po sikur të ndërtojmë një hapësirë të lirë, ku fjala
+                          është e pakompromis dhe mendimi nuk filtrohet?"
+                        </strong>
+                      </p>
+                      <p className="text-gray-300">
+                        <br />
+                        Tru Podcast është produkti i asaj shkëputjeje — një
+                        platformë që refuzon uniformitetin dhe u jep zë atyre që
+                        shpesh injorohen. Këtu nuk ka linjë editoriale të
+                        imponuar, nuk ka fjalë të ndaluara, nuk ka tema të
+                        paprekshme.
+                      </p>
+                      <p className="text-gray-300">
+                        <br />
+                        Është një përgjigje ndaj sistemit që kërkonte heshtje.
+                        Dhe çdo episod është një dëshmi që zëri ynë nuk u ndal.
+                      </p>
+                      <p className="text-gray-300">
+                        <br />
+                        <strong>| </strong>
+                        <strong>
+                          "Sa shumë kam humbur nga frika se mos humbisja."
+                        </strong>
+                        <br />
+                        —Shpendi Gashi
+                      </p>
+                    </div>
+                  </div>
+                  <div className="md:w-2/3">
+                    <img
+                      src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      alt="Early days"
+                      className="rounded-xl shadow-lg"
+                    />
+                  </div>
+                </motion.div>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="flex space-x-4 mt-6"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="flex flex-col md:flex-row-reverse items-center gap-8"
                 >
-                  {[Twitter, Instagram, Youtube].map((Icon, idx) => (
-                    <motion.a
-                      key={idx}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.95 }}
-                      href="#"
-                      className="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-colors"
-                    >
-                      <Icon size={20} />
-                    </motion.a>
-                  ))}
+                  <div className="md:w-1/2">
+                    <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
+                      <Podcast size={48} className="text-white-400 mb-4" />
+                      <h3 className="text-2xl font-bold mb-4">
+                        Fluturimi i Parë
+                      </h3>
+                      <p className="text-gray-300">
+                        Çdo ide e madhe ka nevojë për krahë. Tru Podcast nisi si
+                        një zë i vetëm — i qartë, por ende i brishtë. Dhe
+                        pikërisht atëherë, kur nevoja për të folur ndryshe u bë
+                        urgjencë, u bashkuan njerëz që besuan. Miq,
+                        bashkëpunëtorë, dashamirës. E ndërtuam çdo pjesë me
+                        dorë, me zemër dhe me bindjen se kjo platformë nuk ishte
+                        vetëm ëndrra ime — ishte e domosdoshme për të gjithë ata
+                        që kërkonin një zë sfidues, të ndershëm dhe ndryshe.
+                      </p>
+                      <p className="text-gray-300 mt-4">
+                        Fluturimi nisi më 28 Nëntor — në Ditën e Flamurit — jo
+                        rastësisht. Ishte një akt simbolik, një premtim që zëri
+                        ynë nuk do të përkulet. I ftuari i parë ishte një
+                        luftëtar i gjallë, Dritan Goxhaj — një hero që mishëron
+                        guximin dhe qëndrimin. Një hyrje e denjë për një
+                        platformë që nuk pranon të heshtë.
+                      </p>
+                      <p className="text-gray-300 mt-4">
+                        <strong>| Ky nuk është thjesht një podcast.</strong>
+                        <br />
+                        Është një qëndresë. Është një fluturim drejt së
+                        vërtetës.
+                      </p>
+                      <p className="text-gray-300 mt-4">
+                        Dhe ky është vetëm fillimi. Tru Podcast tani fluturon me
+                        mbështetjen e një komuniteti të tërë — në{" "}
+                        <span
+                          className="underline hover:text-red-600 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://www.youtube.com/@TruPodcastMediaOfficial-p9c",
+                              "_blank"
+                            )
+                          }
+                        >
+                          YouTube
+                        </span>
+                        ,{" "}
+                        <span
+                          className="underline hover:text-green-500 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://open.spotify.com/show/YourShowId",
+                              "_blank"
+                            )
+                          }
+                        >
+                          Spotify
+                        </span>
+                        ,{" "}
+                        <span
+                          className="underline hover:text-orange-500 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://www.patreon.com/YourPage",
+                              "_blank"
+                            )
+                          }
+                        >
+                          Patreon
+                        </span>
+                        ,{" "}
+                        <span
+                          className="underline hover:text-purple-600 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://www.twitch.tv/YourChannel",
+                              "_blank"
+                            )
+                          }
+                        >
+                          Twitch
+                        </span>{" "}
+                        dhe{" "}
+                        <span
+                          className="underline hover:text-blue-400 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://twitter.com/YourHandle",
+                              "_blank"
+                            )
+                          }
+                        >
+                          X
+                        </span>
+                        — duke ndërtuar një hapësirë ku fjalët kanë peshë, dhe
+                        mendimi nuk censurohet.
+                      </p>
+                      <p className="text-gray-300 mt-4">
+                        Bashkohuni me fluturimin tonë. Ndihmoni që ky zë të
+                        flasë më lart, bëhuni pjesë e komunitetit tonë përmes
+                        anëtarësimeve, komenteve, apo duke u bashkëpunuar me ne.
+                        Se vetëm së bashku mund të arrijmë më shumë.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="md:w-2/3">
+                    <img
+                      src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      alt="Growth phase"
+                      className="rounded-xl shadow-lg"
+                    />
+                  </div>
                 </motion.div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* Stats Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-blue-950/5"
-      >
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="text-center"
-              >
-                <div className="inline-block p-4 bg-gray-800/50 rounded-full mb-4">
-                  <stat.icon size={24} className="text-gold-800" />
-                </div>
-                <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                <div className="text-gray-400">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* Our Story Section */}
-      <section className="py-20 bg-blue-950/5">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Story</h2>
-            <p className="text-xl text-gray-300">
-              From a simple idea to a growing platform for meaningful
-              conversations
-            </p>
-          </motion.div>
-
-          <div className="max-w-6xl mx-auto">
-            <div className="space-y-16">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="flex flex-col md:flex-row items-center gap-8"
-              >
-                <div className="md:w-1/2">
-                  <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
-                    <Coffee size={48} className="text-white-400 mb-4" />
-                    <h3 className="text-2xl font-bold mb-4">The Spark</h3>
-                    <p className="text-gray-300">
-                      Tru Podcast nuk lindi nga komoditeti, por nga përplasja.
-                      Ishte pikërisht mospajtimi me formatin e mbyllur të
-                      universitetit, refuzimi për t’u pajtuar me kufizimet
-                      akademike dhe zhgënjimi nga mediat tradicionale që
-                      preferojnë zhurmën ndaj së vërtetës — që ndezën shkëndijën
-                      fillestare.
-                    </p>
-                    <p className="text-gray-300">
-                      <br />
-                      Nga ai moment tensioni, lindi një ide:
-                    </p>
-                    <p className="text-gray-300">
-                      <br />
-
-                      <strong>
-                        "Po sikur të ndërtojmë një hapësirë të lirë, ku fjala
-                        është e pakompromis dhe mendimi nuk filtrohet?"
-                      </strong>
-                    </p>
-                    <p className="text-gray-300">
-                      <br />
-                      Tru Podcast është produkti i asaj shkëputjeje — një
-                      platformë që refuzon uniformitetin dhe u jep zë atyre që
-                      shpesh injorohen. Këtu nuk ka linjë editoriale të
-                      imponuar, nuk ka fjalë të ndaluara, nuk ka tema të
-                      paprekshme.
-                    </p>
-                    <p className="text-gray-300">
-                      <br />
-                      Është një përgjigje ndaj sistemit që kërkonte heshtje. Dhe
-                      çdo episod është një dëshmi që zëri ynë nuk u ndal.
-                    </p>
-                    <p className="text-gray-300">
-                      <br />
-                      <strong>| </strong>
-                      <strong>
-                        "Sa shumë kam humbur nga frika se mos humbisja."
-                      </strong>
-                      <br />
-                      —Shpendi Gashi
-                    </p>
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="flex flex-col md:flex-row items-center gap-8"
+                >
+                  <div className="md:w-1/2">
+                    <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
+                      <BookOpen size={48} className="text-white-400 mb-4" />
+                      <h3 className="text-2xl font-bold mb-4">
+                        Sytë nga E Ardhmja
+                      </h3>
+                      <p className="text-gray-300">
+                        Në Tru Podcast, ne po ndërtojmë më shumë sesa një
+                        emision — po krijojmë një komunitet të mendjesh të
+                        hapura, që nuk kënaqet me sipërfaqësoren dhe që kërkon
+                        thellësi, kuptim dhe dialog të ndershëm. Ndërsa
+                        zgjerojmë horizontin tonë, synimi ynë është të sjellim
+                        përmbajtje më të thelluar, më interaktive dhe më të
+                        vërtetë se kurrë më parë.
+                      </p>
+                      <p className="text-gray-300 mt-4">
+                        Sot, ti mund të bëhesh pjesë aktive e këtij rrugëtimi:
+                      </p>
+                      <p className="text-gray-300 mt-2">
+                        Bëhu anëtar në kanalin tonë{" "}
+                        <span
+                          className="underline hover:text-red-600 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://www.youtube.com/@TruPodcastMediaOfficial-p9c",
+                              "_blank"
+                            )
+                          }
+                        >
+                          YouTube
+                        </span>{" "}
+                        dhe fito akses në përmbajtje ekskluzive, pjesë pas
+                        kuintave dhe rubrika vetëm për anëtarët.
+                      </p>
+                      <p className="text-gray-300 mt-2">
+                        Na ndiq edhe në{" "}
+                        <span
+                          className="underline hover:text-green-500 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://open.spotify.com/show/YourShowId",
+                              "_blank"
+                            )
+                          }
+                        >
+                          Spotify
+                        </span>
+                        ,{" "}
+                        <span
+                          className="underline hover:text-orange-500 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://www.patreon.com/YourPage",
+                              "_blank"
+                            )
+                          }
+                        >
+                          Patreon
+                        </span>
+                        ,{" "}
+                        <span
+                          className="underline hover:text-purple-600 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://www.twitch.tv/YourChannel",
+                              "_blank"
+                            )
+                          }
+                        >
+                          Twitch
+                        </span>{" "}
+                        dhe{" "}
+                        <span
+                          className="underline hover:text-blue-400 cursor-pointer transition-colors"
+                          onClick={() =>
+                            window.open(
+                              "https://twitter.com/YourHandle",
+                              "_blank"
+                            )
+                          }
+                        >
+                          X
+                        </span>
+                        — për përmbajtje të zgjeruar dhe për të qenë pjesë e
+                        komunitetit tonë global.
+                      </p>
+                      <p className="text-gray-300 mt-4">
+                        Mbështetjen tënde e kthejmë në përmbajtje me vlerë.
+                        Fjalët e tua, donacionet dhe pjesëmarrja jote janë
+                        shtysa jonë për të bërë më shumë — për ty.
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="md:w-2/3">
-                  <img
-                    src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                    alt="Early days"
-                    className="rounded-xl shadow-lg"
-                  />
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="flex flex-col md:flex-row-reverse items-center gap-8"
-              >
-                <div className="md:w-1/2">
-                  <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
-                    <Podcast size={48} className="text-white-400 mb-4" />
-                    <h3 className="text-2xl font-bold mb-4">Taking Flight</h3>
-                    <p className="text-gray-300">
-                      Çdo ide e madhe ka nevojë për krahë. Tru Podcast nisi si
-                      një zë i vetëm — i qartë, por ende i brishtë. Dhe
-                      pikërisht atëherë, kur nevoja për të folur ndryshe u bë
-                      urgjencë, u bashkuan njerëz që besuan. Miq,
-                      bashkëpunëtorë, dashamirës. E ndërtuam çdo pjesë me dorë,
-                      me zemër dhe me bindjen se kjo platformë nuk ishte vetëm
-                      ëndrra ime — ishte e domosdoshme për të gjithë ata që
-                      kërkonin një zë sfidues, të ndershëm dhe ndryshe.
-                    </p>
-                    <p className="text-gray-300 mt-4">
-                      Fluturimi nisi më 28 Nëntor — në Ditën e Flamurit — jo
-                      rastësisht. Ishte një akt simbolik, një premtim që zëri
-                      ynë nuk do të përkulet. I ftuari i parë ishte një luftëtar
-                      i gjallë, Dritan Goxhaj — një hero që mishëron guximin dhe
-                      qëndrimin. Një hyrje e denjë për një platformë që nuk
-                      pranon të heshtë.
-                    </p>
-                    <p className="text-gray-300 mt-4">
-                      <strong>| Ky nuk është thjesht një podcast.</strong>
-                      <br />
-                      Është një qëndresë. Është një fluturim drejt së vërtetës.
-                    </p>
-                    <p className="text-gray-300 mt-4">
-                      Dhe ky është vetëm fillimi. Tru Podcast tani fluturon me
-                      mbështetjen e një komuniteti të tërë — në{" "}
-                      <span
-                        className="underline hover:text-red-600 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://www.youtube.com/YourChannel",
-                            "_blank"
-                          )
-                        }
-                      >
-                        YouTube
-                      </span>
-                      ,{" "}
-                      <span
-                        className="underline hover:text-green-500 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://open.spotify.com/show/YourShowId",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Spotify
-                      </span>
-                      ,{" "}
-                      <span
-                        className="underline hover:text-orange-500 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://www.patreon.com/YourPage",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Patreon
-                      </span>
-                      ,{" "}
-                      <span
-                        className="underline hover:text-purple-600 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://www.twitch.tv/YourChannel",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Twitch
-                      </span>{" "}
-                      dhe{" "}
-                      <span
-                        className="underline hover:text-blue-400 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://twitter.com/YourHandle",
-                            "_blank"
-                          )
-                        }
-                      >
-                        X
-                      </span>
-                      — duke ndërtuar një hapësirë ku fjalët kanë peshë, dhe
-                      mendimi nuk censurohet.
-                    </p>
-                    <p className="text-gray-300 mt-4">
-                      Bashkohuni me fluturimin tonë. Ndihmoni që ky zë të flasë
-                      më lart, bëhuni pjesë e komunitetit tonë përmes
-                      anëtarësimeve, komenteve, apo duke u bashkëpunuar me ne.
-                      Se vetëm së bashku mund të arrijmë më shumë.
-                    </p>
+                  <div className="md:w-2/3">
+                    <img
+                      src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      alt="Current studio"
+                      className="rounded-xl shadow-lg"
+                    />
                   </div>
-                </div>
-
-                <div className="md:w-2/3">
-                  <img
-                    src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                    alt="Growth phase"
-                    className="rounded-xl shadow-lg"
-                  />
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="flex flex-col md:flex-row items-center gap-8"
-              >
-                <div className="md:w-1/2">
-                  <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl">
-                    <BookOpen size={48} className="text-white-400 mb-4" />
-                    <h3 className="text-2xl font-bold mb-4">Looking Ahead</h3>
-                    <p className="text-gray-300">
-                      Në Tru Podcast, ne po ndërtojmë më shumë sesa një emision
-                      — po krijojmë një komunitet të mendjesh të hapura, që nuk
-                      kënaqet me sipërfaqësoren dhe që kërkon thellësi, kuptim
-                      dhe dialog të ndershëm. Ndërsa zgjerojmë horizontin tonë,
-                      synimi ynë është të sjellim përmbajtje më të thelluar, më
-                      interaktive dhe më të vërtetë se kurrë më parë.
-                    </p>
-                    <p className="text-gray-300 mt-4">
-                      Sot, ti mund të bëhesh pjesë aktive e këtij rrugëtimi:
-                    </p>
-                    <p className="text-gray-300 mt-2">
-                      Bëhu anëtar në kanalin tonë{" "}
-                      <span
-                        className="underline hover:text-red-600 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://www.youtube.com/YourChannel",
-                            "_blank"
-                          )
-                        }
-                      >
-                        YouTube
-                      </span>{" "}
-                      dhe fito akses në përmbajtje ekskluzive, pjesë pas
-                      kuintave dhe rubrika vetëm për anëtarët.
-                    </p>
-                    <p className="text-gray-300 mt-2">
-                      Na ndiq edhe në{" "}
-                      <span
-                        className="underline hover:text-green-500 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://open.spotify.com/show/YourShowId",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Spotify
-                      </span>
-                      ,{" "}
-                      <span
-                        className="underline hover:text-orange-500 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://www.patreon.com/YourPage",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Patreon
-                      </span>
-                      ,{" "}
-                      <span
-                        className="underline hover:text-purple-600 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://www.twitch.tv/YourChannel",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Twitch
-                      </span>{" "}
-                      dhe{" "}
-                      <span
-                        className="underline hover:text-blue-400 cursor-pointer transition-colors"
-                        onClick={() =>
-                          window.open(
-                            "https://twitter.com/YourHandle",
-                            "_blank"
-                          )
-                        }
-                      >
-                        X
-                      </span>
-                      — për përmbajtje të zgjeruar dhe për të qenë pjesë e
-                      komunitetit tonë global.
-                    </p>
-                    <p className="text-gray-300 mt-4">
-                      Mbështetjen tënde e kthejmë në përmbajtje me vlerë. Fjalët
-                      e tua, donacionet dhe pjesëmarrja jote janë shtysa jonë
-                      për të bërë më shumë — për ty.
-                    </p>
-                  </div>
-                </div>
-                <div className="md:w-2/3">
-                  <img
-                    src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                    alt="Current studio"
-                    className="rounded-xl shadow-lg"
-                  />
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Available On Section */}
-      <section className="py-20 bg-blue-950/5">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold mb-4">Available On</h2>
-            <p className="text-gray-300">
-              Listen to our podcast on your favorite platform
-            </p>
-          </motion.div>
+        {/* Available On Section */}
+        <section className="py-20 bg-blue-950/5">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl font-bold mb-4">Dëgjo në</h2>
+              <p className="text-gray-300">
+                Dëgjo Podcastin Tonë në Platformën tënde të Preferuar
+              </p>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
-          >
-            {platforms.map((platform, index) => (
-              <motion.a
-                key={index}
-                href={platform.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+            >
+              {platforms.map((platform, index) => (
+                <motion.a
+                  key={index}
+                  href={platform.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`
             flex flex-col items-center p-6
             bg-gray-900/50 rounded-xl backdrop-blur-sm
             transition-colors ${platform.color}
           `}
-              >
-                <platform.icon size={32} />
-                <span className="mt-2 font-medium">{platform.name}</span>
-              </motion.a>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="py-20 bg-gradient-to-b from-blue-950/5 to-gold-900">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold mb-6">Vlerat Tona</h2>
-            <p className="text-xl text-gray-300">
-              Parimet që na udhëheqin që nga dita e parë
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            {[
-              {
-                icon: Mic,
-                title: "Zëra të Papërgatitur, Por Autentikë",
-                description:
-                  "Ne rrëfejmë jetët tona pa maska, pa skenar dhe pa filtra. Çdo bisedë është një pasqyrë e papunuar e realitetit, ku emocionet dhe të vërtetat dalin në shesh të lirë.",
-              },
-              {
-                icon: Heart,
-                title: "Rritemi Së Bashku, Jo Vetëm",
-                description:
-                  "Kjo nuk është një udhëtim i vetëm. Në çdo bisedë, ne dhe të ftuarit tanë hapim së bashku dyer të reja, ku gabimet janë mësime dhe çdo moment i papritur bëhet këngë.",
-              },
-              {
-                icon: Award,
-                title: "Cilësia Nuk Është Aksident",
-                description:
-                  "Nuk ofrojmë vetëm përmbajtje - ofrojmë përvoja. Çdo episod është një përzierje e pazakontë e spontanitetit dhe përgatitjes, ku autenticiteti takon profesionalizmin.",
-              },
-              {
-                icon: Zap,
-                title: "Pse? Sepse Ne Besojmë...",
-                description:
-                  "Që botës i duhen më shumë zëra të patinjuar, më pak perfeksionizëm të sajuar dhe më shumë kurajë për të qenë të përkryer... të papërsosur.",
-              },
-            ].map((value, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-xl backdrop-blur-sm"
-              >
-                <div className="bg-gradient-to-br from-gold-600/20 to-gold-800/20 p-4 rounded-full inline-block mb-6">
-                  <value.icon size={32} className="text-gold-800" />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
-                <p className="text-gray-300">{value.description}</p>
-              </motion.div>
-            ))}
+                >
+                  <platform.icon size={32} />
+                  <span className="mt-2 font-medium">{platform.name}</span>
+                </motion.a>
+              ))}
+            </motion.div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+
+        {/* Values Section */}
+        <section className="py-20 bg-gradient-to-b from-blue-950/5 to-gold-900">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="max-w-4xl mx-auto text-center mb-16"
+            >
+              <h2 className="text-4xl font-bold mb-6">Vlerat Tona</h2>
+              <p className="text-xl text-gray-300">
+                Parimet që na udhëheqin që nga dita e parë
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+              {[
+                {
+                  icon: Mic,
+                  title: "Zëra të Papërgatitur, Por Autentikë",
+                  description:
+                    "Ne rrëfejmë jetët tona pa maska, pa skenar dhe pa filtra. Çdo bisedë është një pasqyrë e papunuar e realitetit, ku emocionet dhe të vërtetat dalin në shesh të lirë.",
+                },
+                {
+                  icon: Heart,
+                  title: "Rritemi Së Bashku, Jo Vetëm",
+                  description:
+                    "Kjo nuk është një udhëtim i vetëm. Në çdo bisedë, ne dhe të ftuarit tanë hapim së bashku dyer të reja, ku gabimet janë mësime dhe çdo moment i papritur bëhet këngë.",
+                },
+                {
+                  icon: Award,
+                  title: "Cilësia Nuk Është Aksident",
+                  description:
+                    "Nuk ofrojmë vetëm përmbajtje - ofrojmë përvoja. Çdo episod është një përzierje e pazakontë e spontanitetit dhe përgatitjes, ku autenticiteti takon profesionalizmin.",
+                },
+                {
+                  icon: Zap,
+                  title: "Pse? Sepse Ne Besojmë...",
+                  description:
+                    "Që botës i duhen më shumë zëra të patinjuar, më pak perfeksionizëm të sajuar dhe më shumë kurajë për të qenë të përkryer... të papërsosur.",
+                },
+              ].map((value, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-xl backdrop-blur-sm"
+                >
+                  <div className="bg-gradient-to-br from-gold-600/20 to-gold-800/20 p-4 rounded-full inline-block mb-6">
+                    <value.icon size={32} className="text-gold-800" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
+                  <p className="text-gray-300">{value.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }
 

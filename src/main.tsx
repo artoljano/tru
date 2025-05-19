@@ -11,6 +11,7 @@ import Layout from "./Layout.tsx";
 import "./index.css";
 import NewsletterForm from "./NewsletterForm.tsx";
 import NewsletterAdmin from "./NewsletterAdmin.tsx";
+import { HelmetProvider } from "react-helmet-async";
 
 // Create your router like before
 const router = createBrowserRouter(
@@ -86,6 +87,8 @@ function KillSwitchWrapper() {
 // Render app
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <KillSwitchWrapper />
+    <HelmetProvider>
+      <KillSwitchWrapper />
+    </HelmetProvider>
   </StrictMode>
 );

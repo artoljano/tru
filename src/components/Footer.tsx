@@ -65,8 +65,13 @@ function Footer() {
   const brandLinks = [
     {
       Icon: Youtube,
-      url: "https://youtube.com/YourChannel",
+      url: "https://www.youtube.com/@TruPodcastMediaOfficial-p9c",
       hoverClass: "hover:text-red-500",
+    },
+    {
+      Icon: FaPatreon,
+      url: "https://patreon.com/YourPage",
+      hoverClass: "hover:text-orange-500",
     },
     {
       Icon: CustomIcon,
@@ -75,17 +80,12 @@ function Footer() {
     },
     {
       Icon: FaTiktok,
-      url: "https://tiktok.com/@YourProfile",
+      url: "https://vm.tiktok.com/ZMSec6qQX/",
       hoverClass: "hover:text-pink-500",
     },
     {
-      Icon: FaPatreon,
-      url: "https://patreon.com/YourPage",
-      hoverClass: "hover:text-orange-500",
-    },
-    {
       Icon: Instagram,
-      url: "https://instagram.com/YourProfile",
+      url: "https://www.instagram.com/trupodcastmedia/",
       hoverClass: "hover:text-pink-500",
     },
     {
@@ -95,7 +95,7 @@ function Footer() {
     },
     {
       Icon: Facebook,
-      url: "https://facebook.com/YourPage",
+      url: "https://www.facebook.com/trupodcastmedia/",
       hoverClass: "hover:text-blue-600",
     },
     {
@@ -107,28 +107,16 @@ function Footer() {
 
   const listenLinks = [
     {
+      Icon: Youtube,
+      name: "YouTube",
+      url: "https://www.youtube.com/@TruPodcastMediaOfficial-p9c",
+      hoverClass: "mr-0 hover:text-red-500 ml-2",
+    },
+    {
       Icon: CustomIcon2,
       name: "   Spotify",
       url: "https://open.spotify.com/show/…",
       hoverClass: "mr-0 hover:text-green-500 ml-2",
-    },
-    {
-      Icon: Apple,
-      name: "Apple Podcasts",
-      url: "https://podcasts.apple.com/…",
-      hoverClass: "mr-0 hover:text-purple-500 ml-2",
-    },
-    {
-      Icon: Youtube,
-      name: "YouTube",
-      url: "https://youtube.com/YourChannel",
-      hoverClass: "mr-0 hover:text-red-500 ml-2",
-    },
-    {
-      Icon: Headphones,
-      name: "Google Podcasts",
-      url: "https://podcasts.google.com/…",
-      hoverClass: "mr-0 hover:text-blue-400 ml-2",
     },
     {
       Icon: Twitch,
@@ -141,12 +129,6 @@ function Footer() {
       name: "Patreon",
       url: "https://patreon.com/YourPage",
       hoverClass: "mr-0 hover:text-orange-500 ml-2",
-    },
-    {
-      Icon: FaTiktok,
-      name: "TikTok",
-      url: "https://tiktok.com/@YourProfile",
-      hoverClass: "mr-0 hover:text-pink-500 ml-2",
     },
   ];
 
@@ -292,7 +274,7 @@ function Footer() {
             <div className="text-gray-400 text-sm">
               © 2025 TRU PODCAST MEDIA. Të gjitha të drejtat e rezervuara.
             </div>
-            <div className="flex items-center space-x-6 text-sm">
+            {/* <div className="flex items-center space-x-6 text-sm">
               <a
                 href="#"
                 className="text-gray-400 hover:text-white transition-colors"
@@ -311,13 +293,7 @@ function Footer() {
               >
                 Politika e Cookie-ve
               </a>
-            </div>
-            <div className="flex items-center text-gray-400 text-sm">
-              <span className="flex items-center">
-                Bërë me <Heart size={14} className="mx-1 text-red-500" /> në
-                Tiranë
-              </span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

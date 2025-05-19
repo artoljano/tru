@@ -15,6 +15,7 @@ import { FaTiktok, FaPatreon } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./components/Footer";
 import logo from "../src/images/tru_logo1.png";
+import { Helmet } from "react-helmet-async";
 
 const CustomIcon2 = () => (
   <svg
@@ -53,7 +54,7 @@ const CustomIcon = () => (
 const socialLinks = [
   {
     Icon: Youtube,
-    url: "https://www.youtube.com/YourChannel",
+    url: "https://www.youtube.com/@TruPodcastMediaOfficial-p9c",
     hoverClass: "hover:text-red-500",
   },
   {
@@ -68,12 +69,12 @@ const socialLinks = [
   }, // Spotify = green
   {
     Icon: FaTiktok,
-    url: "https://www.tiktok.com/@YourProfile",
+    url: "https://vm.tiktok.com/ZMSec6qQX/",
     hoverClass: "hover:text-pink-500",
   },
   {
     Icon: Instagram,
-    url: "https://www.instagram.com/YourProfile",
+    url: "https://www.instagram.com/trupodcastmedia/",
     hoverClass: "hover:text-pink-600",
   },
   {
@@ -83,7 +84,7 @@ const socialLinks = [
   },
   {
     Icon: Facebook,
-    url: "https://www.facebook.com/YourPage",
+    url: "https://www.facebook.com/trupodcastmedia/",
     hoverClass: "hover:text-blue-600",
   },
   {
