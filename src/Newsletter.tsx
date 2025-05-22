@@ -296,7 +296,7 @@ function Newsletter() {
 
   useEffect(() => {
     // Fetch posts from JSON file on page load (you would implement this in your backend)
-    fetch("http://localhost:5000/api/getPosts")
+    fetch("http://157.180.84.142:5000/api/getPosts")
       .then((response) => response.json())
       .then((data) => setPosts(data));
   }, []);

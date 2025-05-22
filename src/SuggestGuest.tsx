@@ -16,7 +16,7 @@ function SuggestGuest() {
   const apiUrl =
     window.location.hostname === "localhost"
       ? "http://localhost:5000/api/send-suggestion-email"
-      : "https://artoljano.github.io/tru/api/send-suggestion-email";
+      : "http://157.180.84.142:5000/api/send-suggestion-email";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

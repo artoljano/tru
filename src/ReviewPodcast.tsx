@@ -13,13 +13,13 @@ function decodeHtml(html: string) {
 const episodesApiUrl =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/episodes"
-    : "https://artoljano.github.io/tru/api/episodes";
+    : "http://157.180.84.142:5000/api/episodes";
 
 // Reviews still post to /api/send-review-email
 const reviewApiUrl =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/send-review-email"
-    : "https://artoljano.github.io/tru/api/send-review-email";
+    : "http://157.180.84.142:5000/api/send-review-email";
 
 const fetchEpisodesFromCache = (): any[] | null => {
   const stored = localStorage.getItem("episodes");

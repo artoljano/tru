@@ -295,7 +295,7 @@ const NewsletterAdmin = () => {
 
   useEffect(() => {
     // Fetch posts from JSON file or your backend API
-    fetch("http://localhost:5000/api/getPosts")
+    fetch("http://157.180.84.142:5000/api/getPosts")
       .then((response) => response.json())
       .then((data) => setPosts(data));
   }, []);
@@ -347,7 +347,7 @@ const NewsletterAdmin = () => {
     if (
       window.confirm("Are you sure you want to delete this post and its image?")
     ) {
-      fetch(`http://localhost:5000/api/deletePost`, {
+      fetch(`http://157.180.84.142:5000/api/deletePost`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: postId, image: postImage }), // Send both postId and image path
@@ -488,7 +488,7 @@ const NewsletterAdmin = () => {
             >
               <div className="relative aspect-video">
                 <img
-                  src={`http://localhost:5000/${post.image}`}
+                  src={`http://157.180.84.142:5000/${post.image}`}
                   alt={post.title}
                   className="w-full h-full object-cover"
                 />
