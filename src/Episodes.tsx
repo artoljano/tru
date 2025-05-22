@@ -72,9 +72,7 @@ const Episodes: React.FC = () => {
     handleScrollToTop();
     const loadPlaylists = async () => {
       setLoading(true);
-      const { data: grp } = await axios.get<PlaylistGroup[]>(
-        "http://157.180.84.142:5000/api/playlists"
-      );
+      const { data: grp } = await axios.get<PlaylistGroup[]>("/api/playlists");
       setGroups(grp);
       setLoading(false);
     };
@@ -86,10 +84,8 @@ const Episodes: React.FC = () => {
       setLoading(true);
       const url =
         selectedCategory === "All"
-          ? "http://157.180.84.142:5000/api/episodes"
-          : `http://157.180.84.142:5000/api/episodes?playlist=${encodeURIComponent(
-              selectedCategory
-            )}`;
+          ? "/api/episodes"
+          : `/api/episodes?playlist=${encodeURIComponent(selectedCategory)}`;
       const { data: eps } = await axios.get<Episode[]>(url);
       setEpisodes(eps);
       setLoading(false);
@@ -108,7 +104,7 @@ const Episodes: React.FC = () => {
         const { data } = await axios.get<{
           totalEpisodes: number;
           totalViews: number;
-        }>("http://157.180.84.142:5000/api/stats");
+        }>("/api/stats");
         const newStats = {
           episodes: data.totalEpisodes,
           guests: 30, // update as needed

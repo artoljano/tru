@@ -49,8 +49,7 @@ function decodeHtml(html: string) {
 const apiUrl =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/episodes"
-    : "http://157.180.84.142:5000/api/episodes";
-
+    : "/api/episodes";
 function App() {
   // handleScrollToTop();
   const navigate = useNavigate();
@@ -70,7 +69,7 @@ function App() {
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   useEffect(() => {
-    // localStorage.clear();
+    //localStorage.clear();
     // localStorage.removeItem("episodesTime");
     // localStorage.removeItem("episodes");
 
@@ -86,7 +85,7 @@ function App() {
     const fetchEpisodes = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://157.180.84.142:5000/api/episodes");
+        const response = await fetch("api/episodes");
         const data = await response.json();
         setEpisodes(data); // Set the fetched episodes in the state
         localStorage.setItem("episodes", JSON.stringify(data));

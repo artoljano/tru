@@ -109,7 +109,7 @@ const NewsletterForm = ({
         });
     } else {
       // Save post directly if no image is uploaded
-      fetch("http://157.180.84.142:5000/api/savePost", {
+      fetch("/api/savePost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
