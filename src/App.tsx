@@ -69,7 +69,7 @@ function App() {
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   useEffect(() => {
-    //localStorage.clear();
+    localStorage.clear();
     // localStorage.removeItem("episodesTime");
     // localStorage.removeItem("episodes");
 

@@ -119,16 +119,21 @@ const Episodes: React.FC = () => {
     loadStats();
   }, []);
 
-  const categories = ["All", ...groups.map((g) => g.playlistTitle)];
+  const categories = [
+    "All",
+    ...(Array.isArray(groups) ? groups.map((g) => g.playlistTitle) : []),
+  ];
 
-  const filteredEpisodes = episodes.filter((ep) => {
-    const s = searchTerm.toLowerCase();
-    return (
-      ep.title.toLowerCase().includes(s) ||
-      ep.guest.toLowerCase().includes(s) ||
-      ep.description.toLowerCase().includes(s)
-    );
-  });
+  const filteredEpisodes = Array.isArray(episodes)
+    ? episodes.filter((ep) => {
+        const s = searchTerm.toLowerCase();
+        return (
+          ep.title.toLowerCase().includes(s) ||
+          ep.guest.toLowerCase().includes(s) ||
+          ep.description.toLowerCase().includes(s)
+        );
+      })
+    : [];
 
   const handleReviewClick = (episodeId: string) => {
     navigate(`/review?episode=${episodeId}`);
@@ -188,7 +193,7 @@ const Episodes: React.FC = () => {
 
       <div className="min-h-screen bg-blue-900/40 text-white">
         {/* Hero */}
-        <section className="relative h-[100vh] overflow-hidden pt-[10rem] md:pt-0 md:	h-[70vh]">
+        <section className="relative h-[100vh] overflow-hidden pt-[10rem] md:pt-0 md:	h-[90vh]">
           <div className="absolute inset-0">
             <img
               src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
