@@ -638,12 +638,17 @@ app.post('/api/send-review-email', (req, res) => {
   
    
    // Get all posts
-   app.get('/api/getPosts', (req, res) => {
-     fs.readFile(myPath, (err, fileData) => {
-       if (err) throw err;
-       res.json(JSON.parse(fileData));
-     });
-   });
+   app.get('/api/getPosts', async (req, res) => {
+  try {
+    const fileData = await fs.promises.readFile(myPath, 'utf-8');
+    const posts = JSON.parse(fileData);
+    res.json(posts);
+  } catch (err) {
+    console.error('Error reading newsletter data:', err);
+    res.status(500).json({ error: 'Failed to read newsletter data' });
+  }
+});
+
    
    // Delete a post by ID
    const postsFile = path.join(__dirname, 'newsletterData.json');
@@ -688,7 +693,10 @@ app.delete('/api/deletePost', (req, res) => {
     });
   });
 });
-  
+
+  app.get('/api/health', (req, res) => {
+  res.send('OK');
+});
 
 
 const frontendDistPath = path.join(__dirname, '../dist');
