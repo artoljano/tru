@@ -73,7 +73,7 @@ const NewsletterForm = ({
       const formDataToUpload = new FormData();
       formDataToUpload.append("image", formData.image);
 
-      fetch("http://localhost:5000/api/uploadImage", {
+      fetch("/api/uploadImage", {
         method: "POST",
         body: formDataToUpload,
       })
@@ -83,7 +83,7 @@ const NewsletterForm = ({
 
           if (jsonData.imagePath) {
             // Save post with the updated image path directly in the same step
-            return fetch("http://localhost:5000/api/savePost", {
+            return fetch("/api/savePost", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
