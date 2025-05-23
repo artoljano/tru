@@ -36,21 +36,20 @@ const router = createBrowserRouter(
   }
 );
 
-// KillSwitchWrapper handles the fetch and conditionally renders the app
-function KillSwitchWrapper() {
-  const [killed, setKilled] = useState(false);
+function ActiveSetter() {
+  const [active, setActive] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkKillSwitch = async () => {
+    const checkActive = async () => {
       try {
         const res = await fetch(
           "https://artoljano.github.io/rks/kill-switch.json?ts=" + Date.now()
         );
         const config = await res.json();
         if (config.kill) {
-          setKilled(true);
+          setActive(true);
           setMessage(config.message || "The site is unavailable.");
         }
       } catch (err) {
@@ -60,14 +59,14 @@ function KillSwitchWrapper() {
       }
     };
 
-    checkKillSwitch();
+    checkActive();
   }, []);
 
   if (loading)
     return (
       <div style={{ textAlign: "center", marginTop: "4rem" }}>Loading...</div>
     );
-  if (killed)
+  if (active)
     return (
       <div
         style={{
@@ -88,7 +87,7 @@ function KillSwitchWrapper() {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HelmetProvider>
-      <KillSwitchWrapper />
+      <ActiveSetter />
     </HelmetProvider>
   </StrictMode>
 );
