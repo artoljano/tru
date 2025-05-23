@@ -695,8 +695,13 @@ const frontendDistPath = path.join(__dirname, '../dist');
 app.use(express.static(frontendDistPath));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendDistPath, 'index.html'));
+  if (req.headers.accept && req.headers.accept.includes('text/html')) {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  } else {
+    res.status(404).send('Not found');
+  }
 });
+
 
 // Start the server
 app.listen(port, '0.0.0.0', () => {
