@@ -1,12 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const axios = require('axios');
-const dotenv = require('dotenv');
-const nodemailer = require("nodemailer");
-const fs = require("fs");
-const multer = require("multer");
-const path = require("path");
-const { fileURLToPath } = require('url');
+import express from 'express';
+import cors from 'cors';
+import axios from 'axios';
+import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
+import fs from "fs";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from 'url';  // import to convert URL to file path
 
 
 
