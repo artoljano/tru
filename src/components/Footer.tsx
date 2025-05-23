@@ -232,7 +232,7 @@ function Footer() {
             <ul className="space-y-4">
               <li className="flex items-center text-gray-400">
                 <Mail size={16} className="mr-3" />
-                hello@podcastname.com
+                info@trupodcast.media
               </li>
               <li className="flex items-center text-gray-400">
                 <MapPin size={16} className="mr-3" />
@@ -240,7 +240,7 @@ function Footer() {
               </li>
               <li className="flex items-center text-gray-400">
                 <Phone size={16} className="mr-3" />
-                +355 67 676 767
+                +355 69 805 5554
               </li>
             </ul>
           </div>
