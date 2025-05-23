@@ -487,7 +487,7 @@ function App() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-grey-600/20 to-red-900/50 blur-xl"></div>
               <a
-                href="/tru/episodes"
+                href="/episodes"
                 className="relative block bg-gray-900/80 rounded-2xl p-8 backdrop-blur-sm group hover:bg-gold-900 transition-all duration-300"
               >
                 <div className="flex items-center justify-between">
