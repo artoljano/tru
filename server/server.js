@@ -698,6 +698,7 @@ app.delete('/api/deletePost', (req, res) => {
   res.send('OK');
 });
 
+app.set('trust proxy', true);
 
 const frontendDistPath = path.join(__dirname, '../dist');
 app.use(express.static(frontendDistPath));
