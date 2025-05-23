@@ -23,6 +23,10 @@ import {
 import { FaTiktok, FaPatreon } from "react-icons/fa";
 import host from "../src/images/host.jpeg";
 import intro from "../src/images/about-intro-hq.mp4";
+import spark from "../src/images/spark.jpeg";
+import flight from "../src/images/flight.jpeg";
+import future from "../src/images/future.jpeg";
+
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 
@@ -370,9 +374,10 @@ function About() {
                   </div>
                   <div className="md:w-2/3">
                     <img
-                      src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      // src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      src={spark}
                       alt="Early days"
-                      className="rounded-xl shadow-lg"
+                      className="rounded-xl shadow-lg object-cover h-[700px] w-full"
                     />
                   </div>
                 </motion.div>
@@ -490,9 +495,10 @@ function About() {
 
                   <div className="md:w-2/3">
                     <img
-                      src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      // src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      src={flight}
                       alt="Growth phase"
-                      className="rounded-xl shadow-lg"
+                      className="rounded-xl shadow-lg object-cover h-[700px] w-full"
                     />
                   </div>
                 </motion.div>
@@ -599,9 +605,10 @@ function About() {
                   </div>
                   <div className="md:w-2/3">
                     <img
-                      src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      // src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                      src={future}
                       alt="Current studio"
-                      className="rounded-xl shadow-lg"
+                      className="rounded-xl shadow-lg object-cover h-[700px] w-full"
                     />
                   </div>
                 </motion.div>
