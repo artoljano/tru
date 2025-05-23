@@ -143,16 +143,16 @@ function About() {
           name="description"
           content="Zbulo historinë dhe vizionin prapa Tru Podcast, moderatorët tanë dhe misionin tonë."
         />
-        <link rel="canonical" href="https://yourdomain.com/about" />
+        <link rel="canonical" href="https://trupodcast.media/about" />
         <meta property="og:title" content="Rreth Nesh – Tru Podcast Media" />
         <meta
           property="og:description"
           content="Zbulo historinë dhe vizionin prapa Tru Podcast, moderatorët tanë dhe misionin tonë."
         />
-        <meta property="og:url" content="https://yourdomain.com/about" />
+        <meta property="og:url" content="https://trupodcast.media/about" />
         <meta
           property="og:image"
-          content="https://yourdomain.com/og-about.png"
+          content="https://trupodcast.media/og-about.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Rreth Nesh – Tru Podcast Media" />
@@ -162,7 +162,7 @@ function About() {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/og-about.png"
+          content="https://trupodcast.media/og-about.png"
         />
       </Helmet>
 

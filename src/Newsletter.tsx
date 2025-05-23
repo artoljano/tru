@@ -349,16 +349,16 @@ function Newsletter() {
           name="description"
           content="Abonohu në newsletter-in tonë për përmbledhje javore, reflektime origjinale dhe lajme nga komuniteti ynë."
         />
-        <link rel="canonical" href="https://yourdomain.com/newsletter" />
+        <link rel="canonical" href="https://trupodcast.media/newsletter" />
         <meta property="og:title" content="Newsletter – Tru Media" />
         <meta
           property="og:description"
           content="Abonohu në newsletter-in tonë për përmbledhje javore, reflektime origjinale dhe lajme nga komuniteti ynë."
         />
-        <meta property="og:url" content="https://yourdomain.com/newsletter" />
+        <meta property="og:url" content="https://trupodcast.media/newsletter" />
         <meta
           property="og:image"
-          content="https://yourdomain.com/og-newsletter.png"
+          content="https://trupodcast.media/og-newsletter.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Newsletter – Tru Media" />
@@ -368,7 +368,7 @@ function Newsletter() {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/og-newsletter.png"
+          content="https://trupodcast.media/og-newsletter.png"
         />
       </Helmet>
 

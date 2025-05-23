@@ -156,7 +156,7 @@ const Episodes: React.FC = () => {
           name="description"
           content="Eksploroni koleksionin tonë të bisedave frymëzuese me të ftuar të jashtëzakonshëm."
         />
-        <link rel="canonical" href="https://yourdomain.com/episodes" />
+        <link rel="canonical" href="https://trupodcast.media/episodes" />
 
         {/* Open-Graph */}
         <meta property="og:title" content="Episodet Tona – Tru Podcast Media" />
@@ -164,10 +164,10 @@ const Episodes: React.FC = () => {
           property="og:description"
           content="Eksploroni koleksionin tonë të bisedave frymëzuese me të ftuar të jashtëzakonshëm."
         />
-        <meta property="og:url" content="https://yourdomain.com/episodes" />
+        <meta property="og:url" content="https://trupodcast.media/episodes" />
         <meta
           property="og:image"
-          content="https://yourdomain.com/og-episodes.png"
+          content="https://trupodcast.media/og-episodes.png"
         />
 
         {/* Twitter Card */}
@@ -182,7 +182,7 @@ const Episodes: React.FC = () => {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/og-episodes.png"
+          content="https://trupodcast.media/og-episodes.png"
         />
       </Helmet>
 

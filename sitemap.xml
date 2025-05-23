@@ -3,7 +3,7 @@
 	<!-- Home -->
 	<url>
 		<loc>
-			https://yourdomain.com/
+			https://trupodcast.media/
 		</loc>
 		<changefreq>
 			daily
@@ -15,7 +15,7 @@
 	<!-- Episodes -->
 	<url>
 		<loc>
-			https://yourdomain.com/episodes
+			https://trupodcast.media/episodes
 		</loc>
 		<changefreq>
 			weekly
@@ -27,7 +27,7 @@
 	<!-- About -->
 	<url>
 		<loc>
-			https://yourdomain.com/about
+			https://trupodcast.media/about
 		</loc>
 		<changefreq>
 			monthly
@@ -39,7 +39,7 @@
 	<!-- Newsletter -->
 	<url>
 		<loc>
-			https://yourdomain.com/newsletter
+			https://trupodcast.media/newsletter
 		</loc>
 		<changefreq>
 			weekly
@@ -51,7 +51,7 @@
 	<!-- Suggest -->
 	<url>
 		<loc>
-			https://yourdomain.com/suggest
+			https://trupodcast.media/suggest
 		</loc>
 		<changefreq>
 			monthly
@@ -63,7 +63,7 @@
 	<!-- Review -->
 	<url>
 		<loc>
-			https://yourdomain.com/review
+			https://trupodcast.media/review
 		</loc>
 		<changefreq>
 			monthly

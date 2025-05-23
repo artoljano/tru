@@ -143,7 +143,7 @@ function App() {
           name="description"
           content="Mirësevini në Tru Podcast Media — një hapësirë për biseda autentike dhe pa kufizime me të ftuar të jashtëzakonshëm."
         />
-        <link rel="canonical" href="https://yourdomain.com/" />
+        <link rel="canonical" href="https://trupodcast.media/" />
 
         {/* Open Graph */}
         <meta
@@ -154,10 +154,10 @@ function App() {
           property="og:description"
           content="Mirësevini në Tru Podcast Media — një hapësirë për biseda autentike dhe pa kufizime me të ftuar të jashtëzakonshëm."
         />
-        <meta property="og:url" content="https://yourdomain.com/" />
+        <meta property="og:url" content="https://trupodcast.media/" />
         <meta
           property="og:image"
-          content="https://yourdomain.com/images/og-home.jpg"
+          content="https://trupodcast.media/images/og-home.jpg"
         />
         <meta property="og:type" content="website" />
 
@@ -173,7 +173,7 @@ function App() {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/images/og-home.jpg"
+          content="https://trupodcast.media/images/og-home.jpg"
         />
       </Helmet>
 

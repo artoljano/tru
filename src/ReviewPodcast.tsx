@@ -142,7 +142,7 @@ const ReviewPodcast = () => {
           name="description"
           content="Ndani mendimet tuaja dhe ndihmoni komunitetin tonë të rritet duke lënë një vlerësim për episodet tona."
         />
-        <link rel="canonical" href="https://yourdomain.com/review" />
+        <link rel="canonical" href="https://trupodcast.media/review" />
         <meta
           property="og:title"
           content="Lini një vlerësim – Tru Podcast Media"
@@ -151,10 +151,10 @@ const ReviewPodcast = () => {
           property="og:description"
           content="Ndani mendimet tuaja dhe ndihmoni komunitetin tonë të rritet duke lënë një vlerësim për episodet tona."
         />
-        <meta property="og:url" content="https://yourdomain.com/review" />
+        <meta property="og:url" content="https://trupodcast.media/review" />
         <meta
           property="og:image"
-          content="https://yourdomain.com/og-review.png"
+          content="https://trupodcast.media/og-review.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
@@ -167,7 +167,7 @@ const ReviewPodcast = () => {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/og-review.png"
+          content="https://trupodcast.media/og-review.png"
         />
       </Helmet>
 

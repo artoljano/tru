@@ -82,7 +82,7 @@ function SuggestGuest() {
           name="description"
           content="Keni një emër me histori të jashtëzakonshme? Na ndihmoni të zgjerojmë rrethin e të ftuarve."
         />
-        <link rel="canonical" href="https://yourdomain.com/suggest" />
+        <link rel="canonical" href="https://trupodcast.media/suggest" />
         <meta
           property="og:title"
           content="Sygjero një të ftuar – Tru Podcast Media"
@@ -91,10 +91,10 @@ function SuggestGuest() {
           property="og:description"
           content="Keni një emër me histori të jashtëzakonshme? Na ndihmoni të zgjerojmë rrethin e të ftuarve."
         />
-        <meta property="og:url" content="https://yourdomain.com/suggest" />
+        <meta property="og:url" content="https://trupodcast.media/suggest" />
         <meta
           property="og:image"
-          content="https://yourdomain.com/og-suggest.png"
+          content="https://trupodcast.media/og-suggest.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
@@ -107,7 +107,7 @@ function SuggestGuest() {
         />
         <meta
           name="twitter:image"
-          content="https://yourdomain.com/og-suggest.png"
+          content="https://trupodcast.media/og-suggest.png"
         />
       </Helmet>
 
