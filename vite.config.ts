@@ -7,7 +7,7 @@ export default defineConfig({
     port: 3000, // Change to any port that is not 5000 or in use by other processes
   },
   plugins: [react()],
-  base: '/tru/',
+  base: '/',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
