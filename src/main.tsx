@@ -42,6 +42,11 @@ function ActiveSetter() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (window.location.pathname === "/clear-cache") {
+      localStorage.clear();
+      alert("Cache cleared!");
+    }
+
     const checkActive = async () => {
       try {
         const res = await fetch(
