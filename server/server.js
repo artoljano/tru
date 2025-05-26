@@ -124,34 +124,38 @@ async function getYouTubeVideos() {
 
     // 3) Map & filter out any under 10 minutes
     const episodes = videosRes.data.items
-      .map(item => {
-        const iso = item.contentDetails.duration;
-        const formattedDuration = formatDuration(iso);
-        // convert ISO to total seconds for filtering
-        const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-        const hours   = parseInt(match[1]||'0',10);
-        const minutes = parseInt(match[2]||'0',10);
-        const seconds = parseInt(match[3]||'0',10);
-        const totalSeconds = hours*3600 + minutes*60 + seconds;
+.map(item => {
+  const iso = item.contentDetails?.duration;
 
-        return {
-          id:          item.id,
-          title:       item.snippet.title,
-          description: item.snippet.description,
-          date:        item.snippet.publishedAt,
-          youtubeUrl:  `https://www.youtube.com/watch?v=${item.id}`,
-          image:       item.snippet.thumbnails.high.url,
-          guest:       item.snippet.title,
-          category:    'General',
-          tags:        item.snippet.tags || [],
-          duration:    formattedDuration,
-          _durationSec: totalSeconds,
-        };
-      })
-      // 10 minutes = 600 seconds
-      .filter(ep => ep._durationSec >= 600)
-      // drop our temporary _durationSec before returning
-      .map(({ _durationSec, ...keep }) => keep);
+  if (!iso) {
+    console.warn("⚠️ Skipping video with missing duration:", item.id);
+    return null;
+  }
+
+  const formattedDuration = formatDuration(iso);
+  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  const seconds = parseInt(match[3] || '0', 10);
+  const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+  return {
+    id: item.id,
+    title: item.snippet.title,
+    description: item.snippet.description,
+    date: item.snippet.publishedAt,
+    youtubeUrl: `https://www.youtube.com/watch?v=${item.id}`,
+    image: item.snippet.thumbnails?.high?.url,
+    guest: item.snippet.title,
+    category: 'General',
+    tags: item.snippet.tags || [],
+    duration: formattedDuration,
+    _durationSec: totalSeconds,
+  };
+})
+.filter(ep => ep && ep._durationSec >= 600)
+.map(({ _durationSec, ...keep }) => keep);
+
 
     // cache & return
     cachedEpisodes = episodes;
