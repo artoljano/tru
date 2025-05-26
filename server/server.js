@@ -159,8 +159,15 @@ async function getYouTubeVideos() {
     return episodes;
 
   } catch (err) {
-    console.error('Error in getYouTubeVideos:', err);
-    return [];
+  if (err.response) {
+    console.error('YouTube API error:', err.response.status, err.response.statusText);
+    console.error('URL:', err.config.url);
+    console.error('Params:', err.config.params);
+    console.error('Response body:', err.response.data);
+  } else {
+    console.error('Generic error:', err.message);
+  }
+  return [];
   }
 }
 
@@ -226,9 +233,16 @@ const getYouTubeVideosByPlaylist = async () => {
     cachedPlaylists = playlistVideos;
     lastCacheTime = Date.now();
     return playlistVideos;
-  } catch (error) {
-    console.error('Error fetching YouTube videos by playlist:', error);
-    return [];
+  } catch (err) {
+  if (err.response) {
+    console.error('YouTube API error:', err.response.status, err.response.statusText);
+    console.error('URL:', err.config.url);
+    console.error('Params:', err.config.params);
+    console.error('Response body:', err.response.data);
+  } else {
+    console.error('Generic error:', err.message);
+  }
+  return [];
   }
 };
 

@@ -85,7 +85,7 @@ function App() {
     const fetchEpisodes = async () => {
       try {
         setLoading(true);
-        const response = await fetch("api/episodes");
+        const response = await fetch("/api/episodes");
         const data = await response.json();
         setEpisodes(data); // Set the fetched episodes in the state
         localStorage.setItem("episodes", JSON.stringify(data));
