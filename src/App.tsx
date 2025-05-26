@@ -49,7 +49,7 @@ function decodeHtml(html: string) {
 const apiUrl =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/episodes"
-    : "/api/episodes";
+    : "www.trupodcast.media/api/episodes";
 function App() {
   // handleScrollToTop();
   const navigate = useNavigate();
@@ -85,7 +85,7 @@ function App() {
     const fetchEpisodes = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/episodes");
+        const response = await fetch(apiUrl);
         const data = await response.json();
         setEpisodes(data); // Set the fetched episodes in the state
         localStorage.setItem("episodes", JSON.stringify(data));
