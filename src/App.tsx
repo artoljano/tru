@@ -49,7 +49,7 @@ function decodeHtml(html: string) {
 const apiUrl =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/episodes"
-    : "www.trupodcast.media/api/episodes";
+    : "/api/episodes";
 function App() {
   // handleScrollToTop();
   const navigate = useNavigate();
