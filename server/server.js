@@ -244,36 +244,39 @@ app.get('/api/playlists', async (req, res) => {
 });
 
 
-
 app.get('/api/episodes', async (req, res) => {
   const { playlist } = req.query;
+  console.log("Incoming request to /api/episodes with playlist:", playlist);
 
-  // Helper that filters out anything under 600 seconds (10 min)
-  function keepLongEnough(list) {
-    return list.filter(ep => durationToSeconds(ep.duration) >= 600);
-  }
+  try {
+    function keepLongEnough(list) {
+      return list.filter(ep => durationToSeconds(ep.duration) >= 600);
+    }
 
-  // 1) If user asked for a specific playlist (not "All")
-  if (playlist && playlist !== 'All') {
-    // ensure our playlist-groups cache is fresh
-    if (!cachedPlaylists || Date.now() - lastCacheTime > CACHE_DURATION) {
-      cachedPlaylists = await getYouTubeVideosByPlaylist();
+    if (playlist && playlist !== 'All') {
+      console.log("Fetching playlist-filtered videos...");
+      if (!cachedPlaylists || Date.now() - lastCacheTime > CACHE_DURATION) {
+        cachedPlaylists = await getYouTubeVideosByPlaylist();
+        lastCacheTime = Date.now();
+      }
+      let allVideos = cachedPlaylists.flatMap(pl => pl.videos);
+      let byPlaylist = allVideos.filter(ep => ep.playlist === playlist);
+      return res.json(keepLongEnough(byPlaylist));
+    }
+
+    console.log("Fetching all videos from channel...");
+    if (!cachedEpisodes || Date.now() - lastCacheTime > CACHE_DURATION) {
+      cachedEpisodes = await getYouTubeVideos();
       lastCacheTime = Date.now();
     }
-    // flatten and then filter by playlist title
-    let allVideos = cachedPlaylists.flatMap(pl => pl.videos);
-    let byPlaylist = allVideos.filter(ep => ep.playlist === playlist);
-    return res.json( keepLongEnough(byPlaylist) );
-  }
 
-  // 2) Otherwise "All": fall back to channel uploads
-  if (!cachedEpisodes || Date.now() - lastCacheTime > CACHE_DURATION) {
-    cachedEpisodes = await getYouTubeVideos();
-    lastCacheTime = Date.now();
+    return res.json(keepLongEnough(cachedEpisodes));
+  } catch (err) {
+    console.error("Error in /api/episodes:", err);
+    res.status(500).json({ error: 'Internal server error' });
   }
-  // cachedEpisodes is already a flat array of videos from the channel feed
-  return res.json( keepLongEnough(cachedEpisodes) );
 });
+
 
 
 
