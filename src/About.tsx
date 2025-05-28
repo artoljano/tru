@@ -74,7 +74,7 @@ function About() {
   // 3) while intro is up, render only the video overlay
   if (showIntro) {
     return (
-      <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+      <div className="fixed inset-0 z-50 bg-[#051629] flex items-center justify-center">
         {/* Video Background */}
         <video
           src={intro}
