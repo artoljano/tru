@@ -527,7 +527,7 @@ const NewsletterAdmin = () => {
                   onClick={() => setSelectedPost(post)}
                   className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors"
                 >
-                  Read More
+                  Lexo më shumë
                   <ArrowRight size={16} />
                 </motion.button>
                 {/* Edit and Delete Buttons */}

@@ -441,7 +441,7 @@ function App() {
                       onClick={() => setSelectedEpisode(episode)}
                       className="ml-2 text-blue-400 hover:text-blue-300 underline"
                     >
-                      Read more
+                      Lexo më shumë
                     </button>
                   </p>
                 </motion.div>
