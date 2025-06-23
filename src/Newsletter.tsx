@@ -15,7 +15,7 @@ import { Helmet } from "react-helmet-async";
 interface NewsPost {
   id: number;
   title: string;
-  excerpt: string;
+  excerpt: string; // HTML string
   content: string; // HTML string
   date: string;
   isPodcastRelated: boolean;
@@ -26,6 +26,13 @@ interface NewsPost {
 
 const postsPerPage = 6;
 
+// Utility to strip HTML tags for card display
+function stripHtml(html: string): string {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+}
+
 function Newsletter() {
   const [filter, setFilter] = useState<"all" | "podcast" | "general">("all");
   const [selectedPost, setSelectedPost] = useState<NewsPost | null>(null);
@@ -34,49 +41,43 @@ function Newsletter() {
 
   useEffect(() => {
     fetch("/api/getPosts")
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data: any[]) => {
-        // Ensure tags is always an array
-        const normalized = data.map((p) => ({
-          ...p,
-          tags: Array.isArray(p.tags)
-            ? p.tags
-            : typeof p.tags === "string"
-            ? JSON.parse(p.tags)
-            : [],
-        }));
-        setPosts(normalized);
+        setPosts(
+          data.map((p) => ({
+            ...p,
+            tags: Array.isArray(p.tags)
+              ? p.tags
+              : typeof p.tags === "string"
+              ? JSON.parse(p.tags)
+              : [],
+          }))
+        );
       })
-      .catch((err) => {
-        console.error("Failed to fetch posts:", err);
-        setPosts([]);
-      });
+      .catch(console.error);
   }, []);
 
-  const filteredPosts = posts.filter((post) => {
+  const filtered = posts.filter((p) => {
     if (filter === "all") return true;
-    return filter === "podcast"
-      ? post.isPodcastRelated
-      : !post.isPodcastRelated;
+    return filter === "podcast" ? p.isPodcastRelated : !p.isPodcastRelated;
   });
 
-  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-  const currentPosts = filteredPosts.slice(
+  const totalPages = Math.ceil(filtered.length / postsPerPage);
+  const currentPosts = filtered.slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage
   );
 
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
+  const handlePageChange = (n: number) => {
+    setCurrentPage(n);
     window.scrollTo(0, 0);
   };
 
-  const containerVariants = {
+  const container = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.2 } },
   };
-
-  const itemVariants = {
+  const item = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
@@ -194,26 +195,26 @@ function Newsletter() {
             className="flex justify-center mb-12 space-x-4"
             initial="hidden"
             animate="show"
-            variants={containerVariants}
+            variants={container}
           >
             {[
               { value: "all", label: "Të gjitha" },
               { value: "podcast", label: "Lajme Podcast-i" },
               { value: "general", label: "Reflektime" },
-            ].map((option) => (
+            ].map((opt) => (
               <button
-                key={option.value}
+                key={opt.value}
                 onClick={() => {
-                  setFilter(option.value as any);
+                  setFilter(opt.value as any);
                   setCurrentPage(1);
                 }}
                 className={`px-6 py-3 rounded-full transition-all duration-300 ${
-                  filter === option.value
+                  filter === opt.value
                     ? "bg-white text-black"
                     : "bg-gray-900 text-white hover:bg-gray-800"
                 }`}
               >
-                {option.label}
+                {opt.label}
               </button>
             ))}
           </motion.div>
@@ -223,13 +224,13 @@ function Newsletter() {
             className="grid md:grid-cols-2 gap-8"
             initial="hidden"
             animate="show"
-            variants={containerVariants}
+            variants={container}
           >
             {currentPosts.map((post) => (
               <motion.article
                 key={post.id}
                 className="bg-gray-900/50 rounded-xl overflow-hidden backdrop-blur-sm hover:shadow-2xl transition-all duration-300"
-                variants={itemVariants}
+                variants={item}
               >
                 <div className="relative aspect-video">
                   <img
@@ -255,7 +256,9 @@ function Newsletter() {
                     </span>
                   </div>
                   <h2 className="text-2xl font-bold mb-3">{post.title}</h2>
-                  <p className="text-gray-300 mb-6">{post.excerpt}</p>
+                  <p className="text-gray-300 mb-6">
+                    {stripHtml(post.excerpt)}
+                  </p>
                   <div className="flex flex-wrap gap-2 mb-6">
                     {post.tags.map((tag) => (
                       <span
