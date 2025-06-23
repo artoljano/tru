@@ -21,7 +21,7 @@ interface NewsPost {
   isPodcastRelated: boolean;
   image: string;
   readTime: string;
-  tags: string[];
+  tags: string[]; // ensure this is always an array
 }
 
 const postsPerPage = 6;
@@ -33,10 +33,24 @@ function Newsletter() {
   const [posts, setPosts] = useState<NewsPost[]>([]);
 
   useEffect(() => {
-    // Fetch posts from JSON file on page load (you would implement this in your backend)
     fetch("/api/getPosts")
       .then((response) => response.json())
-      .then((data) => setPosts(data));
+      .then((data: any[]) => {
+        // Normalize tags so .map always works
+        const normalized = data.map((p) => ({
+          ...p,
+          tags: Array.isArray(p.tags)
+            ? p.tags
+            : typeof p.tags === "string"
+            ? JSON.parse(p.tags)
+            : [],
+        }));
+        setPosts(normalized);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch posts:", err);
+        setPosts([]);
+      });
   }, []);
 
   const filteredPosts = posts.filter((post) => {
@@ -52,9 +66,7 @@ function Newsletter() {
   );
 
   const handlePageChange = (newPage: number) => {
-    // Assuming you are updating the currentPage state when the page changes
     setCurrentPage(newPage);
-    // Scroll to the top after changing the page
     window.scrollTo(0, 0);
   };
 
@@ -111,7 +123,7 @@ function Newsletter() {
       </Helmet>
 
       <div className="min-h-screen bg-blue-900/40 text-white">
-        {/* Seksioni Kryesor */}
+        {/* Hero Section */}
         <section className="relative h-[100vh] overflow-hidden pt-[10rem] md:pt-0 md:h-[70vh]">
           <div className="absolute inset-0">
             <img
@@ -121,7 +133,6 @@ function Newsletter() {
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
           </div>
-
           <div className="relative h-full container mx-auto px-4 flex items-center">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -135,7 +146,6 @@ function Newsletter() {
                 Qëndroni të informuar për çdo zhvillim, ide dhe reflektim të ri
                 në botën e politikës, kulturës dhe më shumë.
               </p>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -152,7 +162,6 @@ function Newsletter() {
                     Përmbledhje
                   </div>
                 </motion.div>
-
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -168,7 +177,6 @@ function Newsletter() {
                     Reflektime Vetjake
                   </div>
                 </motion.div>
-
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -189,9 +197,9 @@ function Newsletter() {
           </div>
         </section>
 
-        {/* Përmbajtja Kryesore */}
+        {/* Main Content */}
         <div className="container mx-auto px-4 py-20">
-          {/* Butonat e Filtrit */}
+          {/* Filter Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -235,7 +243,7 @@ function Newsletter() {
               >
                 <div className="relative aspect-video">
                   <img
-                    src={`${post.image}`}
+                    src={post.image}
                     alt={post.title}
                     className="w-full h-full object-cover"
                   />
@@ -282,12 +290,13 @@ function Newsletter() {
             ))}
           </motion.div>
 
-          {/* Navigimi */}
+          {/* Pagination */}
           <div className="flex justify-center mt-12">
             <button
               disabled={currentPage === 1}
               onClick={() => handlePageChange(currentPage - 1)}
-              className="px-4 py-2 bg-gray-800 text-white rounded-full mx-2 disabled:opacity-50"
+              className="px-4 py-2 bg-
+gray-800 text-white rounded-full mx-2 disabled:opacity-50"
             >
               Më Parë
             </button>
@@ -304,7 +313,7 @@ function Newsletter() {
           </div>
         </div>
 
-        {/* Modal i Postimit të Plotë */}
+        {/* Full Post Modal */}
         <AnimatePresence>
           {selectedPost && (
             <motion.div
@@ -356,11 +365,13 @@ function Newsletter() {
                       {selectedPost.title}
                     </h2>
                     <div className="prose prose-invert max-w-none">
-                      {selectedPost.content.split("\n").map((paragraph, i) => (
-                        <p key={i} className="mb-4 text-gray-300">
-                          {paragraph.trim()}
-                        </p>
-                      ))}
+                      {selectedPost.content
+                        .split("\n")
+                        .map((paragraph, index) => (
+                          <p key={index} className="mb-4 text-gray-300">
+                            {paragraph.trim()}
+                          </p>
+                        ))}
                     </div>
                     <div className="flex flex-wrap gap-2 mt-8">
                       {selectedPost.tags.map((tag) => (
