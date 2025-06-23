@@ -656,56 +656,56 @@ app.post('/api/send-review-email', (req, res) => {
     });
   });
   
-  // ────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────
 // PUT /api/updatePost/:id
 // ────────────────────────────────────────────────────────────────
 app.put(
-  '/api/updatePost/:id',
-  upload.single('image'),          // allow optional new image upload
-  express.json(),                  // parse JSON bodies
+  "/api/updatePost/:id",
+  upload.single("image"),  // multer only
   (req, res) => {
     const postId = Number(req.params.id);
-    if (isNaN(postId)) {
-      return res.status(400).json({ error: 'Invalid post ID' });
-    }
+    if (isNaN(postId)) return res.status(400).json({ error: "Invalid post ID" });
 
-    // Read existing posts
-    const data = fs.readFileSync(myPath, 'utf-8');
-    let posts = [];
+    // Load & parse existing posts
+    let posts;
     try {
-      posts = JSON.parse(data);
+      posts = JSON.parse(fs.readFileSync(myPath, "utf-8"));
     } catch (err) {
-      return res.status(500).json({ error: 'Could not parse posts file' });
+      return res.status(500).json({ error: "Could not parse posts file" });
     }
 
-    // Find the post
-    const idx = posts.findIndex(p => p.id === postId);
-    if (idx === -1) {
-      return res.status(404).json({ error: 'Post not found' });
+    const idx = posts.findIndex((p) => p.id === postId);
+    if (idx === -1) return res.status(404).json({ error: "Post not found" });
+
+    const original = posts[idx];
+    const incoming = { ...req.body };
+
+    // Parse tags JSON string into array
+    if (typeof incoming.tags === "string") {
+      try {
+        incoming.tags = JSON.parse(incoming.tags);
+      } catch {
+        // leave as-is on parse failure
+      }
     }
 
-    // Merge incoming fields
-    const updated = {
-      ...posts[idx],
-      ...req.body,                // title, content, tags, etc.
-    };
-
-    // If a new image was uploaded, update its path
+    // Merge and override image if uploaded
+    const updated = { ...original, ...incoming };
     if (req.file) {
       updated.image = `uploads/${req.file.filename}`;
     }
 
-    // Replace & save
     posts[idx] = updated;
     try {
       fs.writeFileSync(myPath, JSON.stringify(posts, null, 2));
     } catch (err) {
-      return res.status(500).json({ error: 'Could not write posts file' });
+      return res.status(500).json({ error: "Could not write posts file" });
     }
 
-    return res.json({ message: 'Post updated', post: updated });
+    res.json({ message: "Post updated", post: updated });
   }
 );
+
 
    
    // Get all posts
