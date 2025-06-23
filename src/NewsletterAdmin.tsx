@@ -30,7 +30,6 @@ const postsPerPage = 6;
 const NewsletterAdmin: React.FC = () => {
   const [editingPost, setEditingPost] = useState<NewsPost | null>(null);
   const [filter, setFilter] = useState<"all" | "podcast" | "general">("all");
-  const [selectedPost, setSelectedPost] = useState<NewsPost | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState<NewsPost[]>([]);
 
@@ -38,16 +37,16 @@ const NewsletterAdmin: React.FC = () => {
     fetch("/api/getPosts")
       .then((res) => res.json())
       .then((data: any[]) => {
-        // Normalize tags so .map always works
-        const normalized: NewsPost[] = data.map((p) => ({
-          ...p,
-          tags: Array.isArray(p.tags)
-            ? p.tags
-            : typeof p.tags === "string"
-            ? JSON.parse(p.tags)
-            : [],
-        }));
-        setPosts(normalized);
+        setPosts(
+          data.map((p) => ({
+            ...p,
+            tags: Array.isArray(p.tags)
+              ? p.tags
+              : typeof p.tags === "string"
+              ? JSON.parse(p.tags)
+              : [],
+          }))
+        );
       })
       .catch((err) => {
         console.error("Failed to fetch posts:", err);
@@ -99,6 +98,11 @@ const NewsletterAdmin: React.FC = () => {
     }
   };
 
+  const startEdit = (post: NewsPost) => {
+    setEditingPost(post);
+    window.scrollTo(0, 0);
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.2 } },
@@ -110,6 +114,11 @@ const NewsletterAdmin: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <Helmet>
+        <title>Newsletter Admin – Tru Media</title>
+      </Helmet>
+
+      {/* Hero */}
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -121,23 +130,24 @@ const NewsletterAdmin: React.FC = () => {
         </div>
         <div className="relative h-full container mx-auto px-4 flex items-center">
           <motion.div
+            className="max-w-3xl text-center"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl text-center"
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
               Newsletter Admin
             </h1>
             <p className="text-xl text-gray-300 mb-8">
-              Manage, edit, and delete newsletter posts.
+              Manage your newsletter posts below.
             </p>
           </motion.div>
         </div>
       </section>
 
       <div className="container mx-auto px-4 py-20">
+        {/* Filters */}
         <motion.div
           className="flex justify-center mb-12 space-x-4"
           initial="hidden"
@@ -166,6 +176,7 @@ const NewsletterAdmin: React.FC = () => {
           ))}
         </motion.div>
 
+        {/* Edit Form */}
         {editingPost && (
           <div className="mb-20">
             <NewsletterForm
@@ -184,6 +195,7 @@ const NewsletterAdmin: React.FC = () => {
           </div>
         )}
 
+        {/* Posts Grid */}
         <motion.div
           className="grid md:grid-cols-2 gap-8"
           initial="hidden"
@@ -232,25 +244,26 @@ const NewsletterAdmin: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                <motion.button
-                  whileHover={{ x: 10 }}
-                  onClick={() => setEditingPost(post)}
-                  className="text-blue-400 hover:text-blue-500 mr-4"
-                >
-                  Edit
-                </motion.button>
-                <motion.button
-                  whileHover={{ x: 10 }}
-                  onClick={() => handleDeletePost(post.id, post.image)}
-                  className="text-red-500 hover:text-red-600"
-                >
-                  Delete
-                </motion.button>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => startEdit(post)}
+                    className="text-blue-400 hover:text-blue-500"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeletePost(post.id, post.image)}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </motion.article>
           ))}
         </motion.div>
 
+        {/* Pagination */}
         <div className="flex justify-center mt-12">
           <button
             disabled={currentPage === 1}
@@ -272,6 +285,7 @@ const NewsletterAdmin: React.FC = () => {
         </div>
       </div>
 
+      {/* Modal */}
       <AnimatePresence>
         {selectedPost && (
           <motion.div
