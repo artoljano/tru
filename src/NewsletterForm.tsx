@@ -77,8 +77,10 @@ const NewsletterForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const isEditing = Boolean(post);
-    const targetId = post!.id;
+    // always use the formData.id, even when editing
+    const targetId = formData.id;
     const url = isEditing
       ? `/api/updatePost/${encodeURIComponent(targetId)}`
       : "/api/savePost";
@@ -100,6 +102,7 @@ const NewsletterForm = ({
       const res = await fetch(url, { method, body });
       if (!res.ok) throw new Error(`${method} failed (${res.status})`);
       const data = await res.json();
+      // backend returns { message, post }
       onSave(data.post as NewsPost);
     } catch (err: any) {
       console.error("Error saving post:", err);
