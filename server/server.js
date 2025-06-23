@@ -661,36 +661,37 @@ app.post('/api/send-review-email', (req, res) => {
 // ────────────────────────────────────────────────────────────────
 app.put(
   "/api/updatePost/:id",
-  upload.single("image"),  // multer only
+  upload.single("image"),
   (req, res) => {
     const postId = Number(req.params.id);
     if (isNaN(postId)) return res.status(400).json({ error: "Invalid post ID" });
 
-    // Load & parse existing posts
     let posts;
     try {
       posts = JSON.parse(fs.readFileSync(myPath, "utf-8"));
-    } catch (err) {
+    } catch {
       return res.status(500).json({ error: "Could not parse posts file" });
     }
 
     const idx = posts.findIndex((p) => p.id === postId);
     if (idx === -1) return res.status(404).json({ error: "Post not found" });
 
-    const original = posts[idx];
+    // multer has already populated req.body for all your text fields
     const incoming = { ...req.body };
 
-    // Parse tags JSON string into array
+    // if tags came in as a string, parse them into an array
     if (typeof incoming.tags === "string") {
       try {
         incoming.tags = JSON.parse(incoming.tags);
       } catch {
-        // leave as-is on parse failure
+        // leave it alone if parse fails
       }
     }
 
-    // Merge and override image if uploaded
-    const updated = { ...original, ...incoming };
+    // merge onto the original
+    const updated = { ...posts[idx], ...incoming };
+
+    // if they uploaded a new file, multer put it in req.file
     if (req.file) {
       updated.image = `uploads/${req.file.filename}`;
     }
@@ -698,13 +699,14 @@ app.put(
     posts[idx] = updated;
     try {
       fs.writeFileSync(myPath, JSON.stringify(posts, null, 2));
-    } catch (err) {
+    } catch {
       return res.status(500).json({ error: "Could not write posts file" });
     }
 
-    res.json({ message: "Post updated", post: updated });
+    return res.json({ message: "Post updated", post: updated });
   }
 );
+
 
 
    
