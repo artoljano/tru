@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import NewsletterForm, { NewsPost } from "./NewsletterForm";
+import NewsletterForm, { NewsPost as FormPost } from "./NewsletterForm";
 
 interface NewsPost {
   id: number;
@@ -25,31 +25,43 @@ interface NewsPost {
   tags: string[];
 }
 
-// const newsPosts: NewsPost[] = [ ... ]  // your commented-out sample data
+const postsPerPage = 6;
 
-const NewsletterAdmin = () => {
+const NewsletterAdmin: React.FC = () => {
   const [editingPost, setEditingPost] = useState<NewsPost | null>(null);
   const [filter, setFilter] = useState<"all" | "podcast" | "general">("all");
   const [selectedPost, setSelectedPost] = useState<NewsPost | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState<NewsPost[]>([]);
-  const postsPerPage = 6; // Define posts per page
 
   useEffect(() => {
-    // Fetch posts from JSON file or your backend API
     fetch("/api/getPosts")
-      .then((response) => response.json())
-      .then((data) => setPosts(data));
+      .then((res) => res.json())
+      .then((data: any[]) => {
+        // Normalize tags so .map always works
+        const normalized: NewsPost[] = data.map((p) => ({
+          ...p,
+          tags: Array.isArray(p.tags)
+            ? p.tags
+            : typeof p.tags === "string"
+            ? JSON.parse(p.tags)
+            : [],
+        }));
+        setPosts(normalized);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch posts:", err);
+        setPosts([]);
+      });
   }, []);
 
-  // Filter the posts based on the selected filter value
   const filteredPosts = posts.filter((post) => {
     if (filter === "all") return true;
-    if (filter === "podcast") return post.isPodcastRelated;
-    return !post.isPodcastRelated;
+    return filter === "podcast"
+      ? post.isPodcastRelated
+      : !post.isPodcastRelated;
   });
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
   const currentPosts = filteredPosts.slice(
     (currentPage - 1) * postsPerPage,
@@ -61,7 +73,6 @@ const NewsletterAdmin = () => {
     window.scrollTo(0, 0);
   };
 
-  // Handle delete post functionality
   const handleDeletePost = (postId: number, postImage: string) => {
     if (
       window.confirm("Are you sure you want to delete this post and its image?")
@@ -72,9 +83,7 @@ const NewsletterAdmin = () => {
         body: JSON.stringify({ id: postId, image: postImage }),
       })
         .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to delete post.");
-          }
+          if (!response.ok) throw new Error("Failed to delete post.");
           return response.json();
         })
         .then((data) => {
@@ -90,9 +99,17 @@ const NewsletterAdmin = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.2 } },
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* New Hero Section */}
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -100,7 +117,7 @@ const NewsletterAdmin = () => {
             alt="Writing Desk"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
         </div>
         <div className="relative h-full container mx-auto px-4 flex items-center">
           <motion.div
@@ -108,121 +125,76 @@ const NewsletterAdmin = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl"
+            className="max-w-3xl text-center"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">Newsletter</h1>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              Newsletter Admin
+            </h1>
             <p className="text-xl text-gray-300 mb-8">
-              Stay updated with our latest podcast news, insights, and thoughts
-              on technology, culture, and more.
+              Manage, edit, and delete newsletter posts.
             </p>
-            <div className="grid grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
-              >
-                <Rss className="w-8 h-8 mb-2 mx-auto text-red-800" />
-                <div className="text-2xl font-bold">Weekly</div>
-                <div className="text-gray-400">Updates</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
-              >
-                <PenTool className="w-8 h-8 mb-2 mx-auto text-red-800" />
-                <div className="text-2xl font-bold">Original</div>
-                <div className="text-gray-400">Content</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
-              >
-                <Users className="w-8 h-8 mb-2 mx-auto text-red-800" />
-                <div className="text-2xl font-bold">Growing</div>
-                <div className="text-gray-400">Community</div>
-              </motion.div>
-            </div>
           </motion.div>
         </div>
       </section>
 
       <div className="container mx-auto px-4 py-20">
-        {/* Filter Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
           className="flex justify-center mb-12 space-x-4"
+          initial="hidden"
+          animate="show"
+          variants={containerVariants}
         >
           {[
             { value: "all", label: "All Posts" },
             { value: "podcast", label: "Podcast News" },
             { value: "general", label: "General Insights" },
-          ].map((option) => (
+          ].map((opt) => (
             <button
-              key={option.value}
+              key={opt.value}
               onClick={() => {
-                setFilter(option.value as "all" | "podcast" | "general");
+                setFilter(opt.value as any);
                 setCurrentPage(1);
               }}
               className={`px-6 py-3 rounded-full transition-all duration-300 ${
-                filter === option.value
+                filter === opt.value
                   ? "bg-white text-black"
                   : "bg-gray-900 text-white hover:bg-gray-800"
               }`}
             >
-              {option.label}
+              {opt.label}
             </button>
           ))}
         </motion.div>
 
-        {/* Edit Form */}
         {editingPost && (
-          <div className="container mx-auto px-4 py-8">
+          <div className="mb-20">
             <NewsletterForm
               post={editingPost}
-              onSave={(updated) => {
+              onSave={(updated: FormPost) => {
                 setPosts((all) =>
                   all.map((p) => (p.id === updated.id ? updated : p))
                 );
                 setEditingPost(null);
               }}
               onDelete={(id) => {
-                if (editingPost) {
-                  handleDeletePost(id, editingPost.image);
-                  setEditingPost(null);
-                }
+                handleDeletePost(id, editingPost.image);
+                setEditingPost(null);
               }}
             />
           </div>
         )}
 
-        {/* Posts Grid */}
         <motion.div
-          variants={{
-            hidden: { opacity: 0 },
-            show: { opacity: 1, transition: { staggerChildren: 0.2 } },
-          }}
+          className="grid md:grid-cols-2 gap-8"
           initial="hidden"
           animate="show"
-          className="grid md:grid-cols-2 gap-8"
+          variants={containerVariants}
         >
           {currentPosts.map((post) => (
             <motion.article
               key={post.id}
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-              }}
               className="bg-gray-900/50 rounded-xl overflow-hidden backdrop-blur-sm hover:shadow-2xl transition-all duration-300"
+              variants={itemVariants}
             >
               <div className="relative aspect-video">
                 <img
@@ -262,34 +234,23 @@ const NewsletterAdmin = () => {
                 </div>
                 <motion.button
                   whileHover={{ x: 10 }}
-                  onClick={() => setSelectedPost(post)}
-                  className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors"
+                  onClick={() => setEditingPost(post)}
+                  className="text-blue-400 hover:text-blue-500 mr-4"
                 >
-                  Lexo më shumë
-                  <ArrowRight size={16} />
+                  Edit
                 </motion.button>
-
-                {/* Edit and Delete Buttons */}
-                <div className="mt-4 flex justify-between gap-4">
-                  <button
-                    onClick={() => setEditingPost(post)}
-                    className="text-blue-400 hover:text-blue-500"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeletePost(post.id, post.image)}
-                    className="text-red-500 hover:text-red-600"
-                  >
-                    Delete
-                  </button>
-                </div>
+                <motion.button
+                  whileHover={{ x: 10 }}
+                  onClick={() => handleDeletePost(post.id, post.image)}
+                  className="text-red-500 hover:text-red-600"
+                >
+                  Delete
+                </motion.button>
               </div>
             </motion.article>
           ))}
         </motion.div>
 
-        {/* Pagination */}
         <div className="flex justify-center mt-12">
           <button
             disabled={currentPage === 1}
@@ -311,22 +272,21 @@ const NewsletterAdmin = () => {
         </div>
       </div>
 
-      {/* Full Post Modal */}
       <AnimatePresence>
         {selectedPost && (
           <motion.div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto"
             onClick={() => setSelectedPost(null)}
           >
             <motion.div
+              className="container mx-auto px-4 py-12 min-h-screen flex items-center"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 50 }}
               transition={{ type: "spring", damping: 25 }}
-              className="container mx-auto px-4 py-12 min-h-screen flex items-center"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="bg-gray-900 rounded-xl max-w-4xl mx-auto overflow-hidden">
@@ -363,13 +323,11 @@ const NewsletterAdmin = () => {
                     {selectedPost.title}
                   </h2>
                   <div className="prose prose-invert max-w-none">
-                    {selectedPost.content
-                      .split("\n")
-                      .map((paragraph, index) => (
-                        <p key={index} className="mb-4 text-gray-300">
-                          {paragraph.trim()}
-                        </p>
-                      ))}
+                    {selectedPost.content.split("\n").map((paragraph, idx) => (
+                      <p key={idx} className="mb-4 text-gray-300">
+                        {paragraph.trim()}
+                      </p>
+                    ))}
                   </div>
                   <div className="flex flex-wrap gap-2 mt-8">
                     {selectedPost.tags.map((tag) => (
