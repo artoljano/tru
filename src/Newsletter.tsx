@@ -16,12 +16,12 @@ interface NewsPost {
   id: number;
   title: string;
   excerpt: string;
-  content: string;
+  content: string; // HTML string
   date: string;
   isPodcastRelated: boolean;
   image: string;
   readTime: string;
-  tags: string[]; // ensure this is always an array
+  tags: string[];
 }
 
 const postsPerPage = 6;
@@ -36,7 +36,7 @@ function Newsletter() {
     fetch("/api/getPosts")
       .then((response) => response.json())
       .then((data: any[]) => {
-        // Normalize tags so .map always works
+        // Ensure tags is always an array
         const normalized = data.map((p) => ({
           ...p,
           tags: Array.isArray(p.tags)
@@ -55,8 +55,9 @@ function Newsletter() {
 
   const filteredPosts = posts.filter((post) => {
     if (filter === "all") return true;
-    if (filter === "podcast") return post.isPodcastRelated;
-    return !post.isPodcastRelated;
+    return filter === "podcast"
+      ? post.isPodcastRelated
+      : !post.isPodcastRelated;
   });
 
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
@@ -70,25 +71,14 @@ function Newsletter() {
     window.scrollTo(0, 0);
   };
 
-  const container = {
+  const containerVariants = {
     hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
+    show: { opacity: 1, transition: { staggerChildren: 0.2 } },
   };
 
-  const item = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-      },
-    },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
   return (
@@ -124,22 +114,22 @@ function Newsletter() {
 
       <div className="min-h-screen bg-blue-900/40 text-white">
         {/* Hero Section */}
-        <section className="relative h-[100vh] overflow-hidden pt-[10rem] md:pt-0 md:h-[70vh]">
+        <section className="relative h-[70vh] overflow-hidden pt-[10rem] md:pt-0">
           <div className="absolute inset-0">
             <img
               src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
-              alt="Pulti Shkrimi"
+              alt="Writing Desk"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
           </div>
           <div className="relative h-full container mx-auto px-4 flex items-center">
             <motion.div
+              className="max-w-3xl"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="max-w-3xl"
             >
               <h1 className="text-5xl md:text-7xl font-bold mb-6">Tru Media</h1>
               <p className="text-xl text-gray-300 mb-8">
@@ -148,11 +138,11 @@ function Newsletter() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <motion.div
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6 break-words"
                 >
                   <Rss className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                   <div className="text-xl sm:text-2xl font-bold mb-1">
@@ -163,11 +153,11 @@ function Newsletter() {
                   </div>
                 </motion.div>
                 <motion.div
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.3 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6 break-words"
                 >
                   <PenTool className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                   <div className="text-xl sm:text-2xl font-bold mb-1">
@@ -178,11 +168,11 @@ function Newsletter() {
                   </div>
                 </motion.div>
                 <motion.div
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6 break-words"
                 >
                   <Users className="w-8 h-8 mb-2 mx-auto text-gold-800" />
                   <div className="text-xl sm:text-2xl font-bold mb-1">
@@ -201,10 +191,10 @@ function Newsletter() {
         <div className="container mx-auto px-4 py-20">
           {/* Filter Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
             className="flex justify-center mb-12 space-x-4"
+            initial="hidden"
+            animate="show"
+            variants={containerVariants}
           >
             {[
               { value: "all", label: "Të gjitha" },
@@ -214,7 +204,7 @@ function Newsletter() {
               <button
                 key={option.value}
                 onClick={() => {
-                  setFilter(option.value as "all" | "podcast" | "general");
+                  setFilter(option.value as any);
                   setCurrentPage(1);
                 }}
                 className={`px-6 py-3 rounded-full transition-all duration-300 ${
@@ -228,18 +218,18 @@ function Newsletter() {
             ))}
           </motion.div>
 
+          {/* Posts Grid */}
           <motion.div
-            key={filter}
-            variants={container}
+            className="grid md:grid-cols-2 gap-8"
             initial="hidden"
             animate="show"
-            className="grid md:grid-cols-2 gap-8"
+            variants={containerVariants}
           >
             {currentPosts.map((post) => (
               <motion.article
                 key={post.id}
-                variants={item}
                 className="bg-gray-900/50 rounded-xl overflow-hidden backdrop-blur-sm hover:shadow-2xl transition-all duration-300"
+                variants={itemVariants}
               >
                 <div className="relative aspect-video">
                   <img
@@ -295,8 +285,7 @@ function Newsletter() {
             <button
               disabled={currentPage === 1}
               onClick={() => handlePageChange(currentPage - 1)}
-              className="px-4 py-2 bg-
-gray-800 text-white rounded-full mx-2 disabled:opacity-50"
+              className="px-4 py-2 bg-gray-800 text-white rounded-full mx-2 disabled:opacity-50"
             >
               Më Parë
             </button>
@@ -317,18 +306,18 @@ gray-800 text-white rounded-full mx-2 disabled:opacity-50"
         <AnimatePresence>
           {selectedPost && (
             <motion.div
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto"
               onClick={() => setSelectedPost(null)}
             >
               <motion.div
+                className="container mx-auto px-4 py-12 min-h-screen flex items-center"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 50 }}
                 transition={{ type: "spring", damping: 25 }}
-                className="container mx-auto px-4 py-12 min-h-screen flex items-center"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="bg-gray-900 rounded-xl max-w-4xl mx-auto overflow-hidden">
@@ -340,7 +329,7 @@ gray-800 text-white rounded-full mx-2 disabled:opacity-50"
                     />
                     <button
                       onClick={() => setSelectedPost(null)}
-                      className="absolute top-4 right-4 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
+                      className="absolute top-4 right-4 bg-black/50 p-2 rounded-full hover:bg-black/70"
                     >
                       <X size={24} />
                     </button>
@@ -364,15 +353,10 @@ gray-800 text-white rounded-full mx-2 disabled:opacity-50"
                     <h2 className="text-3xl font-bold mb-6">
                       {selectedPost.title}
                     </h2>
-                    <div className="prose prose-invert max-w-none">
-                      {selectedPost.content
-                        .split("\n")
-                        .map((paragraph, index) => (
-                          <p key={index} className="mb-4 text-gray-300">
-                            {paragraph.trim()}
-                          </p>
-                        ))}
-                    </div>
+                    <div
+                      className="prose prose-invert max-w-none"
+                      dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                    />
                     <div className="flex flex-wrap gap-2 mt-8">
                       {selectedPost.tags.map((tag) => (
                         <span
