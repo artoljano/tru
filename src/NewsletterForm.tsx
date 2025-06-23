@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-interface NewsPost {
+export interface NewsPost {
   id: number;
   title: string;
   excerpt: string;
-  content: string;
+  content: string; // now HTML
   date: string;
   isPodcastRelated: boolean;
-  image: string | File; // Can be a string (URL) or File (when uploading)
+  image: string | File;
   readTime: string;
   tags: string[];
 }
@@ -16,18 +18,18 @@ interface NewsPost {
 const NewsletterForm = ({
   post,
   onSave,
-  onDelete, // New callback for deleting a post
+  onDelete,
 }: {
   post?: NewsPost;
   onSave: (data: NewsPost) => void;
-  onDelete?: (id: number) => void; // Optional delete function
+  onDelete?: (id: number) => void;
 }) => {
   const [formData, setFormData] = useState<NewsPost>(
     post || {
       id: Date.now(),
       title: "",
       excerpt: "",
-      content: "",
+      content: "", // will hold HTML
       date: new Date().toISOString().split("T")[0],
       isPodcastRelated: false,
       image: "",
@@ -37,15 +39,21 @@ const NewsletterForm = ({
   );
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleExcerptChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, excerpt: value }));
+  };
+
+  const handleContentChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, content: value }));
   };
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,82 +68,50 @@ const NewsletterForm = ({
     if (file) {
       setFormData((prev) => ({
         ...prev,
-        image: file, // Save the file object
+        image: file,
       }));
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const isEditing = Boolean(post);
+    const url = isEditing ? `/api/updatePost/${formData.id}` : "/api/savePost";
+    const method = isEditing ? "PUT" : "POST";
 
-    // If a file is selected, handle the upload
+    const body = new FormData();
+    body.append("title", formData.title);
+    body.append("excerpt", formData.excerpt);
+    body.append("content", formData.content); // HTML content
+    body.append("date", formData.date);
+    body.append("isPodcastRelated", String(formData.isPodcastRelated));
+    body.append("readTime", formData.readTime);
+    body.append("tags", JSON.stringify(formData.tags));
     if (formData.image instanceof File) {
-      const formDataToUpload = new FormData();
-      formDataToUpload.append("image", formData.image);
+      body.append("image", formData.image);
+    }
 
-      fetch("/api/uploadImage", {
-        method: "POST",
-        body: formDataToUpload,
-      })
-        .then((response) => response.json()) // Directly parse JSON response here
-        .then((jsonData) => {
-          console.log("Server response:", jsonData);
-
-          if (jsonData.imagePath) {
-            // Save post with the updated image path directly in the same step
-            return fetch("/api/savePost", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                ...formData,
-                image: jsonData.imagePath, // Directly use the image URL here
-              }),
-            });
-          } else {
-            throw new Error("Image upload failed, no image path returned.");
-          }
-        })
-
-        .then((response) => response.json())
-        .then((savedPost) => {
-          console.log("Post saved successfully:", savedPost);
-          onSave(savedPost); // Callback to parent to update state
-        })
-        .catch((error) => {
-          console.error("Error during process:", error);
-          alert("Error: " + error.message); // Optional: show an alert to the user
-        });
-    } else {
-      // Save post directly if no image is uploaded
-      fetch("/api/savePost", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-        .then((response) => response.json())
-        .then((savedPost) => {
-          console.log("Post saved successfully:", savedPost);
-          onSave(savedPost); // Callback to parent to update state
-        })
-        .catch((error) => {
-          console.error("Error saving post:", error);
-          alert("Error saving post: " + error.message); // Optional: show an alert to the user
-        });
+    try {
+      const res = await fetch(url, { method, body });
+      const saved = await res.json();
+      onSave(saved);
+    } catch (err: any) {
+      console.error("Error saving post:", err);
+      alert("Error: " + err.message);
     }
   };
 
   const handleDelete = () => {
     if (onDelete && post) {
-      onDelete(post.id); // Call the delete callback with the post ID
+      onDelete(post.id);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-red-900/50 text-white pt-24">
+      <Helmet>
+        <title>{post ? "Edit" : "Add New"} Newsletter Post</title>
+      </Helmet>
       <div className="container mx-auto px-4 max-w-4xl pt-10">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -150,6 +126,7 @@ const NewsletterForm = ({
 
         <div className="bg-black/50 rounded-xl p-8 backdrop-blur-sm shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Title */}
             <div className="space-y-2">
               <label
                 htmlFor="title"
@@ -169,6 +146,7 @@ const NewsletterForm = ({
               />
             </div>
 
+            {/* Excerpt as simple rich text */}
             <div className="space-y-2">
               <label
                 htmlFor="excerpt"
@@ -176,18 +154,18 @@ const NewsletterForm = ({
               >
                 Excerpt
               </label>
-              <textarea
-                id="excerpt"
-                name="excerpt"
+              <ReactQuill
+                theme="snow"
                 value={formData.excerpt}
-                onChange={handleChange}
-                required
-                rows={3}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="Short summary of the post"
+                onChange={handleExcerptChange}
+                modules={{
+                  toolbar: [["bold", "italic"], ["link"], [{ list: "bullet" }]],
+                }}
+                className="bg-gray-800 text-white"
               />
             </div>
 
+            {/* Content with full rich-text support */}
             <div className="space-y-2">
               <label
                 htmlFor="content"
@@ -195,18 +173,38 @@ const NewsletterForm = ({
               >
                 Content
               </label>
-              <textarea
-                id="content"
-                name="content"
+              <ReactQuill
+                theme="snow"
                 value={formData.content}
-                onChange={handleChange}
-                required
-                rows={6}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="Full content of the post"
+                onChange={handleContentChange}
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["blockquote", "code-block"],
+                    ["link", "image"],
+                    ["clean"],
+                  ],
+                }}
+                formats={[
+                  "header",
+                  "bold",
+                  "italic",
+                  "underline",
+                  "strike",
+                  "list",
+                  "bullet",
+                  "blockquote",
+                  "code-block",
+                  "link",
+                  "image",
+                ]}
+                className="bg-gray-800 text-white"
               />
             </div>
 
+            {/* Date & Image */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label
@@ -225,7 +223,6 @@ const NewsletterForm = ({
                   className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
                 />
               </div>
-
               <div className="space-y-2">
                 <label
                   htmlFor="image"
@@ -238,12 +235,13 @@ const NewsletterForm = ({
                   id="image"
                   name="image"
                   onChange={handleFileChange}
-                  required
+                  required={!post}
                   className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
                 />
               </div>
             </div>
 
+            {/* ReadTime, Tags, Podcast Checkbox */}
             <div className="space-y-2">
               <label
                 htmlFor="readTime"
@@ -262,7 +260,6 @@ const NewsletterForm = ({
                 placeholder="Read time"
               />
             </div>
-
             <div className="space-y-2">
               <label
                 htmlFor="tags"
@@ -281,7 +278,6 @@ const NewsletterForm = ({
                 placeholder="tag1, tag2, tag3"
               />
             </div>
-
             <div className="flex items-center gap-4">
               <input
                 type="checkbox"
@@ -299,22 +295,22 @@ const NewsletterForm = ({
               </label>
             </div>
 
+            {/* Submit & Delete */}
             <button
               type="submit"
               className="w-full bg-white text-black py-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-300"
             >
               {post ? "Update Post" : "Save Post"}
             </button>
+            {post && onDelete && (
+              <button
+                onClick={handleDelete}
+                className="w-full bg-red-600 text-white py-4 rounded-lg mt-4 font-semibold hover:bg-red-500 transition-colors duration-300"
+              >
+                Delete Post
+              </button>
+            )}
           </form>
-
-          {post && (
-            <button
-              onClick={handleDelete}
-              className="w-full bg-gold-600 text-white py-4 rounded-lg mt-4 font-semibold hover:bg-gold-500 transition-colors duration-300"
-            >
-              Delete Post
-            </button>
-          )}
         </div>
       </div>
     </div>

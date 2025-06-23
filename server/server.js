@@ -656,7 +656,57 @@ app.post('/api/send-review-email', (req, res) => {
     });
   });
   
-  
+  // ────────────────────────────────────────────────────────────────
+// PUT /api/updatePost/:id
+// ────────────────────────────────────────────────────────────────
+app.put(
+  '/api/updatePost/:id',
+  upload.single('image'),          // allow optional new image upload
+  express.json(),                  // parse JSON bodies
+  (req, res) => {
+    const postId = Number(req.params.id);
+    if (isNaN(postId)) {
+      return res.status(400).json({ error: 'Invalid post ID' });
+    }
+
+    // Read existing posts
+    const data = fs.readFileSync(myPath, 'utf-8');
+    let posts = [];
+    try {
+      posts = JSON.parse(data);
+    } catch (err) {
+      return res.status(500).json({ error: 'Could not parse posts file' });
+    }
+
+    // Find the post
+    const idx = posts.findIndex(p => p.id === postId);
+    if (idx === -1) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    // Merge incoming fields
+    const updated = {
+      ...posts[idx],
+      ...req.body,                // title, content, tags, etc.
+    };
+
+    // If a new image was uploaded, update its path
+    if (req.file) {
+      updated.image = `uploads/${req.file.filename}`;
+    }
+
+    // Replace & save
+    posts[idx] = updated;
+    try {
+      fs.writeFileSync(myPath, JSON.stringify(posts, null, 2));
+    } catch (err) {
+      return res.status(500).json({ error: 'Could not write posts file' });
+    }
+
+    return res.json({ message: 'Post updated', post: updated });
+  }
+);
+
    
    // Get all posts
    app.get('/api/getPosts', async (req, res) => {
