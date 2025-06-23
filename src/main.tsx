@@ -12,6 +12,7 @@ import "./index.css";
 import NewsletterForm from "./NewsletterForm.tsx";
 import NewsletterAdmin from "./NewsletterAdmin.tsx";
 import { HelmetProvider } from "react-helmet-async";
+import NewsletterFormPage from "./NewsletterFormPage.tsx";
 
 // Create your router like before
 const router = createBrowserRouter(
@@ -26,8 +27,8 @@ const router = createBrowserRouter(
         { path: "/episodes", element: <Episodes /> },
         { path: "/about", element: <About /> },
         { path: "/newsletter", element: <Newsletter /> },
-        { path: "/admin/newsletter/add", element: <NewsletterForm /> },
-        { path: "/admin/newsletter/add/:id", element: <NewsletterForm /> },
+        { path: "/admin/newsletter/add", element: <NewsletterFormPage /> },
+        { path: "/admin/newsletter/add/:id", element: <NewsletterFormPage /> },
         { path: "/admin/newsletter/manage", element: <NewsletterAdmin /> },
       ],
     },
