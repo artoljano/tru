@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  Calendar,
-  Tag,
-  ArrowRight,
-  Rss,
-  PenTool,
-  Users,
-  BookOpen,
-  X,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, Tag, Rss, PenTool, Users, BookOpen, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import NewsletterForm, { NewsPost as FormPost } from "./NewsletterForm";
 
-interface NewsPost {
+export interface NewsPost {
   id: number;
   title: string;
   excerpt: string;
@@ -98,27 +89,13 @@ const NewsletterAdmin: React.FC = () => {
     }
   };
 
-  const startEdit = (post: NewsPost) => {
-    setEditingPost(post);
-    window.scrollTo(0, 0);
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.2 } },
-  };
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  };
-
   return (
     <div className="min-h-screen bg-black text-white">
       <Helmet>
         <title>Newsletter Admin – Tru Media</title>
       </Helmet>
 
-      {/* Hero */}
+      {/* Hero Section */}
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -147,12 +124,15 @@ const NewsletterAdmin: React.FC = () => {
       </section>
 
       <div className="container mx-auto px-4 py-20">
-        {/* Filters */}
+        {/* Filter Buttons */}
         <motion.div
           className="flex justify-center mb-12 space-x-4"
           initial="hidden"
           animate="show"
-          variants={containerVariants}
+          variants={{
+            hidden: { opacity: 0 },
+            show: { opacity: 1, transition: { staggerChildren: 0.2 } },
+          }}
         >
           {[
             { value: "all", label: "All Posts" },
@@ -176,7 +156,7 @@ const NewsletterAdmin: React.FC = () => {
           ))}
         </motion.div>
 
-        {/* Edit Form */}
+        {/* Editing Form */}
         {editingPost && (
           <div className="mb-20">
             <NewsletterForm
@@ -200,13 +180,19 @@ const NewsletterAdmin: React.FC = () => {
           className="grid md:grid-cols-2 gap-8"
           initial="hidden"
           animate="show"
-          variants={containerVariants}
+          variants={{
+            hidden: { opacity: 0 },
+            show: { opacity: 1, transition: { staggerChildren: 0.2 } },
+          }}
         >
           {currentPosts.map((post) => (
             <motion.article
               key={post.id}
               className="bg-gray-900/50 rounded-xl overflow-hidden backdrop-blur-sm hover:shadow-2xl transition-all duration-300"
-              variants={itemVariants}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+              }}
             >
               <div className="relative aspect-video">
                 <img
@@ -246,7 +232,7 @@ const NewsletterAdmin: React.FC = () => {
                 </div>
                 <div className="flex gap-4">
                   <button
-                    onClick={() => startEdit(post)}
+                    onClick={() => setEditingPost(post)}
                     className="text-blue-400 hover:text-blue-500"
                   >
                     Edit
@@ -284,82 +270,6 @@ const NewsletterAdmin: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* Modal */}
-      <AnimatePresence>
-        {selectedPost && (
-          <motion.div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedPost(null)}
-          >
-            <motion.div
-              className="container mx-auto px-4 py-12 min-h-screen flex items-center"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              transition={{ type: "spring", damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="bg-gray-900 rounded-xl max-w-4xl mx-auto overflow-hidden">
-                <div className="relative aspect-video">
-                  <img
-                    src={selectedPost.image}
-                    alt={selectedPost.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    onClick={() => setSelectedPost(null)}
-                    className="absolute top-4 right-4 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
-                  >
-                    <X size={24} />
-                  </button>
-                  {selectedPost.isPodcastRelated && (
-                    <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded-full text-sm">
-                      Podcast News
-                    </div>
-                  )}
-                </div>
-                <div className="p-8">
-                  <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
-                    <span className="flex items-center gap-1">
-                      <Calendar size={16} />
-                      {selectedPost.date}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <BookOpen size={16} />
-                      {selectedPost.readTime}
-                    </span>
-                  </div>
-                  <h2 className="text-3xl font-bold mb-6">
-                    {selectedPost.title}
-                  </h2>
-                  <div className="prose prose-invert max-w-none">
-                    {selectedPost.content.split("\n").map((paragraph, idx) => (
-                      <p key={idx} className="mb-4 text-gray-300">
-                        {paragraph.trim()}
-                      </p>
-                    ))}
-                  </div>
-                  <div className="flex flex-wrap gap-2 mt-8">
-                    {selectedPost.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="flex items-center gap-1 px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300"
-                      >
-                        <Tag size={14} />
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
