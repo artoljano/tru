@@ -20,11 +20,11 @@ const NewsletterForm = ({
   onSave,
   onDelete,
 }: {
-  post?: Partial<NewsPost>; // incoming post may be missing some fields
+  post?: Partial<NewsPost>; // incoming post may be partial
   onSave: (data: NewsPost) => void;
   onDelete?: (id: number) => void;
 }) => {
-  // Normalize tags (if they came in as JSON-string or already an array)
+  // Helpers to parse incoming fields
   const normalizeTags = (tags: any): string[] => {
     if (Array.isArray(tags)) return tags;
     if (typeof tags === "string") {
@@ -36,29 +36,28 @@ const NewsletterForm = ({
     }
     return [];
   };
+  const normalizeBool = (val: any): boolean =>
+    val === true || val === "true" || val === 1 || val === "1";
 
-  // Build our initial formData
-  const initial: NewsPost = {
+  // Build form state from props
+  const makeFormData = (): NewsPost => ({
     id: post?.id ?? Date.now(),
     title: post?.title ?? "",
     excerpt: post?.excerpt ?? "",
     content: post?.content ?? "",
     date: post?.date ?? new Date().toISOString().slice(0, 10),
-    isPodcastRelated: post?.isPodcastRelated ?? false,
+    isPodcastRelated: normalizeBool(post?.isPodcastRelated),
     image: post?.image ?? "",
     readTime: post?.readTime ?? "",
     tags: normalizeTags(post?.tags),
-  };
+  });
 
-  const [formData, setFormData] = useState<NewsPost>(initial);
+  const [formData, setFormData] = useState<NewsPost>(makeFormData());
 
-  // If the `post` prop ever changes (e.g. after async fetch), re-sync
+  // When `post` arrives/changes, re-populate the form
   useEffect(() => {
     if (post) {
-      setFormData({
-        ...initial,
-        tags: normalizeTags(post.tags),
-      });
+      setFormData(makeFormData());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post]);
@@ -66,29 +65,26 @@ const NewsletterForm = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const target = e.currentTarget;
-    const { name, type, value } = target;
-    if (type === "checkbox") {
-      setFormData((p) => ({
-        ...p,
-        [name]: (target as HTMLInputElement).checked,
-      }));
-    } else {
-      setFormData((p) => ({
-        ...p,
-        [name]: value,
-      }));
-    }
+    const { name, type, value, checked } = e.currentTarget as HTMLInputElement;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "text" || type === "date"
+          ? value
+          : prev[name as keyof NewsPost],
+    }));
   };
 
   const handleExcerptChange = (value: string) =>
-    setFormData((p) => ({ ...p, excerpt: value }));
+    setFormData((prev) => ({ ...prev, excerpt: value }));
   const handleContentChange = (value: string) =>
-    setFormData((p) => ({ ...p, content: value }));
+    setFormData((prev) => ({ ...prev, content: value }));
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((p) => ({
-      ...p,
+    setFormData((prev) => ({
+      ...prev,
       tags: e.target.value.split(",").map((t) => t.trim()),
     }));
   };
@@ -96,17 +92,17 @@ const NewsletterForm = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((p) => ({ ...p, image: file }));
+      setFormData((prev) => ({ ...prev, image: file }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isEditing = Boolean(post?.id);
-    const url = isEditing
+    const editing = Boolean(post?.id);
+    const method = editing ? "PUT" : "POST";
+    const url = editing
       ? `/api/updatePost/${encodeURIComponent(formData.id)}`
       : "/api/savePost";
-    const method = isEditing ? "PUT" : "POST";
 
     const body = new FormData();
     body.append("title", formData.title);
@@ -124,8 +120,7 @@ const NewsletterForm = ({
       const res = await fetch(url, { method, body });
       if (!res.ok) throw new Error(`${method} failed (${res.status})`);
       const json = await res.json();
-      // our server returns { message, post: { … } }
-      const saved = isEditing ? json.post : json.postData || json.post;
+      const saved: NewsPost = editing ? json.post : json.postData || json.post;
       onSave(saved);
     } catch (err: any) {
       console.error("Error saving post:", err);
