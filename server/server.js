@@ -676,7 +676,8 @@ app.put(
   upload.single("image"),
   (req, res) => {
     const postId = Number(req.params.id);
-    if (isNaN(postId)) return res.status(400).json({ error: "Invalid post ID" });
+    if (isNaN(postId))
+      return res.status(400).json({ error: "Invalid post ID" });
 
     let posts;
     try {
@@ -688,27 +689,33 @@ app.put(
     const idx = posts.findIndex((p) => p.id === postId);
     if (idx === -1) return res.status(404).json({ error: "Post not found" });
 
-    // multer has already populated req.body for all your text fields
+    // multer has already populated req.body for your text fields
     const incoming = { ...req.body };
 
-    // if tags came in as a string, parse them into an array
+    // FIX: coerce podcast checkbox to boolean
+    if (typeof incoming.isPodcastRelated === "string") {
+      incoming.isPodcastRelated = incoming.isPodcastRelated === "true";
+    }
+
+    // if tags came in as JSON string, parse them
     if (typeof incoming.tags === "string") {
       try {
         incoming.tags = JSON.parse(incoming.tags);
       } catch {
-        // leave it alone if parse fails
+        // leave it if it wasn’t JSON
       }
     }
 
     // merge onto the original
     const updated = { ...posts[idx], ...incoming };
 
-    // if they uploaded a new file, multer put it in req.file
+    // if they uploaded a new image
     if (req.file) {
       updated.image = `uploads/${req.file.filename}`;
     }
 
     posts[idx] = updated;
+
     try {
       fs.writeFileSync(myPath, JSON.stringify(posts, null, 2));
     } catch {
@@ -718,6 +725,7 @@ app.put(
     return res.json({ message: "Post updated", post: updated });
   }
 );
+
 
 
 
