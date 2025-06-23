@@ -30,7 +30,7 @@ const NewsletterForm = ({
       title: "",
       excerpt: "",
       content: "",
-      date: new Date().toISOString().split("T")[0],
+      date: new Date().toISOString().slice(0, 10),
       isPodcastRelated: false,
       image: "",
       readTime: "",
@@ -43,15 +43,12 @@ const NewsletterForm = ({
   ) => {
     const target = e.currentTarget;
     const { name, type, value } = target;
-
     if (type === "checkbox") {
-      // here `target` is an HTMLInputElement, so `checked` exists
       setFormData((prev) => ({
         ...prev,
         [name]: (target as HTMLInputElement).checked,
       }));
     } else {
-      // for text inputs and selects, use `value`
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -59,35 +56,32 @@ const NewsletterForm = ({
     }
   };
 
-  const handleExcerptChange = (value: string) => {
+  const handleExcerptChange = (value: string) =>
     setFormData((prev) => ({ ...prev, excerpt: value }));
-  };
-
-  const handleContentChange = (value: string) => {
+  const handleContentChange = (value: string) =>
     setFormData((prev) => ({ ...prev, content: value }));
-  };
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
-      tags: e.target.value.split(",").map((tag) => tag.trim()),
+      tags: e.target.value.split(",").map((t) => t.trim()),
     }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        image: file,
-      }));
+      setFormData((prev) => ({ ...prev, image: file }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isEditing = Boolean(post);
-    const url = isEditing ? `/api/updatePost/${formData.id}` : "/api/savePost";
+    const targetId = post!.id;
+    const url = isEditing
+      ? `/api/updatePost/${encodeURIComponent(targetId)}`
+      : "/api/savePost";
     const method = isEditing ? "PUT" : "POST";
 
     const body = new FormData();
@@ -104,11 +98,12 @@ const NewsletterForm = ({
 
     try {
       const res = await fetch(url, { method, body });
-      const saved = await res.json();
-      onSave(saved);
+      if (!res.ok) throw new Error(`${method} failed (${res.status})`);
+      const data = await res.json();
+      onSave(data.post as NewsPost);
     } catch (err: any) {
       console.error("Error saving post:", err);
-      alert("Error: " + err.message);
+      alert("Error saving post: " + err.message);
     }
   };
 
@@ -146,13 +141,13 @@ const NewsletterForm = ({
                 Title
               </label>
               <input
-                type="text"
                 id="title"
                 name="title"
+                type="text"
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
               />
             </div>
 
@@ -224,13 +219,13 @@ const NewsletterForm = ({
                   Date
                 </label>
                 <input
-                  type="date"
                   id="date"
                   name="date"
+                  type="date"
                   value={formData.date}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
                 />
               </div>
               <div className="space-y-2">
@@ -241,12 +236,12 @@ const NewsletterForm = ({
                   Image
                 </label>
                 <input
-                  type="file"
                   id="image"
                   name="image"
+                  type="file"
                   onChange={handleFileChange}
                   required={!post}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
                 />
               </div>
             </div>
@@ -260,13 +255,13 @@ const NewsletterForm = ({
                 Read Time
               </label>
               <input
-                type="text"
                 id="readTime"
                 name="readTime"
+                type="text"
                 value={formData.readTime}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
               />
             </div>
 
@@ -279,22 +274,22 @@ const NewsletterForm = ({
                 Tags (comma-separated)
               </label>
               <input
-                type="text"
                 id="tags"
                 name="tags"
+                type="text"
                 value={formData.tags.join(", ")}
                 onChange={handleTagChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
               />
             </div>
 
             {/* Podcast Related */}
             <div className="flex items-center gap-4">
               <input
-                type="checkbox"
                 id="isPodcastRelated"
                 name="isPodcastRelated"
+                type="checkbox"
                 checked={formData.isPodcastRelated}
                 onChange={handleChange}
                 className="w-5 h-5 text-red-600 border-gray-300 rounded"
@@ -307,7 +302,7 @@ const NewsletterForm = ({
               </label>
             </div>
 
-            {/* Submit & Delete */}
+            {/* Buttons */}
             <button
               type="submit"
               className="w-full bg-white text-black py-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-300"
@@ -316,6 +311,7 @@ const NewsletterForm = ({
             </button>
             {post && onDelete && (
               <button
+                type="button"
                 onClick={handleDelete}
                 className="w-full bg-red-600 text-white py-4 rounded-lg mt-4 font-semibold hover:bg-red-500 transition-colors duration-300"
               >
