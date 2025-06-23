@@ -2,19 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Calendar, Tag, Rss, PenTool, Users, BookOpen, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import NewsletterForm, { NewsPost as FormPost } from "./NewsletterForm";
-
-export interface NewsPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  date: string;
-  isPodcastRelated: boolean;
-  image: string;
-  readTime: string;
-  tags: string[];
-}
+import NewsletterForm, { NewsPost } from "./NewsletterForm";
 
 const postsPerPage = 6;
 
@@ -161,14 +149,19 @@ const NewsletterAdmin: React.FC = () => {
           <div className="mb-20">
             <NewsletterForm
               post={editingPost}
-              onSave={(updated: FormPost) => {
+              onSave={(updated) => {
                 setPosts((all) =>
                   all.map((p) => (p.id === updated.id ? updated : p))
                 );
                 setEditingPost(null);
               }}
               onDelete={(id) => {
-                handleDeletePost(id, editingPost.image);
+                if (!editingPost) return;
+                const imgPath =
+                  typeof editingPost.image === "string"
+                    ? editingPost.image
+                    : "";
+                handleDeletePost(id, imgPath);
                 setEditingPost(null);
               }}
             />
@@ -238,7 +231,11 @@ const NewsletterAdmin: React.FC = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDeletePost(post.id, post.image)}
+                    onClick={() => {
+                      const imgPath =
+                        typeof post.image === "string" ? post.image : "";
+                      handleDeletePost(post.id, imgPath);
+                    }}
                     className="text-red-500 hover:text-red-600"
                   >
                     Delete

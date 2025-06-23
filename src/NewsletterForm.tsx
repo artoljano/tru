@@ -6,8 +6,8 @@ import "react-quill/dist/quill.snow.css";
 export interface NewsPost {
   id: number;
   title: string;
-  excerpt: string;
-  content: string; // now HTML
+  excerpt: string; // HTML
+  content: string; // HTML
   date: string;
   isPodcastRelated: boolean;
   image: string | File;
@@ -29,7 +29,7 @@ const NewsletterForm = ({
       id: Date.now(),
       title: "",
       excerpt: "",
-      content: "", // will hold HTML
+      content: "",
       date: new Date().toISOString().split("T")[0],
       isPodcastRelated: false,
       image: "",
@@ -41,11 +41,22 @@ const NewsletterForm = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const target = e.currentTarget;
+    const { name, type, value } = target;
+
+    if (type === "checkbox") {
+      // here `target` is an HTMLInputElement, so `checked` exists
+      setFormData((prev) => ({
+        ...prev,
+        [name]: (target as HTMLInputElement).checked,
+      }));
+    } else {
+      // for text inputs and selects, use `value`
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleExcerptChange = (value: string) => {
@@ -82,7 +93,7 @@ const NewsletterForm = ({
     const body = new FormData();
     body.append("title", formData.title);
     body.append("excerpt", formData.excerpt);
-    body.append("content", formData.content); // HTML content
+    body.append("content", formData.content);
     body.append("date", formData.date);
     body.append("isPodcastRelated", String(formData.isPodcastRelated));
     body.append("readTime", formData.readTime);
@@ -142,11 +153,10 @@ const NewsletterForm = ({
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="Post title"
               />
             </div>
 
-            {/* Excerpt as simple rich text */}
+            {/* Excerpt */}
             <div className="space-y-2">
               <label
                 htmlFor="excerpt"
@@ -165,7 +175,7 @@ const NewsletterForm = ({
               />
             </div>
 
-            {/* Content with full rich-text support */}
+            {/* Content */}
             <div className="space-y-2">
               <label
                 htmlFor="content"
@@ -241,13 +251,13 @@ const NewsletterForm = ({
               </div>
             </div>
 
-            {/* ReadTime, Tags, Podcast Checkbox */}
+            {/* Read Time */}
             <div className="space-y-2">
               <label
                 htmlFor="readTime"
                 className="block text-sm font-medium text-gray-300"
               >
-                Read Time (e.g., "5 min read")
+                Read Time
               </label>
               <input
                 type="text"
@@ -257,9 +267,10 @@ const NewsletterForm = ({
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="Read time"
               />
             </div>
+
+            {/* Tags */}
             <div className="space-y-2">
               <label
                 htmlFor="tags"
@@ -275,9 +286,10 @@ const NewsletterForm = ({
                 onChange={handleTagChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white focus:outline-none text-white"
-                placeholder="tag1, tag2, tag3"
               />
             </div>
+
+            {/* Podcast Related */}
             <div className="flex items-center gap-4">
               <input
                 type="checkbox"
