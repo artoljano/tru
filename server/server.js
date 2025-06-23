@@ -626,35 +626,47 @@ app.post('/api/send-review-email', (req, res) => {
    }
    
    // Save post endpoint
-   app.post('/api/savePost', upload.single('image'), (req, res) => {
-    const postData = req.body;
-  
-    if (req.file) {
-      postData.image = `uploads/${req.file.filename}`; // Make sure req.file is correctly handled
-    }
-  
-    fs.readFile(myPath, 'utf8', (err, fileData) => {
-      let newsletters = [];
-      if (!err && fileData) {
-        try {
-          newsletters = JSON.parse(fileData);
-        } catch (parseErr) {
-          console.error('Error parsing JSON:', parseErr);
-          return res.status(500).json({ error: 'Failed to parse JSON' });
-        }
+   // Save post endpoint (with id assignment)
+app.post('/api/savePost', upload.single('image'), (req, res) => {
+  // build a new post object, starting with everything sent
+  const incoming = { ...req.body };
+
+  // multer will have stored req.file if an image was uploaded
+  if (req.file) {
+    incoming.image = `uploads/${req.file.filename}`;
+  }
+
+  // assign a fresh numeric ID
+  const newPost = {
+    ...incoming,
+    id: Date.now()
+  };
+
+  // now read, append, and write back
+  fs.readFile(myPath, 'utf8', (err, fileData) => {
+    let newsletters = [];
+    if (!err && fileData) {
+      try {
+        newsletters = JSON.parse(fileData);
+      } catch (parseErr) {
+        console.error('Error parsing JSON:', parseErr);
+        return res.status(500).json({ error: 'Failed to parse JSON' });
       }
-  
-      newsletters.push(postData);
-  
-      fs.writeFile(myPath, JSON.stringify(newsletters, null, 2), (writeErr) => {
-        if (writeErr) {
-          console.error('Error writing JSON file:', writeErr);
-          return res.status(500).json({ error: 'Error saving post' });
-        }
-        res.status(200).json({ message: 'Post saved successfully', post: postData });
-      });
+    }
+
+    newsletters.push(newPost);
+
+    fs.writeFile(myPath, JSON.stringify(newsletters, null, 2), (writeErr) => {
+      if (writeErr) {
+        console.error('Error writing JSON file:', writeErr);
+        return res.status(500).json({ error: 'Error saving post' });
+      }
+      // return the saved post—including its new id—
+      res.status(200).json({ message: 'Post saved successfully', post: newPost });
     });
   });
+});
+
   
 // ────────────────────────────────────────────────────────────────
 // PUT /api/updatePost/:id
