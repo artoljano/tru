@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -6,8 +7,8 @@ import "react-quill/dist/quill.snow.css";
 export interface NewsPost {
   id: number;
   title: string;
-  excerpt: string; // HTML
-  content: string; // HTML
+  excerpt: string;
+  content: string;
   date: string;
   isPodcastRelated: boolean;
   image: string | File;
@@ -15,76 +16,75 @@ export interface NewsPost {
   tags: string[];
 }
 
-const NewsletterForm = ({
-  post,
-  onSave,
-  onDelete,
-}: {
-  post?: NewsPost;
-  onSave: (data: NewsPost) => void;
-  onDelete?: (id: number) => void;
-}) => {
-  const [formData, setFormData] = useState<NewsPost>(
-    post || {
-      id: Date.now(),
-      title: "",
-      excerpt: "",
-      content: "",
-      date: new Date().toISOString().slice(0, 10),
-      isPodcastRelated: false,
-      image: "",
-      readTime: "",
-      tags: [],
+const NewsletterForm: React.FC = () => {
+  const { id } = useParams<{ id?: string }>();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState<NewsPost>({
+    id: Date.now(),
+    title: "",
+    excerpt: "",
+    content: "",
+    date: new Date().toISOString().slice(0, 10),
+    isPodcastRelated: false,
+    image: "",
+    readTime: "",
+    tags: [],
+  });
+
+  // if editing, load existing post
+  useEffect(() => {
+    if (id) {
+      fetch("/api/getPosts")
+        .then((r) => r.json())
+        .then((all: NewsPost[]) => {
+          const found = all.find((p) => p.id === Number(id));
+          if (!found) return alert("Post not found");
+          setFormData({
+            ...found,
+            tags: Array.isArray(found.tags)
+              ? found.tags
+              : typeof found.tags === "string"
+              ? JSON.parse(found.tags)
+              : [],
+          });
+        })
+        .catch((e) => alert(e.message));
     }
-  );
+  }, [id]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const target = e.currentTarget;
-    const { name, type, value } = target;
-    if (type === "checkbox") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: (target as HTMLInputElement).checked,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleExcerptChange = (value: string) =>
-    setFormData((prev) => ({ ...prev, excerpt: value }));
-  const handleContentChange = (value: string) =>
-    setFormData((prev) => ({ ...prev, content: value }));
-
-  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: e.target.value.split(",").map((t) => t.trim()),
+    const tgt = e.currentTarget;
+    const { name, type, value } = tgt;
+    setFormData((p) => ({
+      ...p,
+      [name]: type === "checkbox" ? (tgt as HTMLInputElement).checked : value,
     }));
   };
 
+  const handleExcerptChange = (v: string) =>
+    setFormData((p) => ({ ...p, excerpt: v }));
+  const handleContentChange = (v: string) =>
+    setFormData((p) => ({ ...p, content: v }));
+  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setFormData((p) => ({
+      ...p,
+      tags: e.target.value.split(",").map((t) => t.trim()),
+    }));
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, image: file }));
-    }
+    if (file) setFormData((p) => ({ ...p, image: file }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const isEditing = Boolean(post);
-    // always use the formData.id, even when editing
-    const targetId = formData.id;
-    const url = isEditing
-      ? `/api/updatePost/${encodeURIComponent(targetId)}`
+    const isEdit = Boolean(id);
+    const url = isEdit
+      ? `/api/updatePost/${encodeURIComponent(formData.id)}`
       : "/api/savePost";
-    const method = isEditing ? "PUT" : "POST";
+    const method = isEdit ? "PUT" : "POST";
 
     const body = new FormData();
     body.append("title", formData.title);
@@ -94,235 +94,172 @@ const NewsletterForm = ({
     body.append("isPodcastRelated", String(formData.isPodcastRelated));
     body.append("readTime", formData.readTime);
     body.append("tags", JSON.stringify(formData.tags));
-    if (formData.image instanceof File) {
-      body.append("image", formData.image);
-    }
+    if (formData.image instanceof File) body.append("image", formData.image);
 
     try {
       const res = await fetch(url, { method, body });
-      if (!res.ok) throw new Error(`${method} failed (${res.status})`);
+      if (!res.ok) throw new Error(`${method} failed ${res.status}`);
       const data = await res.json();
-      // backend returns { message, post }
-      onSave(data.post as NewsPost);
+      // data.post holds the saved post
+      navigate("/admin/newsletter/manage");
     } catch (err: any) {
-      console.error("Error saving post:", err);
-      alert("Error saving post: " + err.message);
+      alert("Error: " + err.message);
     }
   };
 
   const handleDelete = () => {
-    if (onDelete && post) {
-      onDelete(post.id);
-    }
+    if (!id) return;
+    if (!window.confirm("Delete this post?")) return;
+    const imgPath = typeof formData.image === "string" ? formData.image : "";
+    fetch("/api/deletePost", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: Number(id), image: imgPath }),
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error("Delete failed");
+        navigate("/admin/newsletter/manage");
+      })
+      .catch((e) => alert(e.message));
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-red-900/50 text-white pt-24">
       <Helmet>
-        <title>{post ? "Edit" : "Add New"} Newsletter Post</title>
+        <title>{id ? "Edit" : "Add New"} Newsletter Post</title>
       </Helmet>
       <div className="container mx-auto px-4 max-w-4xl pt-10">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            {post ? "Edit" : "Add New"} Newsletter Post
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
-            {post
-              ? "Edit the details of the newsletter post below."
-              : "Create a new post for the newsletter by filling out the form below."}
-          </p>
-        </div>
+        <h1 className="text-4xl font-bold mb-6 text-center">
+          {id ? "Edit" : "Add New"} Newsletter Post
+        </h1>
+        <form
+          onSubmit={handleSubmit}
+          className="bg-black/50 p-8 rounded-xl space-y-6 backdrop-blur-sm"
+        >
+          {/* Title */}
+          <div>
+            <label className="block text-gray-300 mb-1">Title</label>
+            <input
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white"
+            />
+          </div>
 
-        <div className="bg-black/50 rounded-xl p-8 backdrop-blur-sm shadow-xl">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Title */}
-            <div className="space-y-2">
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Title
-              </label>
+          {/* Excerpt */}
+          <div>
+            <label className="block text-gray-300 mb-1">Excerpt</label>
+            <ReactQuill
+              theme="snow"
+              value={formData.excerpt}
+              onChange={handleExcerptChange}
+              className="bg-gray-800 text-white"
+              modules={{
+                toolbar: [["bold", "italic"], ["link"], [{ list: "bullet" }]],
+              }}
+            />
+          </div>
+
+          {/* Content */}
+          <div>
+            <label className="block text-gray-300 mb-1">Content</label>
+            <ReactQuill
+              theme="snow"
+              value={formData.content}
+              onChange={handleContentChange}
+              className="bg-gray-800 text-white"
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, 3, false] }],
+                  ["bold", "italic", "underline", "strike"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["blockquote", "code-block"],
+                  ["link", "image"],
+                  ["clean"],
+                ],
+              }}
+            />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Date */}
+            <div>
+              <label className="block text-gray-300 mb-1">Date</label>
               <input
-                id="title"
-                name="title"
-                type="text"
-                value={formData.title}
+                name="date"
+                type="date"
+                value={formData.date}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
+                className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white"
               />
             </div>
 
-            {/* Excerpt */}
-            <div className="space-y-2">
-              <label
-                htmlFor="excerpt"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Excerpt
-              </label>
-              <ReactQuill
-                theme="snow"
-                value={formData.excerpt}
-                onChange={handleExcerptChange}
-                modules={{
-                  toolbar: [["bold", "italic"], ["link"], [{ list: "bullet" }]],
-                }}
-                className="bg-gray-800 text-white"
-              />
-            </div>
-
-            {/* Content */}
-            <div className="space-y-2">
-              <label
-                htmlFor="content"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Content
-              </label>
-              <ReactQuill
-                theme="snow"
-                value={formData.content}
-                onChange={handleContentChange}
-                modules={{
-                  toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ["bold", "italic", "underline", "strike"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    ["blockquote", "code-block"],
-                    ["link", "image"],
-                    ["clean"],
-                  ],
-                }}
-                formats={[
-                  "header",
-                  "bold",
-                  "italic",
-                  "underline",
-                  "strike",
-                  "list",
-                  "bullet",
-                  "blockquote",
-                  "code-block",
-                  "link",
-                  "image",
-                ]}
-                className="bg-gray-800 text-white"
-              />
-            </div>
-
-            {/* Date & Image */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label
-                  htmlFor="date"
-                  className="block text-sm font-medium text-gray-300"
-                >
-                  Date
-                </label>
-                <input
-                  id="date"
-                  name="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="image"
-                  className="block text-sm font-medium text-gray-300"
-                >
-                  Image
-                </label>
-                <input
-                  id="image"
-                  name="image"
-                  type="file"
-                  onChange={handleFileChange}
-                  required={!post}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
-                />
-              </div>
-            </div>
-
-            {/* Read Time */}
-            <div className="space-y-2">
-              <label
-                htmlFor="readTime"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Read Time
-              </label>
+            {/* Image */}
+            <div>
+              <label className="block text-gray-300 mb-1">Image</label>
               <input
-                id="readTime"
-                name="readTime"
-                type="text"
-                value={formData.readTime}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
+                name="image"
+                type="file"
+                onChange={handleFileChange}
+                className="w-full text-gray-200"
               />
             </div>
+          </div>
 
-            {/* Tags */}
-            <div className="space-y-2">
-              <label
-                htmlFor="tags"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Tags (comma-separated)
-              </label>
-              <input
-                id="tags"
-                name="tags"
-                type="text"
-                value={formData.tags.join(", ")}
-                onChange={handleTagChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-white focus:ring-2 focus:ring-white text-white"
-              />
-            </div>
+          {/* Read Time */}
+          <div>
+            <label className="block text-gray-300 mb-1">Read Time</label>
+            <input
+              name="readTime"
+              value={formData.readTime}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white"
+            />
+          </div>
 
-            {/* Podcast Related */}
-            <div className="flex items-center gap-4">
-              <input
-                id="isPodcastRelated"
-                name="isPodcastRelated"
-                type="checkbox"
-                checked={formData.isPodcastRelated}
-                onChange={handleChange}
-                className="w-5 h-5 text-red-600 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="isPodcastRelated"
-                className="text-sm font-medium text-gray-300"
-              >
-                Podcast Related
-              </label>
-            </div>
+          {/* Tags */}
+          <div>
+            <label className="block text-gray-300 mb-1">
+              Tags (comma-separated)
+            </label>
+            <input
+              name="tags"
+              value={formData.tags.join(", ")}
+              onChange={handleTagChange}
+              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white"
+            />
+          </div>
 
-            {/* Buttons */}
+          {/* Podcast */}
+          <div className="flex items-center gap-2">
+            <input
+              name="isPodcastRelated"
+              type="checkbox"
+              checked={formData.isPodcastRelated}
+              onChange={handleChange}
+              className="h-5 w-5 text-red-600"
+            />
+            <label className="text-gray-300">Podcast Related</label>
+          </div>
+
+          {/* Actions */}
+          <button className="w-full bg-white text-black py-3 rounded-lg">
+            {id ? "Update Post" : "Save Post"}
+          </button>
+          {id && (
             <button
-              type="submit"
-              className="w-full bg-white text-black py-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-300"
+              type="button"
+              onClick={handleDelete}
+              className="w-full bg-red-600 py-3 rounded-lg"
             >
-              {post ? "Update Post" : "Save Post"}
+              Delete Post
             </button>
-            {post && onDelete && (
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="w-full bg-red-600 text-white py-4 rounded-lg mt-4 font-semibold hover:bg-red-500 transition-colors duration-300"
-              >
-                Delete Post
-              </button>
-            )}
-          </form>
-        </div>
+          )}
+        </form>
       </div>
     </div>
   );
