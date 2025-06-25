@@ -115,7 +115,7 @@ function Newsletter() {
 
       <div className="min-h-screen bg-blue-900/40 text-white">
         {/* Hero Section */}
-        <section className="relative h-[70vh] overflow-hidden pt-[20rem] md:pt-[10rem]">
+        <section className="relative h-auto overflow-hidden pt-[10rem] md:pt-[10rem]">
           <div className="absolute inset-0">
             <img
               src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
