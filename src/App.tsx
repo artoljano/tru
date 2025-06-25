@@ -201,7 +201,7 @@ function App() {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="w-full md:w-1/2 z-10 flex flex-col justify-center items-center text-center md:text-left"
           >
-            <h1 className="text-3xl md:text-6xl font-bold mb-4 text-white leading-tight px-4">
+            <h1 className="text-3xl md:text-6xl font-bold mb-4 text-white leading-tight px-4 text-center">
               Kur ke TRU, pse s'e perdor!
             </h1>
             <p className="text-lg md:text-2xl text-white max-w-md px-4">
