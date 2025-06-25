@@ -115,7 +115,7 @@ function Newsletter() {
 
       <div className="min-h-screen bg-blue-900/40 text-white">
         {/* Hero Section */}
-        <section className="relative h-auto overflow-hidden pt-[10rem] md:pt-[10rem]">
+        <section className="relative h-auto overflow-hidden pt-[10rem] md:pt-[10rem] md:h-[70vh]">
           <div className="absolute inset-0">
             <img
               src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
@@ -139,7 +139,7 @@ function Newsletter() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <motion.div
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -154,7 +154,7 @@ function Newsletter() {
                   </div>
                 </motion.div>
                 <motion.div
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -169,7 +169,7 @@ function Newsletter() {
                   </div>
                 </motion.div>
                 <motion.div
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
