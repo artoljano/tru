@@ -193,7 +193,8 @@ const Episodes: React.FC = () => {
 
       <div className="min-h-screen bg-blue-900/40 text-white">
         {/* Hero */}
-        <section className="relative h-[100vh] overflow-hidden pt-[10rem] md:pt-0 md:	h-[90vh]">
+        {/* <section className="relative h-[100vh] overflow-hidden pt-[10rem] md:pt-0 md:	h-[90vh]"> */}
+        <section className="relative h-auto overflow-hidden pt-[10rem] md:pt-[10rem] md:h-[70vh]">
           <div className="absolute inset-0">
             <img
               src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"

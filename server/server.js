@@ -41,15 +41,15 @@ let cachedPlaylists = null;
 let lastCacheTime = null;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
+
+
 function durationToSeconds(formatted) {
-  // formatted looks like "1 hour(s) 5 minute(s) 23 second(s)" or "5 minute(s) 3 second(s)"
+  // formatted like "1 hour(s) 5 minute(s)" or "45 minute(s)"
   const hoursMatch   = formatted.match(/(\d+)\s*hour/);
   const minutesMatch = formatted.match(/(\d+)\s*minute/);
-  const secondsMatch = formatted.match(/(\d+)\s*second/);
   const h = hoursMatch   ? parseInt(hoursMatch[1], 10)   : 0;
   const m = minutesMatch ? parseInt(minutesMatch[1], 10) : 0;
-  const s = secondsMatch ? parseInt(secondsMatch[1], 10) : 0;
-  return h * 3600 + m * 60 + s;
+  return h * 3600 + m * 60;
 }
 
 // Helper function to get video duration

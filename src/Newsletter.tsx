@@ -137,7 +137,7 @@ function Newsletter() {
                 Qëndroni të informuar për çdo zhvillim, ide dhe reflektim të ri
                 në botën e politikës, kulturës dhe më shumë.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <motion.div
                   className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center"
                   initial={{ opacity: 0, y: 20 }}
